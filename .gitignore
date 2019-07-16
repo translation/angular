@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+dist
+yarn.lock
+package-lock.json
+server.crt
+server.key
+.DS_Store

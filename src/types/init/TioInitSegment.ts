@@ -1,4 +1,4 @@
-export class TioSegment {
+export class TioInitSegment {
     type = 'source';
     source: string = '';
     target: string = '';

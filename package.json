@@ -5,11 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@types/xmldom": "^0.1.29",
-    "read-xml": "^3.0.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
-    "xml-query": "^1.5.0",
-    "xml-reader": "^2.4.3",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {

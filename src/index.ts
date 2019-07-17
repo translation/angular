@@ -9,7 +9,7 @@ import { TioSyncSegment } from './types/sync/TioSyncSegment';
 var argv = require('minimist')(process.argv.slice(2));
 
 /***********INIT***********/
-// node dist/ng2-translation-io/index.js --init --source='fr-BE' --targets='en:./src/assets/locale/messages.en.xlf, nl-BE:./src/assets/locale/messages.nl.xlf'
+// node dist/ngx-translation-io/index.js --init --source='fr-BE' --targets='en:./src/assets/locale/messages.en.xlf, nl-BE:./src/assets/locale/messages.nl.xlf'
 
 if (argv['init']) {
   // Init objects
@@ -73,7 +73,7 @@ if (argv['init']) {
 
 
 /***********SYNC***********/
-// node dist/ng2-translation-io/index.js --sync --source='fr-BE:./src/assets/locale/messages.fr.xlf' --targets='en, nl-BE'
+// node dist/ngx-translation-io/index.js --sync --source='fr-BE:./src/assets/locale/messages.fr.xlf' --targets='en, nl-BE'
 
 if (argv['sync']) {
   // Init objects

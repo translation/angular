@@ -36,7 +36,7 @@ if (argv['init']) {
     var source = doc.getElementsByTagName('source');
     var target = doc.getElementsByTagName('target');
 
-    // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from them
+    // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from it
     var arraySource: any[] = [source.length];
     var arrayTarget: any[] = [target.length];
 
@@ -49,7 +49,7 @@ if (argv['init']) {
       arrayTarget[j] = (target[j] + '').trim().replace(regexTarget, '').replace('</target>', '').trim();
     }
 
-    // Only if the number of tags are the same, we process and we create the json object for translatio.io
+    // Only if the number of tags are the same, we process and we complete the json object for translatio.io
     if (arraySource.length === arrayTarget.length) {
       var segment = arraySource.map<TioInitSegment>((source, index) => {
         var x = new TioInitSegment();
@@ -90,7 +90,6 @@ if (argv['sync']) {
     tioSyncRequest.target_languages.push(targets[i].trim());
   }
 
-
   // Get and read file for the sync
   var raw = require('fs').readFileSync(file, 'utf8');
 
@@ -98,14 +97,14 @@ if (argv['sync']) {
   var doc = dom.parseFromString(raw, 'text/xml');
   var source = doc.getElementsByTagName('source');
 
-  // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from them
+  // We only keep raw values and we remove tags <source ...></source> from it
   var arraySource: any[] = [source.length];
   var regexSource = new RegExp('<source .*?>');
   for (var i = 0; i < source.length; i++) {
     arraySource[i] = (source[i] + '').trim().replace(regexSource, '').replace('</source>', '').trim();
   }
 
-  // We create the json object for translatio.io
+  // We complete the json object for translatio.io
   tioSyncRequest.segments = arraySource.map<TioSyncSegment>(source => {
     var x = new TioSyncSegment();
     x.source = source;

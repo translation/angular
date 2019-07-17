@@ -49,13 +49,7 @@ for (var x = 0; x < tioInitRequest.target_languages.length; x++) {
       x.target = arrayTarget[index];
       return x;
     });
-
-    if (tioInitRequest.target_languages[x] === 'nl') {
-      tioInitRequest.segments.nl = segment;
-    }
-    if (tioInitRequest.target_languages[x] === 'en') {
-      tioInitRequest.segments.en = segment;
-    }
+    tioInitRequest.segments[tioInitRequest.target_languages[x]] = segment;
   } else {
     console.error('The number of <source> & <target> are not equivalent in the file : ' + files[x]);
   }

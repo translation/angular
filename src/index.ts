@@ -5,12 +5,22 @@ import { TioInitSegment } from './types/init/TioInitSegment';
 import { TioSyncRequest } from './types/sync/TioSyncRequest';
 import { TioSyncSegment } from './types/sync/TioSyncSegment';
 
+
+
 // Get CLI arguments
 var argv = require('minimist')(process.argv.slice(2));
+var apiKey = argv['apiKey'];
+
+
 
 /***********INIT***********/
-// node dist/ngx-translation-io/index.js --init --source='fr-BE' --targets='en:./src/assets/locale/messages.en.xlf, nl-BE:./src/assets/locale/messages.nl.xlf'
-
+/*                                                          //todo : remove this before public
+  node dist/ngx-translation-io/index.js 
+    --init 
+    --apiKey='a234ffaea3154cf785a52b684cea2cb6' 
+    --source='fr-BE' 
+    --targets='en:./src/assets/locale/messages.en.xlf, nl-BE:./src/assets/locale/messages.nl.xlf'
+*/
 if (argv['init']) {
   // Init objects
   var tioInitRequest = new TioInitRequest();
@@ -63,18 +73,39 @@ if (argv['init']) {
     }
   }
 
-  // Finally, we create a json file
-  require('fs').writeFile("translation-io-init.json", JSON.stringify(tioInitRequest), (err: any) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  var url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
+  var data = JSON.stringify(tioInitRequest);
+  // We post the JSON into translation.io
+  require('axios').post(url, {
+    data
+  }).then((res: any) => {
+    console.log(`statusCode: ${res.statusCode}`)
+    console.log(res)
+  }).catch((error: any) => {
+    console.error('Impossible to post the init');
+    console.log(error);
+  })
+
+  // Test : We create a file to see the result
+  // require('fs').writeFile("translation-io-init.json", JSON.stringify(tioInitRequest), (err: any) => {
+  //   if (err) {
+  //     console.log(err);
+  //   }
+  // });
 }
 
 
-/***********SYNC***********/
-// node dist/ngx-translation-io/index.js --sync --source='fr-BE:./src/assets/locale/messages.fr.xlf' --targets='en, nl-BE'
 
+
+
+/***********SYNC***********/
+/*                                                          //todo : remove this before public
+  node dist/ngx-translation-io/index.js 
+    --sync 
+    --apiKey='a234ffaea3154cf785a52b684cea2cb6' 
+    --source='fr-BE:./src/assets/locale/messages.fr.xlf' 
+    --targets='en, nl-BE'
+*/
 if (argv['sync']) {
   // Init objects
   var tioSyncRequest = new TioSyncRequest();
@@ -111,10 +142,23 @@ if (argv['sync']) {
     return x;
   });
 
-  // Finally, we create a json file
-  require('fs').writeFile("translation-io-sync.json", JSON.stringify(tioSyncRequest), (err: any) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  var url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
+  var data = JSON.stringify(tioSyncRequest);
+  // We post the JSON into translation.io
+  require('axios').post(url, {
+    data
+  }).then((res: any) => {
+    console.log(`statusCode: ${res.statusCode}`)
+    console.log(res)
+  }).catch((error: any) => {
+    console.error('Impossible to post the sync')
+    console.log(error);
+  })
+
+  // Test : We create a file to see the result
+  // require('fs').writeFile("translation-io-sync.json", JSON.stringify(tioSyncRequest), (err: any) => {
+  //   if (err) {
+  //     console.log(err);
+  //   }
+  // });
 }

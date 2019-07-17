@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/minimist": "^1.2.0",
     "@types/xmldom": "^0.1.29",
+    "minimist": "^1.2.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
     "xmldom": "^0.1.27"

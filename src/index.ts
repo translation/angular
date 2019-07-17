@@ -74,12 +74,12 @@ if (argv['init']) {
   }
 
   var url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
-  var data = JSON.stringify(tioInitRequest);
+  const data = JSON.stringify(tioInitRequest);
   // We post the JSON into translation.io
   require('axios').post(url, {
     data
   }).then((res: any) => {
-    console.log(`statusCode: ${res.statusCode}`)
+    console.error('Everything ok');
     console.log(res)
   }).catch((error: any) => {
     console.error('Impossible to post the init');
@@ -143,15 +143,15 @@ if (argv['sync']) {
   });
 
   var url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
-  var data = JSON.stringify(tioSyncRequest);
+  const data = JSON.stringify(tioSyncRequest);
   // We post the JSON into translation.io
   require('axios').post(url, {
     data
   }).then((res: any) => {
-    console.log(`statusCode: ${res.statusCode}`)
-    console.log(res)
+    console.error('Everything ok');
+    // console.log(res)
   }).catch((error: any) => {
-    console.error('Impossible to post the sync')
+    console.error('Impossible to post the sync');
     console.log(error);
   })
 

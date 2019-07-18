@@ -142,7 +142,7 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
         newElement.setAttribute('state', 'final');
         const newNode = xml.createTextNode(segment[i].target);
         newElement.appendChild(newNode);
-        xml.replaceChild(newElement, xml.getElementsByTagName('target')[index]);
+        xml.replaceChild(newElement, target[index]);
       }
     }
 

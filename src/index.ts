@@ -4,7 +4,8 @@ import { TioInitSegmentRequest } from './types/init/TioInitSegment.request';
 import { TioSyncRequest } from './types/sync/TioSync.request';
 import { TioSyncSegmentRequest } from './types/sync/TioSyncSegment.request';
 import { TioSyncResponse } from './types/sync/TioSync.response';
-const dom = new xmlDom.DOMParser();
+const domParser = new xmlDom.DOMParser();
+const xmlSerializer = new xmlDom.XMLSerializer();
 
 // Get CLI arguments
 var argv = require('minimist')(process.argv.slice(2));
@@ -43,22 +44,13 @@ if (argv['init']) {
     var raw = require('fs').readFileSync(targetXliffs[x], 'utf8');
 
     // Get tags <source> and <target> from the file
-    var xml = dom.parseFromString(raw, 'text/xml');
+    var xml = domParser.parseFromString(raw, 'text/xml');
     var source = xml.getElementsByTagName('source');
     var target = xml.getElementsByTagName('target');
 
     // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from it
-    var arraySource: string[] = [];
-    var arrayTarget: string[] = [];
-
-    var regexSource = new RegExp('<source .*?>');
-    var regexTarget = new RegExp('<target .*?>');
-    for (var i = 0; i < source.length; i++) {
-      arraySource[i] = (source[i] + '').trim().replace(regexSource, '').replace('</source>', '').replace(/\s+/g, ' ').trim();
-    }
-    for (var j = 0; j < target.length; j++) {
-      arrayTarget[j] = (target[j] + '').trim().replace(regexTarget, '').replace('</target>', '').replace(/\s+/g, ' ').trim();
-    }
+    var arraySource: string[] = getSourceToString(source);
+    var arrayTarget: string[] = getTargetToString(target);
 
     // Only if the number of tags are the same, we process and we complete the json object for translatio.io
     if (arraySource.length === arrayTarget.length) {
@@ -74,37 +66,11 @@ if (argv['init']) {
     }
   }
 
-  var url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
+  const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
   // We post the JSON into translation.io
-  require('axios').post(url, tioInitRequest).then((res: any) => {
-    console.log('Init successful !');
-    console.log('{ status: ' + res.status + ' }');
-    console.log(res.data);
-  }).catch((error: any) => {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('{ status: ' + error.response.status + ' }');
-      console.error(error.response.data);
-      console.error(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.error(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('Error', error.message);
-    }
-    console.error(error.config);
-  })
-
-  // // Test : We create a file to see the result
-  // require('fs').writeFile("translation-io-init.json", JSON.stringify(tioInitRequest), (err: any) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
+  httpPost(url, tioInitRequest, () => {
+    console.log('Init successful !')
+  });
 }
 
 
@@ -121,16 +87,13 @@ if (argv['sync']) {
 
   // Get and read file "source" for the sync
   var raw = require('fs').readFileSync(sourceXliff, 'utf8');
-  // Get tags <source> from the file
-  var xml = dom.parseFromString(raw, 'text/xml');
+
+  // Get tags <source> from the "source" file
+  var xml = domParser.parseFromString(raw, 'text/xml');
   var source = xml.getElementsByTagName('source');
 
   // We only keep raw values and we remove tags <source ...></source> from it
-  var arraySource: string[] = [];
-  var regexSource = new RegExp('<source .*?>');
-  for (var i = 0; i < source.length; i++) {
-    arraySource[i] = (source[i] + '').trim().replace(regexSource, '').replace('</source>', '').replace(/\s+/g, ' ').trim();
-  }
+  var arraySource: string[] = getSourceToString(source);
 
   // We complete the json object for translatio.io
   tioSyncRequest.segments = arraySource.map<TioSyncSegmentRequest>(src => {
@@ -139,74 +102,85 @@ if (argv['sync']) {
     return x;
   });
 
-  var url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
+  const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
   // We post the JSON into translation.io
-  require('axios').post(url, tioSyncRequest).then((res: any) => {
-    console.log('Sync successfull !');
-    console.log('{ status: ' + res.status + ' }');
-    mergeXliff(targetXliffs, tioSyncRequest.target_languages, res.data);
-  }).catch((error: any) => {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('{ status: ' + error.response.status + ' }');
-      console.error(error.response.data);
-      console.error(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.error(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('Error', error.message);
-    }
-    console.error(error.config);
+  httpPost(url, tioSyncRequest, res => {
+    console.log('Sync successful !')
+    mergeXliff(targetXliffs, tioSyncRequest.target_languages, res);
   });
-
-  // // Test : We create a file to see the result
-  // require('fs').writeFile("translation-io-sync.json", JSON.stringify(tioSyncRequest), (err: any) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
 }
 
-
-export function mergeXliff(filesToMerge: string[], target_languages: string[], sync: TioSyncResponse): void {
+export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void {
   console.log('Start merge');
   // For each filesToMerge, we do some process
   for (var x = 0; x < filesToMerge.length; x++) {
     // Get and read file for the merge
-    var raw = require('fs').readFileSync(filesToMerge[0], 'utf8');
+    var raw = require('fs').readFileSync(filesToMerge[x], 'utf8');
 
     // Get tags <source> and <target> from the file
-    var xml = dom.parseFromString(raw, 'text/xml');
+    var xml = domParser.parseFromString(raw, 'text/xml');
     var source = xml.getElementsByTagName('source');
     var target = xml.getElementsByTagName('target');
 
-    // Proccess the <source> like in the sync to permit comparison
-    var arraySource: any[] = [source.length];
-    var regexSource = new RegExp('<source .*?>');
-    for (var i = 0; i < source.length; i++) {
-      arraySource[i] = (source[i] + '').trim().replace(regexSource, '').replace('</source>', '').replace(/\s+/g, ' ').trim();
+    // Proccess the <source> like in the 'sync' to permit comparison
+    var arraySource: string[] = getSourceToString(source);
+
+    var segment = sync.segments[targetLanguages[x]];
+    for (var i = 0; i < segment.length; i++) {
+      //If sources are equals -> we can update the <target> tag.
+      var index = arraySource.indexOf(segment[i].source);
+      if (index > -1) {
+        target[index] = '<target state="final">' + segment[i].target + '</target>' as unknown as Element;
+      }
     }
 
-    var segment = sync.segments[target_languages[x]];
-    for (var i = 0; i < segment.length; i++) {
-      // If sources are equals -> we can update the <target> tag.
-      console.log(segment[i].target);
-      // var index = arraySource.indexOf(segment[i].source);
-      // console.log(index);
-      // if(index > -1) {
-      //   var h = xml.createElement('target', );
-      //   h.setAttribute("state", "final");
-      //   var t = xml.createTextNode('fdfd');
-      //   h.append(t);
-      //   target[index].replaceChild(h, target[index]);
-      //   console.log(target[index] + '');
-      // }
-    }
+    require('fs').writeFile(filesToMerge[x], xml, (err: any) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  console.log('Merge successful');
+  console.log('Merge successful !');
+}
+
+export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>): string[] {
+  const regexSource = new RegExp('<source .*?>');
+  const response: string[] = [];
+  for (let i = 0; i < sources.length; i++) {
+    response.push(xmlSerializer.serializeToString(sources[i]).trim().replace(regexSource, '').replace('</source>', '').replace(/\s+/g, ' ').trim());
+  }
+  return response.slice();
+}
+
+export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] {
+  const regexTarget = new RegExp('<target .*?>');
+  const response: string[] = [];
+  for (let i = 0; i < targets.length; i++) {
+    response.push(xmlSerializer.serializeToString(targets[i]).trim().replace(regexTarget, '').replace('</target>', '').replace(/\s+/g, ' ').trim());
+  }
+  return response.slice();
+}
+
+export function httpPost(url: string, value: any, callback: (res: any) => void) {
+  require('axios').post(url, value).then((res: any) => {
+    console.log('{ status: ' + res.status + ' }');
+    callback(res.data);
+  })
+    .catch((error: any) => {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('{ status: ' + error.response.status + ' }');
+        console.error(error.response.data);
+        console.error(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.error(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error', error.message);
+      }
+    });
 }

@@ -138,11 +138,8 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
       //If sources are equals -> we can update the <target> tag.
       const index = arraySource.indexOf(segment[i].source);
       if (index > -1) {
-        const newElement = xml.createElement('target')
-        newElement.setAttribute('state', 'final');
-        const newNode = xml.createTextNode(segment[i].target);
-        newElement.appendChild(newNode);
-        xml.replaceChild(newElement, target[index]);
+        const newNode = domParser.parseFromString('<target state="final">'+segment[i].target+'</target>', 'text/xml');
+        xml.replaceChild(newNode, target[index]);
       }
     }
 

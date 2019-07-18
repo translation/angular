@@ -113,6 +113,8 @@ if (argv['sync']) {
   });
 }
 
+
+
 export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void {
   console.log('Start merge');
   // For each filesToMerge, we do some process
@@ -139,12 +141,16 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
 
     require('fs').writeFile(filesToMerge[x], xml, (err: any) => {
       if (err) {
-        console.log(err);
+        console.error(err);
       }
     });
   }
   console.log('Merge successful !');
 }
+
+
+
+
 
 export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>): string[] {
   const regexSource = new RegExp('<source .*?>');
@@ -155,6 +161,10 @@ export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>):
   return response.slice();
 }
 
+
+
+
+
 export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] {
   const regexTarget = new RegExp('<target .*?>');
   const response: string[] = [];
@@ -164,8 +174,13 @@ export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] 
   return response.slice();
 }
 
+
+
+
+
 export function httpPost(url: string, value: any, callback: (res: any) => void) {
   require('axios').post(url, value).then((res: any) => {
+    console.log(res.data);
     console.log('{ status: ' + res.status + ' }');
     callback(res.data);
   })
@@ -173,8 +188,8 @@ export function httpPost(url: string, value: any, callback: (res: any) => void) 
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        console.error('{ status: ' + error.response.status + ' }');
         console.error(error.response.data);
+        console.error('{ status: ' + error.response.status + ' }');
         console.error(error.response.headers);
       } else if (error.request) {
         // The request was made but no response was received

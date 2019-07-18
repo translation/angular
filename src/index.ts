@@ -11,12 +11,12 @@ const xmlSerializer = new xmlDom.XMLSerializer();
 const argv = require('minimist')(process.argv.slice(2));
 
 // Manage arguments 
-// source arg.
+  // source arg.
 const argSource: string[] = argv['source'].trim().split(':');
 const sourceLanguage = argSource[0].trim();
 const sourceXliff = argSource[1].trim();
 
-// targets arg.
+  // targets arg.
 const argTargets = argv['targets'].trim().split(',');
 const targetLanguages: string[] = [];
 const targetXliffs: string[] = [];
@@ -26,14 +26,14 @@ for (let i = 0; i < argTargets.length; i++) {
   targetXliffs.push(argTarget[1].trim());       // value
 }
 
-// Api key
+  // Api key
 const apiKey = argv['apiKey'];
 
 
 
 
 
-/***********INIT***********/
+/*********** INIT ***********/
 if (argv['init']) {
   console.log('Start init');
   // Init objects
@@ -80,7 +80,7 @@ if (argv['init']) {
 
 
 
-/***********SYNC***********/
+/*********** SYNC ***********/
 if (argv['sync']) {
   console.log('Start sync');
   // Init objects
@@ -115,6 +115,9 @@ if (argv['sync']) {
 
 
 
+
+
+/*********** MERGE ***********/
 export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void {
   console.log('Start merge');
   // For each filesToMerge, we do some process
@@ -135,7 +138,11 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
       //If sources are equals -> we can update the <target> tag.
       const index = arraySource.indexOf(segment[i].source);
       if (index > -1) {
-        target[index] = '<target state="final">' + segment[i].target + '</target>' as unknown as Element;
+        const newElement = xml.createElement('target')
+        newElement.setAttribute('state', 'final');
+        const newNode = xml.createTextNode(segment[i].target);
+        newElement.appendChild(newNode);
+        xml.replaceChild(newElement, xml.getElementsByTagName('target')[index]);
       }
     }
 

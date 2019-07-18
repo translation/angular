@@ -11,12 +11,12 @@ const xmlSerializer = new xmlDom.XMLSerializer();
 const argv = require('minimist')(process.argv.slice(2));
 
 // Manage arguments 
-  // source arg.
+// source arg.
 const argSource: string[] = argv['source'].trim().split(':');
 const sourceLanguage = argSource[0].trim();
 const sourceXliff = argSource[1].trim();
 
-  // targets arg.
+// targets arg.
 const argTargets = argv['targets'].trim().split(',');
 const targetLanguages: string[] = [];
 const targetXliffs: string[] = [];
@@ -26,7 +26,7 @@ for (let i = 0; i < argTargets.length; i++) {
   targetXliffs.push(argTarget[1].trim());       // value
 }
 
-  // Api key
+// Api key
 const apiKey = argv['apiKey'];
 
 

@@ -14,13 +14,6 @@ var apiKey = argv['apiKey'];
 
 
 /***********INIT***********/
-/*                                                          //todo : remove this before public
-  node dist/ngx-translation-io/index.js 
-    --init 
-    --apiKey='a234ffaea3154cf785a52b684cea2cb6' 
-    --source='fr-BE' 
-    --targets='en:./src/assets/locale/messages.en.xlf, nl-BE:./src/assets/locale/messages.nl.xlf'
-*/
 if (argv['init']) {
   // Init objects
   var tioInitRequest = new TioInitRequest();
@@ -74,16 +67,27 @@ if (argv['init']) {
   }
 
   var url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
-  const data = JSON.stringify(tioInitRequest);
   // We post the JSON into translation.io
-  require('axios').post(url, {
-    data
-  }).then((res: any) => {
-    console.error('Everything ok');
+  require('axios').post(url, tioInitRequest).then((res: any) => {
+    console.error('Init successful !');
     console.log(res)
   }).catch((error: any) => {
-    console.error('Impossible to post the init');
-    console.log(error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error(error.response.data);
+      console.error(error.response.status);
+      console.error(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.error(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error', error.message);
+    }
+    console.error(error.config);
   })
 
   // Test : We create a file to see the result
@@ -99,13 +103,6 @@ if (argv['init']) {
 
 
 /***********SYNC***********/
-/*                                                          //todo : remove this before public
-  node dist/ngx-translation-io/index.js 
-    --sync 
-    --apiKey='a234ffaea3154cf785a52b684cea2cb6' 
-    --source='fr-BE:./src/assets/locale/messages.fr.xlf' 
-    --targets='en, nl-BE'
-*/
 if (argv['sync']) {
   // Init objects
   var tioSyncRequest = new TioSyncRequest();
@@ -143,16 +140,27 @@ if (argv['sync']) {
   });
 
   var url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
-  const data = JSON.stringify(tioSyncRequest);
   // We post the JSON into translation.io
-  require('axios').post(url, {
-    data
-  }).then((res: any) => {
-    console.error('Everything ok');
-    // console.log(res)
+  require('axios').post(url, tioSyncRequest).then((res: any) => {
+    console.log('Sync successfull !');
+    console.log(res);
   }).catch((error: any) => {
-    console.error('Impossible to post the sync');
-    console.log(error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('{ status: ' + error.response.status + ' }');
+      console.error(error.response.data);
+      console.error(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.error(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error', error.message);
+    }
+    console.log(error.config);
   })
 
   // Test : We create a file to see the result

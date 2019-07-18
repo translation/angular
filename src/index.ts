@@ -8,54 +8,57 @@ const domParser = new xmlDom.DOMParser();
 const xmlSerializer = new xmlDom.XMLSerializer();
 
 // Get CLI arguments
-var argv = require('minimist')(process.argv.slice(2));
+const argv = require('minimist')(process.argv.slice(2));
 
 // Manage arguments 
 // source arg.
-var argSource: string[] = argv['source'].trim().split(':');
-var sourceLanguage = argSource[0].trim();
-var sourceXliff = argSource[1].trim();
+const argSource: string[] = argv['source'].trim().split(':');
+const sourceLanguage = argSource[0].trim();
+const sourceXliff = argSource[1].trim();
 
 // targets arg.
-var argTargets = argv['targets'].trim().split(',');
-var targetLanguages: string[] = [];
-var targetXliffs: string[] = [];
-for (var i = 0; i < argTargets.length; i++) {
-  var argTarget = argTargets[i].trim().split(':');
+const argTargets = argv['targets'].trim().split(',');
+const targetLanguages: string[] = [];
+const targetXliffs: string[] = [];
+for (let i = 0; i < argTargets.length; i++) {
+  const argTarget = argTargets[i].trim().split(':');
   targetLanguages.push(argTarget[0].trim());    // key
   targetXliffs.push(argTarget[1].trim());       // value
 }
 
-// api key
-var apiKey = argv['apiKey'];
+// Api key
+const apiKey = argv['apiKey'];
+
+
+
 
 
 /***********INIT***********/
 if (argv['init']) {
   console.log('Start init');
   // Init objects
-  var tioInitRequest = new TioInitRequest();
+  const tioInitRequest = new TioInitRequest();
   tioInitRequest.source_language = sourceLanguage;
   tioInitRequest.target_languages = targetLanguages.slice();
 
   // For each targets-languages, we do some process
-  for (var x = 0; x < tioInitRequest.target_languages.length; x++) {
+  for (let x = 0; x < tioInitRequest.target_languages.length; x++) {
     // Get and read file for the current targets-languages
-    var raw = require('fs').readFileSync(targetXliffs[x], 'utf8');
+    const raw = require('fs').readFileSync(targetXliffs[x], 'utf8');
 
     // Get tags <source> and <target> from the file
-    var xml = domParser.parseFromString(raw, 'text/xml');
-    var source = xml.getElementsByTagName('source');
-    var target = xml.getElementsByTagName('target');
+    const xml = domParser.parseFromString(raw, 'text/xml');
+    const source = xml.getElementsByTagName('source');
+    const target = xml.getElementsByTagName('target');
 
     // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from it
-    var arraySource: string[] = getSourceToString(source);
-    var arrayTarget: string[] = getTargetToString(target);
+    const arraySource: string[] = getSourceToString(source);
+    const arrayTarget: string[] = getTargetToString(target);
 
     // Only if the number of tags are the same, we process and we complete the json object for translatio.io
     if (arraySource.length === arrayTarget.length) {
-      var segment = arraySource.map<TioInitSegmentRequest>((src, index) => {
-        var x = new TioInitSegmentRequest();
+      const segment = arraySource.map<TioInitSegmentRequest>((src, index) => {
+        const x = new TioInitSegmentRequest();
         x.source = src;
         x.target = arrayTarget[index];
         return x;
@@ -81,23 +84,23 @@ if (argv['init']) {
 if (argv['sync']) {
   console.log('Start sync');
   // Init objects
-  var tioSyncRequest = new TioSyncRequest();
+  const tioSyncRequest = new TioSyncRequest();
   tioSyncRequest.source_language = sourceLanguage;
   tioSyncRequest.target_languages = targetLanguages.slice(); // key
 
   // Get and read file "source" for the sync
-  var raw = require('fs').readFileSync(sourceXliff, 'utf8');
+  const raw = require('fs').readFileSync(sourceXliff, 'utf8');
 
   // Get tags <source> from the "source" file
-  var xml = domParser.parseFromString(raw, 'text/xml');
-  var source = xml.getElementsByTagName('source');
+  const xml = domParser.parseFromString(raw, 'text/xml');
+  const source = xml.getElementsByTagName('source');
 
   // We only keep raw values and we remove tags <source ...></source> from it
-  var arraySource: string[] = getSourceToString(source);
+  const arraySource: string[] = getSourceToString(source);
 
   // We complete the json object for translatio.io
   tioSyncRequest.segments = arraySource.map<TioSyncSegmentRequest>(src => {
-    var x = new TioSyncSegmentRequest();
+    const x = new TioSyncSegmentRequest();
     x.source = src;
     return x;
   });
@@ -113,22 +116,22 @@ if (argv['sync']) {
 export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void {
   console.log('Start merge');
   // For each filesToMerge, we do some process
-  for (var x = 0; x < filesToMerge.length; x++) {
+  for (let x = 0; x < filesToMerge.length; x++) {
     // Get and read file for the merge
-    var raw = require('fs').readFileSync(filesToMerge[x], 'utf8');
+    const raw = require('fs').readFileSync(filesToMerge[x], 'utf8');
 
     // Get tags <source> and <target> from the file
-    var xml = domParser.parseFromString(raw, 'text/xml');
-    var source = xml.getElementsByTagName('source');
-    var target = xml.getElementsByTagName('target');
+    const xml = domParser.parseFromString(raw, 'text/xml');
+    const source = xml.getElementsByTagName('source');
+    const target = xml.getElementsByTagName('target');
 
     // Proccess the <source> like in the 'sync' to permit comparison
-    var arraySource: string[] = getSourceToString(source);
+    const arraySource: string[] = getSourceToString(source);
 
-    var segment = sync.segments[targetLanguages[x]];
-    for (var i = 0; i < segment.length; i++) {
+    const segment = sync.segments[targetLanguages[x]];
+    for (let i = 0; i < segment.length; i++) {
       //If sources are equals -> we can update the <target> tag.
-      var index = arraySource.indexOf(segment[i].source);
+      const index = arraySource.indexOf(segment[i].source);
       if (index > -1) {
         target[index] = '<target state="final">' + segment[i].target + '</target>' as unknown as Element;
       }

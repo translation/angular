@@ -89,13 +89,6 @@ if (argv['init']) {
     }
     console.error(error.config);
   })
-
-  // Test : We create a file to see the result
-  // require('fs').writeFile("translation-io-init.json", JSON.stringify(tioInitRequest), (err: any) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
 }
 
 
@@ -160,13 +153,6 @@ if (argv['sync']) {
       // Something happened in setting up the request that triggered an Error
       console.error('Error', error.message);
     }
-    console.log(error.config);
-  })
-
-  // Test : We create a file to see the result
-  // require('fs').writeFile("translation-io-sync.json", JSON.stringify(tioSyncRequest), (err: any) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
+    console.error(error.config);
+  });
 }

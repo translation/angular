@@ -160,7 +160,7 @@ export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>):
   const regexSource = new RegExp('<source .*?>');
   const response: string[] = [];
   for (let i = 0; i < sources.length; i++) {
-    response.push(xmlSerializer.serializeToString(sources[i]).trim().replace(regexSource, '').replace('</source>', '').replace(/\s+/g, ' ').trim());
+    response.push(xmlSerializer.serializeToString(sources[i]).trim().replace(regexSource, '').replace('</source>', '').replace(/\t/g, '').trim());
   }
   return response.slice();
 }
@@ -173,7 +173,7 @@ export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] 
   const regexTarget = new RegExp('<target .*?>');
   const response: string[] = [];
   for (let i = 0; i < targets.length; i++) {
-    response.push(xmlSerializer.serializeToString(targets[i]).trim().replace(regexTarget, '').replace('</target>', '').replace(/\s+/g, ' ').trim());
+    response.push(xmlSerializer.serializeToString(targets[i]).trim().replace(regexTarget, '').replace('</target>', '').replace(/\t/g, '').trim());
   }
   return response.slice();
 }

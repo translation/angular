@@ -2,7 +2,7 @@
   "name": "ngx-translation-io",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "translate.js",
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "@types/xmldom": "^0.1.29",

@@ -183,4 +183,4 @@ function httpPost(url, value, callback) {
     });
 }
 exports.httpPost = httpPost;
-//# sourceMappingURL=translation.js.map
+//# sourceMappingURL=index.js.map

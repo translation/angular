@@ -19,6 +19,7 @@
     "translation": "bin/index.js"
   },
   "scripts": {
+    "translation": "node bin/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "corellia",

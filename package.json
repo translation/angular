@@ -1,5 +1,5 @@
 {
-  "name": "ngx-translation-io",
+  "name": "@corellia/ngx-translation-io",
   "version": "1.0.0",
   "description": "",
   "main": "translation.js",
@@ -14,6 +14,9 @@
   },
   "devDependencies": {
     "@types/node": "^12.6.3"
+  },
+  "bin": {
+    "translation": "bin/translation.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -16,7 +16,7 @@
     "@types/node": "^12.6.3"
   },
   "bin": {
-    "translationio": "./bin/index.js"
+    "translation-io": "./bin/index.js"
   },
   "scripts": {
     "test": "node ./bin/index.js"

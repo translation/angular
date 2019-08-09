@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import * as xmlDom from 'xmldom';
 import { TioInitRequest } from './types/init/TioInit.request';
 import { TioInitSegmentRequest } from './types/init/TioInitSegment.request';

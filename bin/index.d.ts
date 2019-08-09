@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { TioSyncResponse } from './types/sync/TioSync.response';
 /*********** MERGE ***********/
 export declare function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void;

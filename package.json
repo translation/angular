@@ -1,8 +1,8 @@
 {
   "name": "@corellia/ngx-translation-io",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "",
-  "main": "bin/index.js",
+  "main": "bin/start",
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "@types/xmldom": "^0.1.29",
@@ -16,10 +16,10 @@
     "@types/node": "^12.6.3"
   },
   "bin": {
-    "translation-io": "./bin/index.js"
+    "translation-io": "./bin/start"
   },
   "scripts": {
-    "test": "node ./bin/index.js"
+    "test": "node ./bin/start"
   },
   "author": "corellia",
   "license": "ISC"

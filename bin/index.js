@@ -19,15 +19,15 @@ const xmlSerializer = new xmlDom.XMLSerializer();
 const argv = require('minimist')(process.argv.slice(2));
 // Get arguments 
 // Source arg.
-const argSource = argv['source'].split(':');
+const argSource = argv['source'].trim().split(':');
 const sourceLanguage = argSource[0].trim();
 const sourceXliff = argSource[1].trim();
 // Targets arg.
-const argTargets = argv['targets'].split(',');
+const argTargets = argv['targets'].trim().split(',');
 const targetLanguages = [];
 const targetXliffs = [];
 for (let i = 0; i < argTargets.length; i++) {
-    const argTarget = argTargets[i].split(':');
+    const argTarget = argTargets[i].trim().split(':');
     targetLanguages.push(argTarget[0].trim()); // key
     targetXliffs.push(argTarget[1].trim()); // value
 }

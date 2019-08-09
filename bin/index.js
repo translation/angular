@@ -19,10 +19,10 @@ const argv = require('minimist')(process.argv.slice(2));
 // Get arguments 
 // Source arg.
 const argSource = argv['source'].trim().split(':');
-const sourceLanguage = argSource[0].trim();
-const sourceXliff = argSource[1].trim();
+const sourceLanguage = argSource[0].trim(); // key
+const sourceXliff = argSource[1].trim(); // value
 // Targets arg.
-const argTargets = argv['targets'].trim().split(',');
+const argTargets = argv['targets'];
 const targetLanguages = [];
 const targetXliffs = [];
 for (let i = 0; i < argTargets.length; i++) {

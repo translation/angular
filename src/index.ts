@@ -14,12 +14,12 @@ const argv = require('minimist')(process.argv.slice(2));
 
 // Get arguments 
 // Source arg.
-const argSource: string[] = (argv['source'] as string).trim().split(':');
+const argSource: string[] = argv['source'].trim().split(':');
 const sourceLanguage = argSource[0].trim();
 const sourceXliff = argSource[1].trim();
 
 // Targets arg.
-const argTargets = (argv['targets'] as string).trim().split(',');
+const argTargets = argv['targets'].trim().split(',');
 const targetLanguages: string[] = [];
 const targetXliffs: string[] = [];
 for (let i = 0; i < argTargets.length; i++) {
@@ -29,7 +29,7 @@ for (let i = 0; i < argTargets.length; i++) {
 }
 
 // Api arg.
-const apiKey = (argv['apiKey'] as string).trim();
+const apiKey = argv['apiKey'].trim();
 
 
 

@@ -1,8 +1,8 @@
 {
   "name": "@corellia/ngx-translation-io",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "description": "",
-  "main": "bin/start",
+  "main": "bin/index.js",
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "@types/xmldom": "^0.1.29",
@@ -15,11 +15,20 @@
   "devDependencies": {
     "@types/node": "^12.6.3"
   },
+  "keywords": [
+    "cli",
+    "ngx-translation-io"
+  ],
   "bin": {
-    "translation-io": "./bin/start"
+    "@corellia/ngx-translation-io": "./bin/ngx-translation-io",
+    "ngx-translation-io": "./bin/ngx-translation-io",
+    "tio": "./bin/ngx-translation-io"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
-    "test": "node ./bin/start"
+    "test": "node ./bin/ngx-translation-io"
   },
   "author": "corellia",
   "license": "ISC"

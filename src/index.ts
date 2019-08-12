@@ -138,7 +138,7 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
       //If sources are equals -> we can update the <target> tag.
       const index = arraySource.indexOf(segment[i].source);
       if (index > -1) {
-        const newNode = domParser.parseFromString('<target state="final">'+segment[i].target+'</target>', 'text/xml');
+        const newNode = domParser.parseFromString('<target state="final">' + segment[i].target + '</target>', 'text/xml');
         xml.replaceChild(newNode, target[index]);
       }
     }
@@ -152,37 +152,35 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
   console.log('Merge successful !');
 }
 
-
-
-
-
 export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>): string[] {
   const regexSource = new RegExp('<source .*?>');
   const response: string[] = [];
   for (let i = 0; i < sources.length; i++) {
-    const val = xmlSerializer.serializeToString(sources[i]).trim()
-      .replace(regexSource, '').trim()
-      .replace('</source>', '').trim()
-      .replace(/\t/g, '').trim()
-      .replace(/\s+/g,' ').trim();
+    console.log('source: ' + xmlSerializer.serializeToString(sources[i]));
+
+    const val = xmlSerializer.serializeToString(sources[i])
+      .replace(regexSource, '')
+      .replace('</source>', '')
+      .replace(/\t/g, '')
+      .replace(/\s+/g, ' ').trim();
+    console.log('source: ' + val);
     response.push(val);
   }
   return response.slice();
 }
 
-
-
-
-
 export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] {
   const regexTarget = new RegExp('<target .*?>');
   const response: string[] = [];
   for (let i = 0; i < targets.length; i++) {
-    const val = xmlSerializer.serializeToString(targets[i]).trim()
-      .replace(regexTarget, '').trim()
-      .replace('</target>', '').trim()
-      .replace(/\t/g, '').trim()
-      .replace(/\s+/g,' ').trim();
+    console.log('target: ' + xmlSerializer.serializeToString(targets[i]));
+
+    const val = xmlSerializer.serializeToString(targets[i])
+      .replace(regexTarget, '')
+      .replace('</target>', '')
+      .replace(/\t/g, '')
+      .replace(/\s+/g, ' ').trim();
+    console.log('target: ' + val);
     response.push(val);
   }
   return response.slice();

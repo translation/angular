@@ -61,7 +61,12 @@ if (argv['init']) {
       for (let i = 0; i < arraySource.length; i++) {
         let tioIS = new TioInitSegmentRequest();
         tioIS.source = arraySource[i];
-        tioIS.target = arrayTarget[i];
+        // If equals -> we set the target "empty"
+        if(arraySource[i] === arrayTarget[i]) {
+          tioIS.target = '';
+        } else {
+          tioIS.target = arrayTarget[i];
+        }
         // We can't have duplicates in the init proccess
         const index = segment.findIndex(val => tioIS.source === val.source);
         if (index === -1) {

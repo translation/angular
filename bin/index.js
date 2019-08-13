@@ -86,6 +86,8 @@ if (argv['sync']) {
     console.log('Start sync');
     // Init objects
     const tioSyncRequest = new TioSync_request_1.TioSyncRequest();
+    tioSyncRequest.purge = argv['purge'];
+    tioSyncRequest.readonly = argv['readonly'];
     tioSyncRequest.source_language = sourceLanguage;
     tioSyncRequest.target_languages = targetLanguages.slice(); // key
     // Get and read file "source" for the sync
@@ -122,12 +124,12 @@ function mergeXliff(filesToMerge, targetLanguages, sync) {
         // Proccess the <source> like in the 'sync' to permit comparison
         const arraySource = getXMLElementsToArrayString('source', sources);
         // Get the traductions
-        const segment = sync.segments[targetLanguages[x]];
+        const segments = sync.segments[targetLanguages[x]];
         // Proccessing and updating the xliff file
-        for (let i = 0; i < segment.length; i++) {
+        for (let i = 0; i < segments.length; i++) {
             arraySource.forEach((element, index) => {
-                if (element === segment[i].source) {
-                    const newNode = domParser.parseFromString('<target state="final">' + segment[i].target + '</target>', 'text/xml');
+                if (element === segments[i].source) {
+                    const newNode = domParser.parseFromString('<target state="final">' + segments[i].target + '</target>', 'text/xml');
                     xml.replaceChild(newNode, targets[index]);
                 }
             });

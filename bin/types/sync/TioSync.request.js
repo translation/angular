@@ -5,6 +5,8 @@ class TioSyncRequest {
         this.source_language = '';
         this.target_languages = [];
         this.segments = [];
+        this.purge = false;
+        this.readonly = false;
     }
 }
 exports.TioSyncRequest = TioSyncRequest;

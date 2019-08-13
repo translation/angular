@@ -31,5 +31,5 @@
     "test": "node ./bin/ngx-translation-io"
   },
   "author": "corellia",
-  "license": "ISC"
+  "license": "MIT"
 }

@@ -153,36 +153,28 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
   console.log('Merge successful !');
 }
 
-
-
-
-
 export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>): string[] {
   const regexSource = new RegExp('<source .*?>');
   const response: string[] = [];
   for (let i = 0; i < sources.length; i++) {
-    const val = xmlSerializer.serializeToString(sources[i]).trim()
-      .replace(regexSource, '').trim()
-      .replace('</source>', '').trim()
-      .replace(/\t/g, '').trim()
+    const val = xmlSerializer.serializeToString(sources[i])
+      .replace(regexSource, '')
+      .replace('</source>', '')
+      .replace(/\t/g, '')
       .replace(/\s+/g, ' ').trim();
     response.push(val);
   }
   return response.slice();
 }
 
-
-
-
-
 export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] {
   const regexTarget = new RegExp('<target .*?>');
   const response: string[] = [];
   for (let i = 0; i < targets.length; i++) {
-    const val = xmlSerializer.serializeToString(targets[i]).trim()
-      .replace(regexTarget, '').trim()
-      .replace('</target>', '').trim()
-      .replace(/\t/g, '').trim()
+    const val = xmlSerializer.serializeToString(targets[i])
+      .replace(regexTarget, '')
+      .replace('</target>', '')
+      .replace(/\t/g, '')
       .replace(/\s+/g, ' ').trim();
     response.push(val);
   }

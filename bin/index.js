@@ -132,11 +132,13 @@ function getSourceToString(sources) {
     const regexSource = new RegExp('<source .*?>');
     const response = [];
     for (let i = 0; i < sources.length; i++) {
-        const val = xmlSerializer.serializeToString(sources[i]).trim()
-            .replace(regexSource, '').trim()
-            .replace('</source>', '').trim()
-            .replace(/\t/g, '').trim()
+        console.log('source: ' + xmlSerializer.serializeToString(sources[i]));
+        const val = xmlSerializer.serializeToString(sources[i])
+            .replace(regexSource, '')
+            .replace('</source>', '')
+            .replace(/\t/g, '')
             .replace(/\s+/g, ' ').trim();
+        console.log('source: ' + val);
         response.push(val);
     }
     return response.slice();
@@ -146,11 +148,13 @@ function getTargetToString(targets) {
     const regexTarget = new RegExp('<target .*?>');
     const response = [];
     for (let i = 0; i < targets.length; i++) {
-        const val = xmlSerializer.serializeToString(targets[i]).trim()
-            .replace(regexTarget, '').trim()
-            .replace('</target>', '').trim()
-            .replace(/\t/g, '').trim()
+        console.log('target: ' + xmlSerializer.serializeToString(targets[i]));
+        const val = xmlSerializer.serializeToString(targets[i])
+            .replace(regexTarget, '')
+            .replace('</target>', '')
+            .replace(/\t/g, '')
             .replace(/\s+/g, ' ').trim();
+        console.log('target: ' + val);
         response.push(val);
     }
     return response.slice();

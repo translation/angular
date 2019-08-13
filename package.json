@@ -10,7 +10,8 @@
     "minimist": "^1.2.0",
     "tslint": "^5.18.0",
     "typescript": "3.2.4",
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.1.27",
+    "ngx-i18nsupport": "^0.17.1"
   },
   "devDependencies": {
     "@types/node": "^12.6.3"

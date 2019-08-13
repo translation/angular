@@ -57,12 +57,13 @@ if (argv['init']) {
 
     // Only if the number of tags are the same, we process and we complete the json object for translatio.io
     if (arraySource.length === arrayTarget.length) {
-      const segment = arraySource.map<TioInitSegmentRequest>((src, index) => {
-        const x = new TioInitSegmentRequest();
-        x.source = src;
-        x.target = arrayTarget[index];
-        return x;
-      });
+      const segment: TioInitSegmentRequest[] = [];
+      for (let i = 0; i < arraySource.length; i++) {
+        let tioIS = new TioInitSegmentRequest();
+        tioIS.source = arraySource[i];
+        tioIS.target = arrayTarget[i];
+        segment.push(tioIS);
+      }
       tioInitRequest.segments[tioInitRequest.target_languages[x]] = segment;
     } else {
       console.error('The number of <source> & <target> are not equivalent in the file : ' + targetXliffs[x]);
@@ -138,7 +139,7 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
       //If sources are equals -> we can update the <target> tag.
       const index = arraySource.indexOf(segment[i].source);
       if (index > -1) {
-        const newNode = domParser.parseFromString('<target state="final">'+segment[i].target+'</target>', 'text/xml');
+        const newNode = domParser.parseFromString('<target state="final">' + segment[i].target + '</target>', 'text/xml');
         xml.replaceChild(newNode, target[index]);
       }
     }
@@ -164,7 +165,7 @@ export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>):
       .replace(regexSource, '').trim()
       .replace('</source>', '').trim()
       .replace(/\t/g, '').trim()
-      .replace(/\s+/g,' ').trim();
+      .replace(/\s+/g, ' ').trim();
     response.push(val);
   }
   return response.slice();
@@ -182,7 +183,7 @@ export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] 
       .replace(regexTarget, '').trim()
       .replace('</target>', '').trim()
       .replace(/\t/g, '').trim()
-      .replace(/\s+/g,' ').trim();
+      .replace(/\s+/g, ' ').trim();
     response.push(val);
   }
   return response.slice();

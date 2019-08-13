@@ -62,7 +62,7 @@ if (argv['init']) {
         let tioIS = new TioInitSegmentRequest();
         tioIS.source = arraySource[i];
         // If equals -> we set the target "empty"
-        if(arraySource[i] === arrayTarget[i]) {
+        if (arraySource[i] === arrayTarget[i]) {
           tioIS.target = '';
         } else {
           tioIS.target = arrayTarget[i];
@@ -95,6 +95,12 @@ if (argv['sync']) {
   console.log('Start sync');
   // Init objects
   const tioSyncRequest = new TioSyncRequest();
+  if(argv['purge']) {
+    console.log('Purge enable');
+  }
+  if(argv['readonly']) {
+    console.log('Readonly enable');
+  }
   tioSyncRequest.purge = argv['purge'];
   tioSyncRequest.readonly = argv['readonly'];
   tioSyncRequest.source_language = sourceLanguage;
@@ -151,10 +157,13 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
     // Proccessing and updating the xliff file
     for (let i = 0; i < segments.length; i++) {
       arraySource.forEach((element: string, index: number) => {
-        if (element === segments[i].source) {
-          const newNode = domParser.parseFromString('<target state="final">' + segments[i].target + '</target>', 'text/xml');
-          xml.replaceChild(newNode, targets[index]);
-        }
+          if (element === segments[i].source) {
+            const newNode = domParser.parseFromString('<target state="final">' + segments[i].target + '</target>', 'text/xml');
+            xml.replaceChild(newNode, targets[index]);
+          } else {
+            const newNode = domParser.parseFromString('<target state="needs-translation">' + '@@@@@' + segments[i].source + '@@@@@' + '</target>', 'text/xml');
+            xml.replaceChild(newNode, targets[index]);
+          }
       });
     }
 

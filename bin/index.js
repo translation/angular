@@ -86,6 +86,12 @@ if (argv['sync']) {
     console.log('Start sync');
     // Init objects
     const tioSyncRequest = new TioSync_request_1.TioSyncRequest();
+    if (argv['purge']) {
+        console.log('Purge enable');
+    }
+    if (argv['readonly']) {
+        console.log('Readonly enable');
+    }
     tioSyncRequest.purge = argv['purge'];
     tioSyncRequest.readonly = argv['readonly'];
     tioSyncRequest.source_language = sourceLanguage;
@@ -130,6 +136,10 @@ function mergeXliff(filesToMerge, targetLanguages, sync) {
             arraySource.forEach((element, index) => {
                 if (element === segments[i].source) {
                     const newNode = domParser.parseFromString('<target state="final">' + segments[i].target + '</target>', 'text/xml');
+                    xml.replaceChild(newNode, targets[index]);
+                }
+                else {
+                    const newNode = domParser.parseFromString('<target state="needs-translation">' + '@@@@@' + segments[i].source + '@@@@@' + '</target>', 'text/xml');
                     xml.replaceChild(newNode, targets[index]);
                 }
             });

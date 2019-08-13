@@ -48,12 +48,12 @@ if (argv['init']) {
 
     // Get tags <source> and <target> from the file
     const xml = domParser.parseFromString(raw, 'text/xml');
-    const source = xml.getElementsByTagName('source');
-    const target = xml.getElementsByTagName('target');
+    const sources = xml.getElementsByTagName('source');
+    const targets = xml.getElementsByTagName('target');
 
     // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from it
-    const arraySource: string[] = getSourceToString(source);
-    const arrayTarget: string[] = getTargetToString(target);
+    let arraySource: string[] = getXMLElementsToArrayString('source', sources);
+    const arrayTarget: string[] = getXMLElementsToArrayString('target', targets);
 
     // Only if the number of tags are the same, we process and we complete the json object for translatio.io
     if (arraySource.length === arrayTarget.length) {
@@ -62,7 +62,11 @@ if (argv['init']) {
         let tioIS = new TioInitSegmentRequest();
         tioIS.source = arraySource[i];
         tioIS.target = arrayTarget[i];
-        segment.push(tioIS);
+        // We can't have duplicates in the init proccess
+        const index = segment.findIndex(val => tioIS.source === val.source);
+        if (index === -1) {
+          segment.push(tioIS);
+        }
       }
       tioInitRequest.segments[tioInitRequest.target_languages[x]] = segment;
     } else {
@@ -94,10 +98,10 @@ if (argv['sync']) {
 
   // Get tags <source> from the "source" file
   const xml = domParser.parseFromString(raw, 'text/xml');
-  const source = xml.getElementsByTagName('source');
+  const sources = xml.getElementsByTagName('source');
 
   // We only keep raw values and we remove tags <source ...></source> from it
-  const arraySource: string[] = getSourceToString(source);
+  const arraySource: string[] = getXMLElementsToArrayString('source', sources);
 
   // We complete the json object for translatio.io
   tioSyncRequest.segments = arraySource.map<TioSyncSegmentRequest>(src => {
@@ -128,20 +132,23 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
 
     // Get tags <source> and <target> from the file
     const xml = domParser.parseFromString(raw, 'text/xml');
-    const source = xml.getElementsByTagName('source');
-    const target = xml.getElementsByTagName('target');
+    const sources = xml.getElementsByTagName('source');
+    const targets = xml.getElementsByTagName('target');
 
     // Proccess the <source> like in the 'sync' to permit comparison
-    const arraySource: string[] = getSourceToString(source);
+    const arraySource: string[] = getXMLElementsToArrayString('source', sources);
 
+    // Get the traductions
     const segment = sync.segments[targetLanguages[x]];
+
+    // Proccessing and updating the xliff file
     for (let i = 0; i < segment.length; i++) {
-      //If sources are equals -> we can update the <target> tag.
-      const index = arraySource.indexOf(segment[i].source);
-      if (index > -1) {
-        const newNode = domParser.parseFromString('<target state="final">' + segment[i].target + '</target>', 'text/xml');
-        xml.replaceChild(newNode, target[index]);
-      }
+      arraySource.forEach((element: string, index: number) => {
+        if (element === segment[i].source) {
+          const newNode = domParser.parseFromString('<target state="final">' + segment[i].target + '</target>', 'text/xml');
+          xml.replaceChild(newNode, targets[index]);
+        }
+      });
     }
 
     require('fs').writeFile(filesToMerge[x], xml, (err: any) => {
@@ -153,37 +160,24 @@ export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sy
   console.log('Merge successful !');
 }
 
-export function getSourceToString(sources: HTMLCollectionOf<HTMLSourceElement>): string[] {
-  const regexSource = new RegExp('<source .*?>');
+
+
+
+
+/*********** UTILS ***********/
+export function getXMLElementsToArrayString(nodeName: string, xmlElements: HTMLCollectionOf<any>): string[] {
+  const regexNode = new RegExp('<' + nodeName + ' .*?>');
   const response: string[] = [];
-  for (let i = 0; i < sources.length; i++) {
-    const val = xmlSerializer.serializeToString(sources[i])
-      .replace(regexSource, '')
-      .replace('</source>', '')
+  for (let i = 0; i < xmlElements.length; i++) {
+    const val = xmlSerializer.serializeToString(xmlElements[i])
+      .replace(regexNode, '')
+      .replace('</' + nodeName + '>', '')
       .replace(/\t/g, '')
       .replace(/\s+/g, ' ').trim();
     response.push(val);
   }
   return response.slice();
 }
-
-export function getTargetToString(targets: HTMLCollectionOf<Element>): string[] {
-  const regexTarget = new RegExp('<target .*?>');
-  const response: string[] = [];
-  for (let i = 0; i < targets.length; i++) {
-    const val = xmlSerializer.serializeToString(targets[i])
-      .replace(regexTarget, '')
-      .replace('</target>', '')
-      .replace(/\t/g, '')
-      .replace(/\s+/g, ' ').trim();
-    response.push(val);
-  }
-  return response.slice();
-}
-
-
-
-
 
 export function httpPost(url: string, value: any, callback: (res: any) => void) {
   require('axios').post(url, value).then((res: any) => {

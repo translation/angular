@@ -29,6 +29,12 @@ for (let i = 0; i < argTargets.length; i++) {
 // Api arg.
 const apiKey = argv['apiKey'].trim();
 
+// Proxy arg.
+const proxy = argv['proxy'];
+const host = argv['host'].trim();
+const port = argv['port'];
+
+
 
 
 
@@ -198,26 +204,40 @@ export function getXMLElementsToArrayString(nodeName: string, xmlElements: HTMLC
 }
 
 export function httpPost(url: string, value: any, callback: (res: any) => void) {
-  require('axios').post(url, value).then((res: any) => {
-    console.log(res.data);
-    console.log('{ status: ' + res.status + ' }');
-    callback(res.data);
-  })
+  let axios = require('axios');
+  if (proxy) {
+    axios.create({
+      'proxy': {
+        host: host,
+        port: port
+      }
+    });
+  }
+
+  axios.post(url, value)
+    .then((res: any) => {
+      console.log(res.data);
+      console.log('{ status: ' + res.status + ' }');
+      callback(res.data);
+    })
     .catch((error: any) => {
       if (error.response) {
+        console.error('{ error.response }');
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
         console.error(error.response.data);
-        console.error('{ status: ' + error.response.status + ' }');
         console.error(error.response.headers);
+        console.error('{ status: ' + error.response.status + ' }');
       } else if (error.request) {
+        console.error('{ error.request }');
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
         console.error(error.request);
       } else {
         // Something happened in setting up the request that triggered an Error
-        console.error('Error', error.message);
+        console.error('{ other error }');
+        console.error(error.message);
       }
     });
 }

@@ -206,8 +206,8 @@ export function getXMLElementsToArrayString(nodeName: string, xmlElements: HTMLC
 export function httpPost(url: string, value: any, callback: (res: any) => void) {
   let axios = require('axios');
   if (proxy) {
-    axios.create({
-      'proxy': {
+    axios = axios.create({
+      proxy: {
         host: host,
         port: port
       }

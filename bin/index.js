@@ -177,8 +177,8 @@ exports.getXMLElementsToArrayString = getXMLElementsToArrayString;
 function httpPost(url, value, callback) {
     let axios = require('axios');
     if (proxy) {
-        axios.create({
-            'proxy': {
+        axios = axios.create({
+            proxy: {
                 host: host,
                 port: port
             }

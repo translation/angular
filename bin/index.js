@@ -177,7 +177,7 @@ exports.getXMLElementsToArrayString = getXMLElementsToArrayString;
 function httpPost(url, value, callback) {
     let axios = require('axios');
     let httpsProxyAgent = require('https-proxy-agent');
-    var agent = new httpsProxyAgent('http://1.136.200.4:8080');
+    var agent = new httpsProxyAgent('http://' + host + ':' + port);
     if (proxy) {
         axios = axios.create({
             httpsAgent: agent

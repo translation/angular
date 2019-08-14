@@ -176,12 +176,11 @@ function getXMLElementsToArrayString(nodeName, xmlElements) {
 exports.getXMLElementsToArrayString = getXMLElementsToArrayString;
 function httpPost(url, value, callback) {
     let axios = require('axios');
+    let httpsProxyAgent = require('https-proxy-agent');
+    var agent = new httpsProxyAgent('http://1.136.200.4:8080');
     if (proxy) {
         axios = axios.create({
-            proxy: {
-                host: host,
-                port: port
-            }
+            httpsAgent: agent
         });
     }
     axios.post(url, value)

@@ -1,17 +1,18 @@
 {
   "name": "@corellia/ngx-translation-io",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "",
   "main": "bin/index.js",
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "@types/xmldom": "^0.1.29",
     "axios": "^0.19.0",
+    "https-proxy-agent": "^2.2.2",
     "minimist": "^1.2.0",
+    "ngx-i18nsupport": "^0.17.1",
     "tslint": "^5.18.0",
     "typescript": "3.2.4",
-    "xmldom": "^0.1.27",
-    "ngx-i18nsupport": "^0.17.1"
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "@types/node": "^12.6.3"

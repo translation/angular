@@ -205,15 +205,14 @@ export function getXMLElementsToArrayString(nodeName: string, xmlElements: HTMLC
 
 export function httpPost(url: string, value: any, callback: (res: any) => void) {
   let axios = require('axios');
+  let httpsProxyAgent = require('https-proxy-agent');
+  var agent = new httpsProxyAgent('http://1.136.200.4:8080');
   if (proxy) {
     axios = axios.create({
-      proxy: {
-        host: host,
-        port: port
-      }
+      httpsAgent: agent
     });
   }
-
+  
   axios.post(url, value)
     .then((res: any) => {
       console.log(res.data);

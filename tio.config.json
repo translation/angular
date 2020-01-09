@@ -1,0 +1,22 @@
+{
+    "apiKey": "ac46715551af41bd8a8980c5b1a02140",
+    "i18n_key": "@@TIO:",
+    "source_language": {
+        "language": "fr-BE",
+        "file": "./src/assets/locale/messages.fr.xlf"
+    },
+    "target_languages": [
+        {
+            "language": "en",
+            "file": "./src/assets/locale/messages.en.xlf"
+        },
+        {
+            "language": "nl-BE",
+            "file": "./src/assets/locale/messages.nl.xlf"
+        }
+    ],
+    "proxy": {
+        "url": "http://1.136.200.4:8080",
+        "port": "8080"
+    }
+}

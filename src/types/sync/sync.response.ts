@@ -4,22 +4,16 @@ export class SyncResponse {
         url: string
     } = { name: '', url: '' };
     segments: { 
-        [language: string]: SyncSegmentSourceResponse[] | SyncSegmentKeyResponse[]; 
+        [language: string]: SyncSegmentResponse[]; 
     } = {};
     unused_segment_ids: any[] = [];
 }
 
 
 
-export class SyncSegmentKeyResponse {
+export class SyncSegmentResponse {
     type: string = '';
     key: string = '';
-    source: string = '';
-    target: string = '';
-}
-
-export class SyncSegmentSourceResponse {
-    type: string = '';
     source: string = '';
     target: string = '';
 }

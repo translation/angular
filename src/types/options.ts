@@ -1,6 +1,5 @@
 export class Options {
     apiKey: string = '';
-    type: string = '';
     i18nKey: string = '';
     source_language: I18nFile = new I18nFile;
     target_languages: I18nFile[] = [];

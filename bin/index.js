@@ -8,149 +8,174 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const xmlDom = __importStar(require("xmldom"));
-const TioInit_request_1 = require("./types/init/TioInit.request");
-const TioInitSegment_request_1 = require("./types/init/TioInitSegment.request");
-const TioSync_request_1 = require("./types/sync/TioSync.request");
-const TioSyncSegment_request_1 = require("./types/sync/TioSyncSegment.request");
+const init_request_1 = require("./types/init/init.request");
+const utils_1 = require("./utils");
+const sync_request_1 = require("./types/sync/sync.request");
 const domParser = new xmlDom.DOMParser();
-const xmlSerializer = new xmlDom.XMLSerializer();
 // Get CLI arguments
 const argv = require('minimist')(process.argv.slice(2));
+const options = JSON.parse(require('fs').readFileSync(argv['options']));
 // Get arguments 
+// Type of extract
+const i18n_key = options.i18nKey.trim();
 // Source arg.
-const argSource = argv['source'].trim().split(':');
-const sourceLanguage = argSource[0].trim(); // key
-const sourceXliff = argSource[1].trim(); // value
+const sourceLanguage = options.source_language.language.trim();
+const sourceXliff = options.source_language.file.trim();
 // Targets arg.
-const argTargets = argv['targets'];
 const targetLanguages = [];
 const targetXliffs = [];
-for (let i = 0; i < argTargets.length; i++) {
-    const argTarget = argTargets[i].trim().split(':');
-    targetLanguages.push(argTarget[0].trim()); // key
-    targetXliffs.push(argTarget[1].trim()); // value
+for (let i = 0; i < options.target_languages.length; i++) {
+    targetLanguages.push(options.target_languages[i].language.trim());
+    targetXliffs.push(options.target_languages[i].file.trim());
 }
 // Api arg.
-const apiKey = argv['apiKey'].trim();
+const apiKey = options.apiKey.trim();
 // Proxy arg.
-const proxy = argv['proxy'];
-const host = argv['host'].trim();
-const port = argv['port'];
-/*********** INIT ***********/
+let proxy_url = '';
+if (options.proxy) {
+    proxy_url = options.proxy.url.trim() + ':' + options.proxy.port.trim();
+}
+// /*********** INIT ***********/
 if (argv['init']) {
     console.log('Start init');
     // Init objects
-    const tioInitRequest = new TioInit_request_1.TioInitRequest();
-    tioInitRequest.source_language = sourceLanguage;
-    tioInitRequest.target_languages = targetLanguages.slice();
+    const initRequest = new init_request_1.InitRequest();
+    initRequest.source_language = sourceLanguage;
+    initRequest.target_languages = targetLanguages.slice();
     // For each targets-languages, we do some process
-    for (let x = 0; x < tioInitRequest.target_languages.length; x++) {
-        // Get and read file for the current targets-languages
+    for (let x = 0; x < initRequest.target_languages.length; x++) {
+        // Get and read file for the current target-language
         const raw = require('fs').readFileSync(targetXliffs[x], 'utf8');
-        // Get tags <source> and <target> from the file
-        const xml = domParser.parseFromString(raw, 'text/xml');
-        const sources = xml.getElementsByTagName('source');
-        const targets = xml.getElementsByTagName('target');
-        // We only keep raw values and we remove tags <source ...></source> and <target ...></target> from it
-        let arraySource = getXMLElementsToArrayString('source', sources);
-        const arrayTarget = getXMLElementsToArrayString('target', targets);
-        // Only if the number of tags are the same, we process and we complete the json object for translatio.io
-        if (arraySource.length === arrayTarget.length) {
-            const segment = [];
-            for (let i = 0; i < arraySource.length; i++) {
-                let tioIS = new TioInitSegment_request_1.TioInitSegmentRequest();
-                tioIS.source = arraySource[i];
-                // If equals -> we set the target "empty"
-                if (arraySource[i] === arrayTarget[i]) {
-                    tioIS.target = '';
-                }
-                else {
-                    tioIS.target = arrayTarget[i];
-                }
-                // We can't have duplicates in the init proccess
-                const index = segment.findIndex(val => tioIS.source === val.source);
-                if (index === -1) {
-                    segment.push(tioIS);
-                }
+        const transUnits = domParser.parseFromString(raw, 'text/xml').getElementsByTagName('trans-unit');
+        const segments = [];
+        for (let t = 0; t < transUnits.length; t++) {
+            const id = transUnits[t].getAttribute('id');
+            if (id && (segments.findIndex(x => x.key === id) === -1)) {
+                const initSegmentRequest = new init_request_1.InitSegmentRequest(id, i18n_key);
+                const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
+                const target_string = utils_1.getXMLElementToString('target', transUnits[t].getElementsByTagName('target')[0]);
+                initSegmentRequest.source = source_string;
+                // If texts are equals -> we set the target "empty"
+                initSegmentRequest.target = (source_string === target_string) ? '' : target_string;
+                segments.push(initSegmentRequest);
             }
-            tioInitRequest.segments[tioInitRequest.target_languages[x]] = segment;
+            else {
+                console.error(id ? 'Duplicated ids' : 'Id not set');
+            }
         }
-        else {
-            console.error('The number of <source> & <target> are not equivalent in the file : ' + targetXliffs[x]);
-        }
+        initRequest.segments[initRequest.target_languages[x]] = segments.slice();
     }
-    const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
-    // We post the JSON into translation.io
-    httpPost(url, tioInitRequest, () => {
-        console.log('Init successful !');
-    });
+    // const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
+    // // We post the JSON into translation.io
+    // httpPost(url, initRequest, proxy_url, () => {
+    //   console.log('Init successful !')
+    // });
 }
 /*********** SYNC ***********/
 if (argv['sync']) {
     console.log('Start sync');
+    pull(() => {
+    });
     // Init objects
-    const tioSyncRequest = new TioSync_request_1.TioSyncRequest();
+    const syncRequest = new sync_request_1.SyncRequest();
     if (argv['purge']) {
-        console.log('Purge enable');
+        console.log('! Purge enable');
+        syncRequest.purge = true;
     }
     if (argv['readonly']) {
-        console.log('Readonly enable');
+        console.log('! Readonly enable');
+        syncRequest.readonly = true;
     }
-    tioSyncRequest.purge = argv['purge'];
-    tioSyncRequest.readonly = argv['readonly'];
-    tioSyncRequest.source_language = sourceLanguage;
-    tioSyncRequest.target_languages = targetLanguages.slice(); // key
+    syncRequest.source_language = sourceLanguage;
+    syncRequest.target_languages = targetLanguages.slice();
     // Get and read file "source" for the sync
     const raw = require('fs').readFileSync(sourceXliff, 'utf8');
-    // Get tags <source> from the "source" file
-    const xml = domParser.parseFromString(raw, 'text/xml');
-    const sources = xml.getElementsByTagName('source');
-    // We only keep raw values and we remove tags <source ...></source> from it
-    const arraySource = getXMLElementsToArrayString('source', sources);
-    // We complete the json object for translatio.io
-    tioSyncRequest.segments = arraySource.map(src => {
-        const x = new TioSyncSegment_request_1.TioSyncSegmentRequest();
-        x.source = src;
-        return x;
-    });
-    const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
-    // We post the JSON into translation.io
-    httpPost(url, tioSyncRequest, res => {
-        console.log('Sync successful !');
-        mergeXliff(targetXliffs, tioSyncRequest.target_languages, res);
-    });
+    const transUnits = domParser.parseFromString(raw, 'text/xml').getElementsByTagName('trans-unit');
+    const segments = [];
+    for (let t = 0; t < transUnits.length; t++) {
+        const id = transUnits[t].getAttribute('id');
+        if (id && (segments.findIndex(x => x.key === id) === -1)) {
+            const syncSegmentRequest = new sync_request_1.SyncSegmentRequest(id, i18n_key);
+            const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
+            syncSegmentRequest.source = source_string;
+            segments.push(syncSegmentRequest);
+        }
+        else {
+            console.error(id ? 'Duplicated ids' : 'Id not set');
+        }
+    }
+    syncRequest.segments = segments.slice();
+    // const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
+    // // We post the JSON into translation.io
+    // httpPost(url, syncRequest, proxy_url, (response: SyncResponse) => {
+    //   console.log('Sync successful !')
+    //   merge(response);
+    // });
 }
+/*********** PULL ***********/
+function pull(callback) {
+    console.log('Start pull');
+    // const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
+    // // We post the JSON into translation.io
+    // httpPost(url, new PullRequest(), proxy_url, (response: PullResponse) => {
+    //   console.log('Pull successful !')
+    //   callback();
+    // });
+}
+exports.pull = pull;
 /*********** MERGE ***********/
-function mergeXliff(filesToMerge, targetLanguages, sync) {
+function merge(sync) {
     console.log('Start merge');
     // For each filesToMerge, we do some process
-    for (let x = 0; x < filesToMerge.length; x++) {
+    for (let x = 0; x < targetXliffs.length; x++) {
         // Get and read file for the merge
-        const raw = require('fs').readFileSync(filesToMerge[x], 'utf8');
-        // Get tags <source> and <target> from the file
+        const raw = require('fs').readFileSync(targetXliffs[x], 'utf8');
         const xml = domParser.parseFromString(raw, 'text/xml');
-        const sources = xml.getElementsByTagName('source');
-        const targets = xml.getElementsByTagName('target');
-        // Proccess the <source> like in the 'sync' to permit comparison
-        const arraySource = getXMLElementsToArrayString('source', sources);
-        // Get the traductions
-        const segments = sync.segments[targetLanguages[x]];
-        // Proccessing and updating the xliff file
-        for (let i = 0; i < segments.length; i++) {
-            arraySource.forEach((src, index) => {
-                if (src === segments[i].source) {
-                    if (segments[i].target === '') {
-                        const newNode = domParser.parseFromString('<target state="needs-translation">' + '@@@@@' + segments[i].source + '@@@@@' + '</target>', 'text/xml');
-                        xml.replaceChild(newNode, targets[index]);
+        const transUnits = xml.getElementsByTagName('trans-unit');
+        const key_segments = sync.segments[targetLanguages[x]].filter(x => x.key.startsWith(i18n_key));
+        const source_segments = sync.segments[targetLanguages[x]].filter(x => !x.key.startsWith(i18n_key));
+        for (let t = 0; t < transUnits.length; t++) {
+            const id = transUnits[t].getAttribute('id');
+            const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
+            const target = transUnits[t].getElementsByTagName('target')[0];
+            if (id && id.startsWith(i18n_key)) {
+                const index = key_segments.findIndex(x => x.key === id);
+                if (index !== -1) {
+                    if (source_string === key_segments[index].source) {
+                        if (key_segments[index].target === '') {
+                            const newNode = domParser.parseFromString('<target state="needs-translation">' + '@@@@@' + key_segments[index].source + '@@@@@' + '</target>', 'text/xml');
+                            xml.replaceChild(newNode, target);
+                        }
+                        else {
+                            const newNode = domParser.parseFromString('<target state="final">' + key_segments[index].target + '</target>', 'text/xml');
+                            xml.replaceChild(newNode, target);
+                        }
                     }
                     else {
-                        const newNode = domParser.parseFromString('<target state="final">' + segments[i].target + '</target>', 'text/xml');
-                        xml.replaceChild(newNode, targets[index]);
+                        console.error('key error : source are not equivalent');
                     }
                 }
-            });
+                else {
+                    console.error('Id is missing in the xliff file : ' + id);
+                }
+            }
+            else {
+                // Proccessing and updating the xliff file
+                for (let i = 0; i < source_segments.length; i++) {
+                    if (source_string === source_segments[i].source) {
+                        if (source_segments[i].target === '') {
+                            const newNode = domParser.parseFromString('<target state="needs-translation">' + '@@@@@' + source_segments[i].source + '@@@@@' + '</target>', 'text/xml');
+                            xml.replaceChild(newNode, target);
+                        }
+                        else {
+                            const newNode = domParser.parseFromString('<target state="final">' + source_segments[i].target + '</target>', 'text/xml');
+                            xml.replaceChild(newNode, target);
+                        }
+                    }
+                }
+            }
         }
-        require('fs').writeFile(filesToMerge[x], xml, (err) => {
+        require('fs').writeFile(targetXliffs[x], xml, (err) => {
             if (err) {
                 console.error(err);
             }
@@ -158,59 +183,5 @@ function mergeXliff(filesToMerge, targetLanguages, sync) {
     }
     console.log('Merge successful !');
 }
-exports.mergeXliff = mergeXliff;
-/*********** UTILS ***********/
-function getXMLElementsToArrayString(nodeName, xmlElements) {
-    const regexNode = new RegExp('<' + nodeName + ' .*?>');
-    const response = [];
-    for (let i = 0; i < xmlElements.length; i++) {
-        const val = xmlSerializer.serializeToString(xmlElements[i])
-            .replace(regexNode, '')
-            .replace('</' + nodeName + '>', '')
-            .replace(/\t/g, '')
-            .replace(/\s+/g, ' ').trim();
-        response.push(val);
-    }
-    return response.slice();
-}
-exports.getXMLElementsToArrayString = getXMLElementsToArrayString;
-function httpPost(url, value, callback) {
-    let axios = require('axios');
-    let httpsProxyAgent = require('https-proxy-agent');
-    var agent = new httpsProxyAgent('http://' + host + ':' + port);
-    if (proxy) {
-        axios = axios.create({
-            httpsAgent: agent
-        });
-    }
-    axios.post(url, value)
-        .then((res) => {
-        console.log(res.data);
-        console.log('{ status: ' + res.status + ' }');
-        callback(res.data);
-    })
-        .catch((error) => {
-        if (error.response) {
-            console.error('{ error.response }');
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.error(error.response.data);
-            console.error(error.response.headers);
-            console.error('{ status: ' + error.response.status + ' }');
-        }
-        else if (error.request) {
-            console.error('{ error.request }');
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.error(error.request);
-        }
-        else {
-            // Something happened in setting up the request that triggered an Error
-            console.error('{ other error }');
-            console.error(error.message);
-        }
-    });
-}
-exports.httpPost = httpPost;
+exports.merge = merge;
 //# sourceMappingURL=index.js.map

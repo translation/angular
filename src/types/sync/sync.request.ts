@@ -1,20 +1,25 @@
 export class SyncRequest {
     source_language: string = '';
     target_languages: string[] = [];
-    segments: SyncSegmentSourceRequest[] | SyncSegmentKeyRequest = [];
+    segments: SyncSegmentRequest[] = [];
     purge: boolean = false;
     readonly: boolean = false;
 }
 
 
 
-export class SyncSegmentKeyRequest {
-    type: string = 'key';
+export class SyncSegmentRequest {
+    type: string = '';
     key: string = '';
     source: string = '';
-}
 
-export class SyncSegmentSourceRequest {
-    type: string = 'source';
-    source: string = '';
+    constructor(id: string, i18n_key: string) {
+        if (id.startsWith(i18n_key)) {
+            this.source = 'key';
+            this.key = id;
+        } else {
+            this.source = 'source';
+            this.key = '';
+        }
+    }
 }

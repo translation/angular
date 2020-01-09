@@ -1,6 +1,5 @@
-import { TioSyncResponse } from './types/sync/TioSync.response';
+import { SyncResponse } from './types/sync/sync.response';
+/*********** PULL ***********/
+export declare function pull(callback: () => void): void;
 /*********** MERGE ***********/
-export declare function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void;
-/*********** UTILS ***********/
-export declare function getXMLElementsToArrayString(nodeName: string, xmlElements: HTMLCollectionOf<any>): string[];
-export declare function httpPost(url: string, value: any, callback: (res: any) => void): void;
+export declare function merge(sync: SyncResponse): void;

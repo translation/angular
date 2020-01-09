@@ -1,38 +1,46 @@
 import * as xmlDom from 'xmldom';
-import { TioInitRequest } from './types/init/TioInit.request';
-import { TioInitSegmentRequest } from './types/init/TioInitSegment.request';
-import { TioSyncRequest } from './types/sync/TioSync.request';
-import { TioSyncSegmentRequest } from './types/sync/TioSyncSegment.request';
-import { TioSyncResponse } from './types/sync/TioSync.response';
+import { InitRequest, InitSegmentSourceRequest } from './types/init/init.request';
+import { SyncRequest, SyncSegmentSourceRequest } from './types/sync/sync.request';
+import { SyncResponse } from './types/sync/sync.response';
+import { Options } from './types/options';
 const domParser = new xmlDom.DOMParser();
 const xmlSerializer = new xmlDom.XMLSerializer();
 
 // Get CLI arguments
 const argv = require('minimist')(process.argv.slice(2));
+const options: Options = JSON.parse(
+  require('fs').readFileSync(argv['options'])
+);
 
 // Get arguments 
+// Type of extract
+const isKeyType: boolean = options.type === "key";
+let i18n_key: string = '';
+if (isKeyType) {
+  i18n_key = options.i18nKey.trim();
+}
+
 // Source arg.
-const argSource: string[] = argv['source'].trim().split(':');
-const sourceLanguage = argSource[0].trim();     // key
-const sourceXliff = argSource[1].trim();        // value
+const sourceLanguage: string = options.source_language.language.trim();
+const sourceXliff: string = options.source_language.file.trim();
 
 // Targets arg.
-const argTargets: string[] = argv['targets'];
 const targetLanguages: string[] = [];
 const targetXliffs: string[] = [];
-for (let i = 0; i < argTargets.length; i++) {
-  const argTarget = argTargets[i].trim().split(':');
-  targetLanguages.push(argTarget[0].trim());    // key
-  targetXliffs.push(argTarget[1].trim());       // value
+for (let i = 0; i < options.target_languages.length; i++) {
+  targetLanguages.push(options.target_languages[i].language.trim());
+  targetXliffs.push(options.target_languages[i].file.trim());
 }
 
 // Api arg.
-const apiKey = argv['apiKey'].trim();
+const apiKey: string = options.apiKey.trim();
 
 // Proxy arg.
-const proxy = argv['proxy'];
-const host = argv['host'].trim();
-const port = argv['port'];
+const isProxy: boolean = options.proxy ? true : false;
+let proxy_url: string = '';
+if (isProxy) {
+  proxy_url = options.proxy.url.trim() + ':' + options.proxy.port.trim();
+}
 
 
 
@@ -43,7 +51,7 @@ const port = argv['port'];
 if (argv['init']) {
   console.log('Start init');
   // Init objects
-  const tioInitRequest = new TioInitRequest();
+  const tioInitRequest = new InitRequest();
   tioInitRequest.source_language = sourceLanguage;
   tioInitRequest.target_languages = targetLanguages.slice();
 
@@ -63,9 +71,9 @@ if (argv['init']) {
 
     // Only if the number of tags are the same, we process and we complete the json object for translatio.io
     if (arraySource.length === arrayTarget.length) {
-      const segment: TioInitSegmentRequest[] = [];
+      const segment: InitSegmentSourceRequest[] = [];
       for (let i = 0; i < arraySource.length; i++) {
-        let tioIS = new TioInitSegmentRequest();
+        let tioIS = new InitSegmentSourceRequest();
         tioIS.source = arraySource[i];
         // If equals -> we set the target "empty"
         if (arraySource[i] === arrayTarget[i]) {
@@ -100,17 +108,17 @@ if (argv['init']) {
 if (argv['sync']) {
   console.log('Start sync');
   // Init objects
-  const tioSyncRequest = new TioSyncRequest();
+  const tioSyncRequest = new SyncRequest();
   if (argv['purge']) {
-    console.log('Purge enable');
+    console.log('! Purge enable');
   }
   if (argv['readonly']) {
-    console.log('Readonly enable');
+    console.log('! Readonly enable');
   }
   tioSyncRequest.purge = argv['purge'];
   tioSyncRequest.readonly = argv['readonly'];
   tioSyncRequest.source_language = sourceLanguage;
-  tioSyncRequest.target_languages = targetLanguages.slice(); // key
+  tioSyncRequest.target_languages = targetLanguages.slice();
 
   // Get and read file "source" for the sync
   const raw = require('fs').readFileSync(sourceXliff, 'utf8');
@@ -123,8 +131,8 @@ if (argv['sync']) {
   const arraySource: string[] = getXMLElementsToArrayString('source', sources);
 
   // We complete the json object for translatio.io
-  tioSyncRequest.segments = arraySource.map<TioSyncSegmentRequest>(src => {
-    const x = new TioSyncSegmentRequest();
+  tioSyncRequest.segments = arraySource.map<SyncSegmentSourceRequest>(src => {
+    const x = new SyncSegmentSourceRequest();
     x.source = src;
     return x;
   });
@@ -142,7 +150,7 @@ if (argv['sync']) {
 
 
 /*********** MERGE ***********/
-export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: TioSyncResponse): void {
+export function mergeXliff(filesToMerge: string[], targetLanguages: string[], sync: SyncResponse): void {
   console.log('Start merge');
   // For each filesToMerge, we do some process
   for (let x = 0; x < filesToMerge.length; x++) {
@@ -205,9 +213,9 @@ export function getXMLElementsToArrayString(nodeName: string, xmlElements: HTMLC
 
 export function httpPost(url: string, value: any, callback: (res: any) => void) {
   let axios = require('axios');
-  let httpsProxyAgent = require('https-proxy-agent');
-  var agent = new httpsProxyAgent('http://' + host + ':' + port);
-  if (proxy) {
+  if (isProxy) {
+    let httpsProxyAgent = require('https-proxy-agent');
+    var agent = new httpsProxyAgent(proxy_url);
     axios = axios.create({
       httpsAgent: agent
     });

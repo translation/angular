@@ -12,3 +12,7 @@ export declare class PullSegmentResponse {
     new_source: string;
     created_at: number;
 }
+export declare class PullGroupedResponse {
+    key: string;
+    segments: PullSegmentResponse[];
+}

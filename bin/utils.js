@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const xmlDom = __importStar(require("xmldom"));
+const pull_response_1 = require("./types/pull/pull.response");
 const xmlSerializer = new xmlDom.XMLSerializer();
 function getXMLElementToString(nodeName, xmlElement) {
     const regexNode = new RegExp('<' + nodeName + ' .*?>');
@@ -57,4 +58,30 @@ function httpPost(url, value, proxy, callback) {
     });
 }
 exports.httpPost = httpPost;
+function getUniqueSegmentFromPull(array) {
+    const groupedSegments = [];
+    // On groupe les segment par "key"
+    array.forEach((response) => {
+        const index = groupedSegments.findIndex((item) => {
+            return item.key === response.key;
+        });
+        if (index !== -1) {
+            groupedSegments[index].segments.push(response);
+        }
+        else {
+            const data = new pull_response_1.PullGroupedResponse();
+            data.key = response.key;
+            data.segments = [response];
+            groupedSegments.push(data);
+        }
+    });
+    // On récupère la dernière valeur et on l'ajoute au tableau
+    const data = [];
+    groupedSegments.forEach(element => {
+        element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
+        data.push(element.segments[0]);
+    });
+    return data;
+}
+exports.getUniqueSegmentFromPull = getUniqueSegmentFromPull;
 //# sourceMappingURL=utils.js.map

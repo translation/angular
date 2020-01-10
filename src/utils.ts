@@ -1,5 +1,6 @@
 
 import * as xmlDom from 'xmldom';
+import { PullSegmentResponse, PullGroupedResponse } from './types/pull/pull.response';
 const xmlSerializer = new xmlDom.XMLSerializer();
 
 export function getXMLElementToString(nodeName: string, xmlElement: Element): string {
@@ -46,4 +47,29 @@ export function httpPost(url: string, value: any, proxy: string, callback: (res:
                 console.error(error.message);
             }
         });
+}
+
+export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegmentResponse[] {
+    const groupedSegments: PullGroupedResponse[] = [];
+    // On groupe les segment par "key"
+    array.forEach((response: PullSegmentResponse) => {
+      const index = groupedSegments.findIndex((item: PullGroupedResponse) => {
+        return item.key === response.key;
+      });
+      if (index !== -1) {
+        groupedSegments[index].segments.push(response)
+      } else {
+        const data = new PullGroupedResponse();
+        data.key = response.key;
+        data.segments = [response];
+        groupedSegments.push(data);
+      }
+    });
+    // On récupère la dernière valeur et on l'ajoute au tableau
+    const data: PullSegmentResponse[] = [];
+    groupedSegments.forEach(element => {
+      element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
+      data.push(element.segments[0]);
+    });
+    return data;
 }

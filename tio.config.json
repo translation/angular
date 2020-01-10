@@ -1,6 +1,6 @@
 {
     "apiKey": "09d80ac695fa4dcfa722d2ce470fb59c",
-    "i18n_key": "@@TIO:",
+    "i18n_key": "TIO",
     "source_language": {
         "language": "fr-BE",
         "file": "./src/assets/locale/messages.fr.xlf"

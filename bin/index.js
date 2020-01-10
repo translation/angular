@@ -18,7 +18,7 @@ const argv = require('minimist')(process.argv.slice(2));
 const options = JSON.parse(require('fs').readFileSync(argv['options']));
 // Set arguments 
 // Type of extract
-const i18n_key = options.i18nKey.trim();
+const i18n_key = '@@' + options.i18nKey.trim();
 // Source arg.
 const sourceLanguage = options.source_language.language.trim();
 const sourceFile = options.source_language.file.trim();
@@ -125,6 +125,8 @@ function pull(callback) {
         files.push(sourceFile);
         const languages = targetLanguages;
         languages.push(sourceLanguage);
+        // Remove old edits from response
+        const segments = utils_1.getUniqueSegmentFromPull(response.source_edits);
         // For each languages, we do some process
         for (let x = 0; x < languages.length; x++) {
             // Get and read file for the current language

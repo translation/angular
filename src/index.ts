@@ -1,10 +1,10 @@
 import * as xmlDom from 'xmldom';
 import { Options } from './types/options';
-import { getXMLElementToString, httpPost } from './utils';
+import { getXMLElementToString, httpPost, getUniqueSegmentFromPull } from './utils';
 import { InitRequest, InitSegmentRequest } from './types/init/init.request';
 import { SyncRequest, SyncSegmentRequest } from './types/sync/sync.request';
 import { SyncResponse } from './types/sync/sync.response';
-import { PullResponse } from './types/pull/pull.response';
+import { PullResponse, PullSegmentResponse } from './types/pull/pull.response';
 import { PullRequest } from './types/pull/pull.request';
 const domParser = new xmlDom.DOMParser();
 
@@ -17,7 +17,7 @@ const options: Options = JSON.parse(
 
 // Set arguments 
 // Type of extract
-const i18n_key = options.i18nKey.trim();
+const i18n_key = '@@' + options.i18nKey.trim();
 
 // Source arg.
 const sourceLanguage: string = options.source_language.language.trim();
@@ -143,7 +143,6 @@ if (argv['sync']) {
 
 
 
-
 /*********** PULL ***********/
 export function pull(callback: () => void): void {
   console.log('Start pull');
@@ -155,6 +154,9 @@ export function pull(callback: () => void): void {
 
     const languages = targetLanguages;
     languages.push(sourceLanguage);
+
+    // Remove old edits from response
+    const segments: PullSegmentResponse[] = getUniqueSegmentFromPull(response.source_edits);
 
     // For each languages, we do some process
     for (let x = 0; x < languages.length; x++) {

@@ -15,3 +15,8 @@ export class PullSegmentResponse {
     new_source: string = '';
     created_at: number = 0;
 }
+
+export class PullGroupedResponse {
+    key: string = '';
+    segments: PullSegmentResponse[] = [];
+}

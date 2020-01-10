@@ -17,4 +17,11 @@ class PullSegmentResponse {
     }
 }
 exports.PullSegmentResponse = PullSegmentResponse;
+class PullGroupedResponse {
+    constructor() {
+        this.key = '';
+        this.segments = [];
+    }
+}
+exports.PullGroupedResponse = PullGroupedResponse;
 //# sourceMappingURL=pull.response.js.map

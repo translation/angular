@@ -8,7 +8,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const xmlDom = __importStar(require("xmldom"));
-const pull_response_1 = require("./types/pull/pull.response");
 const xmlSerializer = new xmlDom.XMLSerializer();
 function getXMLElementToString(nodeName, xmlElement) {
     const regexNode = new RegExp('<' + nodeName + ' .*?>');
@@ -69,9 +68,10 @@ function getUniqueSegmentFromPull(array) {
             groupedSegments[index].segments.push(response);
         }
         else {
-            const data = new pull_response_1.PullGroupedResponse();
-            data.key = response.key;
-            data.segments = [response];
+            const data = {
+                key: response.key,
+                segments: [response]
+            };
             groupedSegments.push(data);
         }
     });
@@ -81,7 +81,7 @@ function getUniqueSegmentFromPull(array) {
         element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
         data.push(element.segments[0]);
     });
-    return data;
+    return data.slice();
 }
 exports.getUniqueSegmentFromPull = getUniqueSegmentFromPull;
 //# sourceMappingURL=utils.js.map

@@ -53,23 +53,24 @@ export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegm
     const groupedSegments: PullGroupedResponse[] = [];
     // On groupe les segment par "key"
     array.forEach((response: PullSegmentResponse) => {
-      const index = groupedSegments.findIndex((item: PullGroupedResponse) => {
-        return item.key === response.key;
-      });
-      if (index !== -1) {
-        groupedSegments[index].segments.push(response)
-      } else {
-        const data = new PullGroupedResponse();
-        data.key = response.key;
-        data.segments = [response];
-        groupedSegments.push(data);
-      }
+        const index = groupedSegments.findIndex((item: PullGroupedResponse) => {
+            return item.key === response.key;
+        });
+        if (index !== -1) {
+            groupedSegments[index].segments.push(response)
+        } else {
+            const data: PullGroupedResponse = {
+                key: response.key,
+                segments: [response]
+            }
+            groupedSegments.push(data);
+        }
     });
     // On récupère la dernière valeur et on l'ajoute au tableau
     const data: PullSegmentResponse[] = [];
     groupedSegments.forEach(element => {
-      element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
-      data.push(element.segments[0]);
+        element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
+        data.push(element.segments[0]);
     });
-    return data;
+    return data.slice();
 }

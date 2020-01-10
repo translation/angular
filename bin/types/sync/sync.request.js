@@ -21,7 +21,7 @@ class SyncSegmentRequest {
         }
         else {
             this.source = 'source';
-            this.key = '';
+            this.key = null;
         }
     }
 }

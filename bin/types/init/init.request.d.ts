@@ -7,7 +7,7 @@ export declare class InitRequest {
 }
 export declare class InitSegmentRequest {
     type: string;
-    key: string;
+    key: string | null;
     source: string;
     target: string;
     constructor(id: string, i18n_key: string);

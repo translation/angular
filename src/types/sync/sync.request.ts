@@ -10,7 +10,7 @@ export class SyncRequest {
 
 export class SyncSegmentRequest {
     type: string = '';
-    key: string = '';
+    key: string | null = '';
     source: string = '';
 
     constructor(id: string, i18n_key: string) {
@@ -19,7 +19,7 @@ export class SyncSegmentRequest {
             this.key = id;
         } else {
             this.source = 'source';
-            this.key = '';
+            this.key = null;
         }
     }
 }

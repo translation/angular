@@ -20,7 +20,7 @@ class InitSegmentRequest {
         }
         else {
             this.source = 'source';
-            this.key = '';
+            this.key = null;
         }
     }
 }

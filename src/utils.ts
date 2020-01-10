@@ -2,10 +2,6 @@
 import * as xmlDom from 'xmldom';
 const xmlSerializer = new xmlDom.XMLSerializer();
 
-
-
-
-
 export function getXMLElementToString(nodeName: string, xmlElement: Element): string {
     const regexNode = new RegExp('<' + nodeName + ' .*?>');
     return xmlSerializer.serializeToString(xmlElement)
@@ -14,10 +10,6 @@ export function getXMLElementToString(nodeName: string, xmlElement: Element): st
         .replace(/\t/g, '')
         .replace(/\s+/g, ' ').trim();
 }
-
-
-
-
 
 export function httpPost(url: string, value: any, proxy: string, callback: (res: any) => void) {
     let axios = require('axios');
@@ -28,7 +20,6 @@ export function httpPost(url: string, value: any, proxy: string, callback: (res:
             httpsAgent: agent
         });
     }
-
     axios.post(url, value)
         .then((res: any) => {
             console.log(res.data);

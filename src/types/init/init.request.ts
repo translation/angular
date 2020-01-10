@@ -10,7 +10,7 @@ export class InitRequest {
 
 export class InitSegmentRequest {
     type: string = '';
-    key: string = '';
+    key: string | null = '';
     source: string = '';
     target: string = '';
 
@@ -20,7 +20,7 @@ export class InitSegmentRequest {
             this.key = id;
         } else {
             this.source = 'source';
-            this.key = '';
+            this.key = null;
         }
     }
 }

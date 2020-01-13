@@ -1,5 +1,5 @@
 {
-    "apiKey": "09d80ac695fa4dcfa722d2ce470fb59c",
+    "api_key": "09d80ac695fa4dcfa722d2ce470fb59c",
     "i18n_key": "TIO",
     "source_language": {
         "language": "fr-BE",
@@ -14,9 +14,5 @@
             "language": "nl-BE",
             "file": "./src/assets/locale/messages.nl.xlf"
         }
-    ],
-    "proxy": {
-        "url": "http://1.136.200.4:8080",
-        "port": "8080"
-    }
+    ]
 }

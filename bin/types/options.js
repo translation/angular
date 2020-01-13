@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Options {
     constructor() {
-        this.apiKey = '';
-        this.i18nKey = '';
+        this.api_key = '';
+        this.i18n_key = '';
         this.source_language = new I18nFile;
         this.target_languages = [];
         this.proxy = new ProxyOption();

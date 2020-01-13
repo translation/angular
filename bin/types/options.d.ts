@@ -1,6 +1,6 @@
 export declare class Options {
-    apiKey: string;
-    i18nKey: string;
+    api_key: string;
+    i18n_key: string;
     source_language: I18nFile;
     target_languages: I18nFile[];
     proxy: ProxyOption;

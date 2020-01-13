@@ -10,16 +10,16 @@ export class SyncRequest {
 
 export class SyncSegmentRequest {
     type: string = '';
-    key: string | null = '';
+    key?: string;
     source: string = '';
 
-    constructor(id: string, i18n_key: string) {
-        if (id.startsWith(i18n_key)) {
-            this.source = 'key';
+    constructor(id: string, i18nKey: string) {
+        if (id.startsWith(i18nKey)) {
+            this.type = 'key';
             this.key = id;
         } else {
-            this.source = 'source';
-            this.key = null;
+            this.type = 'source';
+            this.key = undefined;
         }
     }
 }

@@ -10,7 +10,7 @@ export declare class SyncResponse {
 }
 export declare class SyncSegmentResponse {
     type: string;
-    key: string;
+    key?: string;
     source: string;
     target: string;
 }

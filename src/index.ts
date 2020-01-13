@@ -17,7 +17,7 @@ const options: Options = JSON.parse(
 
 // Set arguments 
 // Type of extract
-const i18n_key = '@@' + options.i18nKey.trim();
+const i18nKey = options.i18n_key.trim();
 
 // Source arg.
 const sourceLanguage: string = options.source_language.language.trim();
@@ -32,17 +32,17 @@ for (let i = 0; i < options.target_languages.length; i++) {
 }
 
 // Api arg.
-const apiKey: string = options.apiKey.trim();
+const apiKey: string = options.api_key.trim();
 
 // Proxy arg.
-let proxy_url: string = '';
+let proxyUrl: string = '';
 if (options.proxy) {
-  proxy_url = options.proxy.url.trim() + ':' + options.proxy.port.trim();
+  proxyUrl = options.proxy.url.trim() + ':' + options.proxy.port.trim();
 }
 
 
 
-// /*********** INIT ***********/
+/*********** INIT ***********/
 if (argv['init']) {
   console.log('Start init');
   // Init objects
@@ -61,7 +61,7 @@ if (argv['init']) {
     for (let t = 0; t < transUnits.length; t++) {
       const id = transUnits[t].getAttribute('id');
       if (id && (segments.findIndex(x => x.key === id) === -1)) {
-        const initSegmentRequest = new InitSegmentRequest(id, i18n_key);
+        const initSegmentRequest = new InitSegmentRequest(id, i18nKey);
 
         const source_string = getXMLElementToString(
           'source',
@@ -82,11 +82,11 @@ if (argv['init']) {
     }
     initRequest.segments[initRequest.target_languages[x]] = segments.slice();
   }
-  // const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
-  // // We post the JSON into translation.io
-  // httpPost(url, initRequest, proxy_url, () => {
-  //   console.log('Init successful !')
-  // });
+  const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
+  // We post the JSON into translation.io
+  httpPost(url, initRequest, proxyUrl, () => {
+    console.log('Init successful !')
+  });
 }
 
 
@@ -117,7 +117,7 @@ if (argv['sync']) {
     for (let t = 0; t < transUnits.length; t++) {
       const id = transUnits[t].getAttribute('id');
       if (id && (segments.findIndex(x => x.key === id) === -1)) {
-        const syncSegmentRequest = new SyncSegmentRequest(id, i18n_key);
+        const syncSegmentRequest = new SyncSegmentRequest(id, i18nKey);
 
         const source_string = getXMLElementToString(
           'source',
@@ -132,12 +132,12 @@ if (argv['sync']) {
     }
     syncRequest.segments = segments.slice();
 
-    // const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
-    // // We post the JSON into translation.io
-    // httpPost(url, syncRequest, proxy_url, (response: SyncResponse) => {
-    //   console.log('Sync successful !')
-    //   merge(response);
-    // });
+    const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
+    // We post the JSON into translation.io
+    httpPost(url, syncRequest, proxyUrl, (response: SyncResponse) => {
+      console.log('Sync successful !')
+      merge(response);
+    });
   });
 }
 
@@ -148,7 +148,7 @@ export function pull(callback: () => void): void {
   console.log('Start pull');
   const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
   // We post the JSON into translation.io
-  httpPost(url, new PullRequest(), proxy_url, (response: PullResponse) => {
+  httpPost(url, new PullRequest(), proxyUrl, (response: PullResponse) => {
     const files = targetFiles;
     files.push(sourceFile);
 
@@ -169,7 +169,7 @@ export function pull(callback: () => void): void {
         const id = transUnits[t].getAttribute('id');
         const source = transUnits[t].getElementsByTagName('source')[0];
 
-        if (id && id.startsWith(i18n_key)) {
+        if (id && id.startsWith(i18nKey)) {
           const index = response.source_edits.findIndex(x => x.key === id);
           if (index !== -1) {
             const newNode = domParser.parseFromString('<source>' + response.source_edits[index].new_source + '</source>', 'text/xml');
@@ -202,8 +202,8 @@ export function merge(sync: SyncResponse): void {
     const xml = domParser.parseFromString(raw, 'text/xml')
     const transUnits = xml.getElementsByTagName('trans-unit');
 
-    const key_segments = sync.segments[targetLanguages[x]].filter(x => x.key.startsWith(i18n_key));
-    const source_segments = sync.segments[targetLanguages[x]].filter(x => !x.key.startsWith(i18n_key));
+    const key_segments = sync.segments[targetLanguages[x]].filter(x => !!x.key);
+    const source_segments = sync.segments[targetLanguages[x]].filter(x => !x.key);
 
     for (let t = 0; t < transUnits.length; t++) {
       const id = transUnits[t].getAttribute('id');
@@ -213,7 +213,7 @@ export function merge(sync: SyncResponse): void {
       );
       const target = transUnits[t].getElementsByTagName('target')[0];
 
-      if (id && id.startsWith(i18n_key)) {
+      if (id && id.startsWith(i18nKey)) {
         const index = key_segments.findIndex(x => x.key === id);
         if (index !== -1) {
           if (source_string === key_segments[index].source) {
@@ -245,7 +245,6 @@ export function merge(sync: SyncResponse): void {
         }
       }
     }
-
     require('fs').writeFile(targetFiles[x], xml, (err: any) => {
       if (err) {
         console.error(err);

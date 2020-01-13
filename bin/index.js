@@ -18,7 +18,7 @@ const argv = require('minimist')(process.argv.slice(2));
 const options = JSON.parse(require('fs').readFileSync(argv['options']));
 // Set arguments 
 // Type of extract
-const i18n_key = '@@' + options.i18nKey.trim();
+const i18nKey = options.i18n_key.trim();
 // Source arg.
 const sourceLanguage = options.source_language.language.trim();
 const sourceFile = options.source_language.file.trim();
@@ -30,13 +30,13 @@ for (let i = 0; i < options.target_languages.length; i++) {
     targetFiles.push(options.target_languages[i].file.trim());
 }
 // Api arg.
-const apiKey = options.apiKey.trim();
+const apiKey = options.api_key.trim();
 // Proxy arg.
-let proxy_url = '';
+let proxyUrl = '';
 if (options.proxy) {
-    proxy_url = options.proxy.url.trim() + ':' + options.proxy.port.trim();
+    proxyUrl = options.proxy.url.trim() + ':' + options.proxy.port.trim();
 }
-// /*********** INIT ***********/
+/*********** INIT ***********/
 if (argv['init']) {
     console.log('Start init');
     // Init objects
@@ -53,7 +53,7 @@ if (argv['init']) {
         for (let t = 0; t < transUnits.length; t++) {
             const id = transUnits[t].getAttribute('id');
             if (id && (segments.findIndex(x => x.key === id) === -1)) {
-                const initSegmentRequest = new init_request_1.InitSegmentRequest(id, i18n_key);
+                const initSegmentRequest = new init_request_1.InitSegmentRequest(id, i18nKey);
                 const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
                 const target_string = utils_1.getXMLElementToString('target', transUnits[t].getElementsByTagName('target')[0]);
                 initSegmentRequest.source = source_string;
@@ -67,11 +67,11 @@ if (argv['init']) {
         }
         initRequest.segments[initRequest.target_languages[x]] = segments.slice();
     }
-    // const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
-    // // We post the JSON into translation.io
-    // httpPost(url, initRequest, proxy_url, () => {
-    //   console.log('Init successful !')
-    // });
+    const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
+    // We post the JSON into translation.io
+    utils_1.httpPost(url, initRequest, proxyUrl, () => {
+        console.log('Init successful !');
+    });
 }
 /*********** SYNC ***********/
 if (argv['sync']) {
@@ -97,7 +97,7 @@ if (argv['sync']) {
         for (let t = 0; t < transUnits.length; t++) {
             const id = transUnits[t].getAttribute('id');
             if (id && (segments.findIndex(x => x.key === id) === -1)) {
-                const syncSegmentRequest = new sync_request_1.SyncSegmentRequest(id, i18n_key);
+                const syncSegmentRequest = new sync_request_1.SyncSegmentRequest(id, i18nKey);
                 const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
                 syncSegmentRequest.source = source_string;
                 segments.push(syncSegmentRequest);
@@ -107,12 +107,12 @@ if (argv['sync']) {
             }
         }
         syncRequest.segments = segments.slice();
-        // const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
-        // // We post the JSON into translation.io
-        // httpPost(url, syncRequest, proxy_url, (response: SyncResponse) => {
-        //   console.log('Sync successful !')
-        //   merge(response);
-        // });
+        const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
+        // We post the JSON into translation.io
+        utils_1.httpPost(url, syncRequest, proxyUrl, (response) => {
+            console.log('Sync successful !');
+            merge(response);
+        });
     });
 }
 /*********** PULL ***********/
@@ -120,7 +120,7 @@ function pull(callback) {
     console.log('Start pull');
     const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    utils_1.httpPost(url, new pull_request_1.PullRequest(), proxy_url, (response) => {
+    utils_1.httpPost(url, new pull_request_1.PullRequest(), proxyUrl, (response) => {
         const files = targetFiles;
         files.push(sourceFile);
         const languages = targetLanguages;
@@ -136,7 +136,7 @@ function pull(callback) {
             for (let t = 0; t < transUnits.length; t++) {
                 const id = transUnits[t].getAttribute('id');
                 const source = transUnits[t].getElementsByTagName('source')[0];
-                if (id && id.startsWith(i18n_key)) {
+                if (id && id.startsWith(i18nKey)) {
                     const index = response.source_edits.findIndex(x => x.key === id);
                     if (index !== -1) {
                         const newNode = domParser.parseFromString('<source>' + response.source_edits[index].new_source + '</source>', 'text/xml');
@@ -167,13 +167,13 @@ function merge(sync) {
         const raw = require('fs').readFileSync(sourceFile[x], 'utf8');
         const xml = domParser.parseFromString(raw, 'text/xml');
         const transUnits = xml.getElementsByTagName('trans-unit');
-        const key_segments = sync.segments[targetLanguages[x]].filter(x => x.key.startsWith(i18n_key));
-        const source_segments = sync.segments[targetLanguages[x]].filter(x => !x.key.startsWith(i18n_key));
+        const key_segments = sync.segments[targetLanguages[x]].filter(x => !!x.key);
+        const source_segments = sync.segments[targetLanguages[x]].filter(x => !x.key);
         for (let t = 0; t < transUnits.length; t++) {
             const id = transUnits[t].getAttribute('id');
             const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
             const target = transUnits[t].getElementsByTagName('target')[0];
-            if (id && id.startsWith(i18n_key)) {
+            if (id && id.startsWith(i18nKey)) {
                 const index = key_segments.findIndex(x => x.key === id);
                 if (index !== -1) {
                     if (source_string === key_segments[index].source) {

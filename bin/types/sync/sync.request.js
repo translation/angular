@@ -11,17 +11,16 @@ class SyncRequest {
 }
 exports.SyncRequest = SyncRequest;
 class SyncSegmentRequest {
-    constructor(id, i18n_key) {
+    constructor(id, i18nKey) {
         this.type = '';
-        this.key = '';
         this.source = '';
-        if (id.startsWith(i18n_key)) {
-            this.source = 'key';
+        if (id.startsWith(i18nKey)) {
+            this.type = 'key';
             this.key = id;
         }
         else {
-            this.source = 'source';
-            this.key = null;
+            this.type = 'source';
+            this.key = undefined;
         }
     }
 }

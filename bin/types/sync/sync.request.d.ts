@@ -7,7 +7,7 @@ export declare class SyncRequest {
 }
 export declare class SyncSegmentRequest {
     type: string;
-    key: string | null;
+    key?: string;
     source: string;
-    constructor(id: string, i18n_key: string);
+    constructor(id: string, i18nKey: string);
 }

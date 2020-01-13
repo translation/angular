@@ -11,7 +11,6 @@ const xmlDom = __importStar(require("xmldom"));
 const utils_1 = require("./utils");
 const init_request_1 = require("./types/init/init.request");
 const sync_request_1 = require("./types/sync/sync.request");
-const pull_request_1 = require("./types/pull/pull.request");
 const domParser = new xmlDom.DOMParser();
 // Get CLI arguments
 const argv = require('minimist')(process.argv.slice(2));
@@ -69,7 +68,7 @@ if (argv['init']) {
     }
     const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    utils_1.httpPost(url, initRequest, proxyUrl, () => {
+    utils_1.httpCall('POST', url, initRequest, proxyUrl, () => {
         console.log('Init successful !');
     });
 }
@@ -109,7 +108,7 @@ if (argv['sync']) {
         syncRequest.segments = segments.slice();
         const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
         // We post the JSON into translation.io
-        utils_1.httpPost(url, syncRequest, proxyUrl, (response) => {
+        utils_1.httpCall('POST', url, syncRequest, proxyUrl, (response) => {
             console.log('Sync successful !');
             merge(response);
         });
@@ -120,7 +119,7 @@ function pull(callback) {
     console.log('Start pull');
     const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    utils_1.httpPost(url, new pull_request_1.PullRequest(), proxyUrl, (response) => {
+    utils_1.httpCall('GET', url, '&timestamp=0', proxyUrl, (response) => {
         const files = targetFiles;
         files.push(sourceFile);
         const languages = targetLanguages;

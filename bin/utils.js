@@ -18,7 +18,7 @@ function getXMLElementToString(nodeName, xmlElement) {
         .replace(/\s+/g, ' ').trim();
 }
 exports.getXMLElementToString = getXMLElementToString;
-function httpPost(url, value, proxy, callback) {
+function httpCall(request, url, value, proxy, callback) {
     let axios = require('axios');
     if (proxy) {
         const httpsProxyAgent = require('https-proxy-agent');
@@ -27,36 +27,30 @@ function httpPost(url, value, proxy, callback) {
             httpsAgent: agent
         });
     }
-    axios.post(url, value)
-        .then((res) => {
-        console.log(res.data);
-        console.log('{ status: ' + res.status + ' }');
-        callback(res.data);
-    })
-        .catch((error) => {
-        if (error.response) {
-            console.error('{ error.response }');
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.error(error.response.data);
-            console.error(error.response.headers);
-            console.error('{ status: ' + error.response.status + ' }');
-        }
-        else if (error.request) {
-            console.error('{ error.request }');
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.error(error.request);
-        }
-        else {
-            // Something happened in setting up the request that triggered an Error
-            console.error('{ other error }');
-            console.error(error.message);
-        }
-    });
+    if (request === 'POST') {
+        axios.post(url, value)
+            .then((res) => {
+            console.log(res.data);
+            console.log('{ status: ' + res.status + ' }');
+            callback(res.data);
+        })
+            .catch((error) => {
+            logErrors(error);
+        });
+    }
+    else {
+        axios.get(url + value)
+            .then((res) => {
+            console.log(res.data);
+            console.log('{ status: ' + res.status + ' }');
+            callback(res.data);
+        })
+            .catch((error) => {
+            logErrors(error);
+        });
+    }
 }
-exports.httpPost = httpPost;
+exports.httpCall = httpCall;
 function getUniqueSegmentFromPull(array) {
     const groupedSegments = [];
     // On groupe les segment par "key"
@@ -84,4 +78,27 @@ function getUniqueSegmentFromPull(array) {
     return data.slice();
 }
 exports.getUniqueSegmentFromPull = getUniqueSegmentFromPull;
+function logErrors(error) {
+    if (error.response) {
+        console.error('{ error.response }');
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error(error.response.data);
+        console.error(error.response.headers);
+        console.error('{ status: ' + error.response.status + ' }');
+    }
+    else if (error.request) {
+        console.error('{ error.request }');
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.error(error.request);
+    }
+    else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('{ other error }');
+        console.error(error.message);
+    }
+    console.log(error.config);
+}
 //# sourceMappingURL=utils.js.map

@@ -1,11 +1,10 @@
 import * as xmlDom from 'xmldom';
 import { Options } from './types/options';
-import { getXMLElementToString, httpPost, getUniqueSegmentFromPull } from './utils';
+import { getXMLElementToString, httpCall, getUniqueSegmentFromPull } from './utils';
 import { InitRequest, InitSegmentRequest } from './types/init/init.request';
 import { SyncRequest, SyncSegmentRequest } from './types/sync/sync.request';
 import { SyncResponse } from './types/sync/sync.response';
 import { PullResponse, PullSegmentResponse } from './types/pull/pull.response';
-import { PullRequest } from './types/pull/pull.request';
 const domParser = new xmlDom.DOMParser();
 
 
@@ -84,7 +83,7 @@ if (argv['init']) {
   }
   const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
   // We post the JSON into translation.io
-  httpPost(url, initRequest, proxyUrl, () => {
+  httpCall('POST', url, initRequest, proxyUrl, () => {
     console.log('Init successful !')
   });
 }
@@ -134,7 +133,7 @@ if (argv['sync']) {
 
     const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    httpPost(url, syncRequest, proxyUrl, (response: SyncResponse) => {
+    httpCall('POST', url, syncRequest, proxyUrl, (response: SyncResponse) => {
       console.log('Sync successful !')
       merge(response);
     });
@@ -147,8 +146,9 @@ if (argv['sync']) {
 export function pull(callback: () => void): void {
   console.log('Start pull');
   const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
+  const params = '&timestamp=0';
   // We post the JSON into translation.io
-  httpPost(url, new PullRequest(), proxyUrl, (response: PullResponse) => {
+  httpCall('GET', url, params, proxyUrl, (response: PullResponse) => {
     const files = targetFiles;
     files.push(sourceFile);
 

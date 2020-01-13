@@ -12,7 +12,7 @@ export function getXMLElementToString(nodeName: string, xmlElement: Element): st
         .replace(/\s+/g, ' ').trim();
 }
 
-export function httpCall(request: string, url: string, value: any, proxy: string, callback: (res: any) => void) {
+export async function httpCall(request: string, url: string, value: any, proxy: string): Promise<any> {
     let axios = require('axios');
     if (proxy) {
         const httpsProxyAgent = require('https-proxy-agent');
@@ -22,25 +22,29 @@ export function httpCall(request: string, url: string, value: any, proxy: string
         });
     }
     if (request === 'POST') {
-        axios.post(url, value)
-            .then((res: any) => {
-                console.log(res.data);
-                console.log('{ status: ' + res.status + ' }');
-                callback(res.data);
-            })
-            .catch((error: any) => {
-                logErrors(error);
-            });
+        try {
+            return await axios.post(url, value)
+                .then((res: any) => {
+                    console.log(res.data);
+                    console.log('{ status: ' + res.status + ' }');
+                    return res.data;
+                })
+        }
+        catch (error) {
+            logErrors(request, error);
+        }
     } else {
-        axios.get(url + value)
-            .then((res: any) => {
-                console.log(res.data);
-                console.log('{ status: ' + res.status + ' }');
-                callback(res.data);
-            })
-            .catch((error: any) => {
-                logErrors(error);
-            });
+        try {
+            return await axios.get(url + value)
+                .then((res: any) => {
+                    console.log(res.data);
+                    console.log('{ status: ' + res.status + ' }');
+                    return res.data;
+                })
+        }
+        catch (error) {
+            logErrors(request, error);
+        }
     }
 }
 
@@ -52,7 +56,7 @@ export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegm
             return item.key === response.key;
         });
         if (index !== -1) {
-            groupedSegments[index].segments.push(response)
+            groupedSegments[index].segments.push(response);
         } else {
             const data: PullGroupedResponse = {
                 key: response.key,
@@ -64,7 +68,7 @@ export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegm
     // On récupère la dernière valeur et on l'ajoute au tableau
     const data: PullSegmentResponse[] = [];
     groupedSegments.forEach(element => {
-        element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
+        element.segments = element.segments.sort((varA, varB) => varB.created_at - varA.created_at).slice();
         data.push(element.segments[0]);
     });
     return data.slice();
@@ -74,7 +78,8 @@ export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegm
 
 
 
-function logErrors(error: any): void {
+function logErrors(request: string, error: any): void {
+    console.error('HTTP ' + request + ' error : ');
     if (error.response) {
         console.error('{ error.response }');
         // The request was made and the server responded with a status code
@@ -93,5 +98,9 @@ function logErrors(error: any): void {
         console.error('{ other error }');
         console.error(error.message);
     }
-    console.log(error.config);
+    console.error(error.config);
+}
+
+export function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

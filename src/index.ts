@@ -1,17 +1,19 @@
 import * as xmlDom from 'xmldom';
 import { Options } from './types/options';
-import { getXMLElementToString, httpCall, getUniqueSegmentFromPull } from './utils';
+import { getXMLElementToString, httpCall, getUniqueSegmentFromPull, delay } from './utils';
 import { InitRequest, InitSegmentRequest } from './types/init/init.request';
 import { SyncRequest, SyncSegmentRequest } from './types/sync/sync.request';
 import { SyncResponse } from './types/sync/sync.response';
 import { PullResponse, PullSegmentResponse } from './types/pull/pull.response';
 const domParser = new xmlDom.DOMParser();
+const reader = require('fs');
+
 
 
 // Get CLI arguments
 const argv = require('minimist')(process.argv.slice(2));
 const options: Options = JSON.parse(
-  require('fs').readFileSync(argv['options'])
+  reader.readFileSync(argv['options'])
 );
 
 // Set arguments 
@@ -52,7 +54,7 @@ if (argv['init']) {
   // For each target languages, we do some process
   for (let x = 0; x < initRequest.target_languages.length; x++) {
     // Get and read file for the current target language
-    const raw = require('fs').readFileSync(targetFiles[x], 'utf8');
+    const raw = reader.readFileSync(targetFiles[x], 'utf8');
     const xml = domParser.parseFromString(raw, 'text/xml');
     const transUnits = xml.getElementsByTagName('trans-unit');
 
@@ -83,8 +85,8 @@ if (argv['init']) {
   }
   const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
   // We post the JSON into translation.io
-  httpCall('POST', url, initRequest, proxyUrl, () => {
-    console.log('Init successful !')
+  httpCall('POST', url, initRequest, proxyUrl).then(() => {
+    console.log('Init successful !');
   });
 }
 
@@ -92,8 +94,10 @@ if (argv['init']) {
 
 /*********** SYNC ***********/
 if (argv['sync']) {
-  console.log('Start sync');
-  pull(() => {
+  pull().then(async () => {
+    await delay(3000);
+
+    console.log('Start sync');
     // Init objects
     const syncRequest = new SyncRequest();
     if (argv['purge']) {
@@ -108,8 +112,8 @@ if (argv['sync']) {
     syncRequest.target_languages = targetLanguages.slice();
 
     // Get and read file "source" for the sync
-    const raw = require('fs').readFileSync(sourceFile, 'utf8');
-    const xml = domParser.parseFromString(raw, 'text/xml')
+    const raw = reader.readFileSync(sourceFile, 'utf8');
+    const xml = domParser.parseFromString(raw, 'text/xml');
     const transUnits = xml.getElementsByTagName('trans-unit');
 
     const segments: SyncSegmentRequest[] = [];
@@ -133,60 +137,66 @@ if (argv['sync']) {
 
     const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    httpCall('POST', url, syncRequest, proxyUrl, (response: SyncResponse) => {
-      console.log('Sync successful !')
+    httpCall('POST', url, syncRequest, proxyUrl).then((response: SyncResponse) => {
+      console.log('Sync successful !');
       merge(response);
     });
-  });
+  })
 }
 
 
 
 /*********** PULL ***********/
-export function pull(callback: () => void): void {
+export async function pull(): Promise<any> {
   console.log('Start pull');
   const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
   const params = '&timestamp=0';
   // We post the JSON into translation.io
-  httpCall('GET', url, params, proxyUrl, (response: PullResponse) => {
-    const files = targetFiles;
-    files.push(sourceFile);
+  httpCall('GET', url, params, proxyUrl).then((response: PullResponse) => {
+    if (response.source_edits.length > 0) {
+      const files = targetFiles.slice();
+      files.push(sourceFile);
 
-    const languages = targetLanguages;
-    languages.push(sourceLanguage);
+      const languages = targetLanguages.slice();
+      languages.push(sourceLanguage);
 
-    // Remove old edits from response
-    const segments: PullSegmentResponse[] = getUniqueSegmentFromPull(response.source_edits);
+      // Remove old edits from response
+      const segments: PullSegmentResponse[] = getUniqueSegmentFromPull(response.source_edits);
 
-    // For each languages, we do some process
-    for (let x = 0; x < languages.length; x++) {
-      // Get and read file for the current language
-      const raw = require('fs').readFileSync(files[x], 'utf8');
-      const xml = domParser.parseFromString(raw, 'text/xml')
-      const transUnits = xml.getElementsByTagName('trans-unit');
+      // For each languages, we do some process
+      for (let x = 0; x < languages.length; x++) {
+        // Get and read file for the current language
+        const raw = reader.readFileSync(files[x], 'utf8');
+        const xml = domParser.parseFromString(raw, 'text/xml');
+        const transUnits = xml.getElementsByTagName('trans-unit');
 
-      for (let t = 0; t < transUnits.length; t++) {
-        const id = transUnits[t].getAttribute('id');
-        const source = transUnits[t].getElementsByTagName('source')[0];
+        for (let t = 0; t < transUnits.length; t++) {
+          const id = transUnits[t].getAttribute('id');
+          const source = transUnits[t].getElementsByTagName('source')[0];
+          const target = transUnits[t].getElementsByTagName('target')[0];
 
-        if (id && id.startsWith(i18nKey)) {
-          const index = response.source_edits.findIndex(x => x.key === id);
-          if (index !== -1) {
-            const newNode = domParser.parseFromString('<source>' + response.source_edits[index].new_source + '</source>', 'text/xml');
-            xml.replaceChild(newNode, source);
-          } else {
-            console.error('Id is missing in the xliff file : ' + id);
+          if (id && id.startsWith(i18nKey)) {
+            const index = segments.findIndex(x => x.key === id);
+            if (index !== -1) {
+              const newNode = domParser.parseFromString('<source>' + segments[index].new_source + '</source>', 'text/xml');
+              xml.replaceChild(newNode, source);
+
+              if (languages[x] === sourceLanguage) {
+                const newNode = domParser.parseFromString('<target state="final">' + segments[index].new_source + '</target>', 'text/xml');
+                xml.replaceChild(newNode, target);
+              }
+            }
           }
         }
+
+        require('fs').writeFile(files[x], xml, (err: any) => {
+          if (err) {
+            console.error('Write file', err);
+          }
+        });
       }
-      require('fs').writeFile(files[x], xml, (err: any) => {
-        if (err) {
-          console.error(err);
-        }
-      });
+      console.log('Pull successful !');
     }
-    console.log('Pull successful !')
-    callback();
   });
 }
 
@@ -198,8 +208,8 @@ export function merge(sync: SyncResponse): void {
   // For each target files, we do some process
   for (let x = 0; x < targetFiles.length; x++) {
     // Get and read file for the current target language
-    const raw = require('fs').readFileSync(sourceFile[x], 'utf8');
-    const xml = domParser.parseFromString(raw, 'text/xml')
+    const raw = reader.readFileSync(targetFiles[x], 'utf8');
+    const xml = domParser.parseFromString(raw, 'text/xml');
     const transUnits = xml.getElementsByTagName('trans-unit');
 
     const key_segments = sync.segments[targetLanguages[x]].filter(x => !!x.key);
@@ -225,7 +235,7 @@ export function merge(sync: SyncResponse): void {
               xml.replaceChild(newNode, target);
             }
           } else {
-            console.error('Source are not equivalent');
+            console.error('Source are not equivalent : ' + source_string + ' ||| ' + key_segments[index].source);
           }
         } else {
           console.error('Id is missing in the xliff file : ' + id);
@@ -247,7 +257,7 @@ export function merge(sync: SyncResponse): void {
     }
     require('fs').writeFile(targetFiles[x], xml, (err: any) => {
       if (err) {
-        console.error(err);
+        console.error('Write file', err);
       }
     });
   }

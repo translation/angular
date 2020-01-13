@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -18,37 +26,43 @@ function getXMLElementToString(nodeName, xmlElement) {
         .replace(/\s+/g, ' ').trim();
 }
 exports.getXMLElementToString = getXMLElementToString;
-function httpCall(request, url, value, proxy, callback) {
-    let axios = require('axios');
-    if (proxy) {
-        const httpsProxyAgent = require('https-proxy-agent');
-        const agent = new httpsProxyAgent(proxy);
-        axios = axios.create({
-            httpsAgent: agent
-        });
-    }
-    if (request === 'POST') {
-        axios.post(url, value)
-            .then((res) => {
-            console.log(res.data);
-            console.log('{ status: ' + res.status + ' }');
-            callback(res.data);
-        })
-            .catch((error) => {
-            logErrors(error);
-        });
-    }
-    else {
-        axios.get(url + value)
-            .then((res) => {
-            console.log(res.data);
-            console.log('{ status: ' + res.status + ' }');
-            callback(res.data);
-        })
-            .catch((error) => {
-            logErrors(error);
-        });
-    }
+function httpCall(request, url, value, proxy) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let axios = require('axios');
+        if (proxy) {
+            const httpsProxyAgent = require('https-proxy-agent');
+            const agent = new httpsProxyAgent(proxy);
+            axios = axios.create({
+                httpsAgent: agent
+            });
+        }
+        if (request === 'POST') {
+            try {
+                return yield axios.post(url, value)
+                    .then((res) => {
+                    console.log(res.data);
+                    console.log('{ status: ' + res.status + ' }');
+                    return res.data;
+                });
+            }
+            catch (error) {
+                logErrors(request, error);
+            }
+        }
+        else {
+            try {
+                return yield axios.get(url + value)
+                    .then((res) => {
+                    console.log(res.data);
+                    console.log('{ status: ' + res.status + ' }');
+                    return res.data;
+                });
+            }
+            catch (error) {
+                logErrors(request, error);
+            }
+        }
+    });
 }
 exports.httpCall = httpCall;
 function getUniqueSegmentFromPull(array) {
@@ -72,13 +86,14 @@ function getUniqueSegmentFromPull(array) {
     // On récupère la dernière valeur et on l'ajoute au tableau
     const data = [];
     groupedSegments.forEach(element => {
-        element.segments = element.segments.sort((varA, varB) => varA.created_at - varB.created_at).slice();
+        element.segments = element.segments.sort((varA, varB) => varB.created_at - varA.created_at).slice();
         data.push(element.segments[0]);
     });
     return data.slice();
 }
 exports.getUniqueSegmentFromPull = getUniqueSegmentFromPull;
-function logErrors(error) {
+function logErrors(request, error) {
+    console.error('HTTP ' + request + ' error : ');
     if (error.response) {
         console.error('{ error.response }');
         // The request was made and the server responded with a status code
@@ -99,6 +114,10 @@ function logErrors(error) {
         console.error('{ other error }');
         console.error(error.message);
     }
-    console.log(error.config);
+    console.error(error.config);
 }
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+exports.delay = delay;
 //# sourceMappingURL=utils.js.map

@@ -95,9 +95,10 @@ if (argv['init']) {
 /*********** SYNC ***********/
 if (argv['sync']) {
   pull().then(async () => {
+    console.log('Start sync');
+
     await delay(3000);
 
-    console.log('Start sync');
     // Init objects
     const syncRequest = new SyncRequest();
     if (argv['purge']) {

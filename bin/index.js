@@ -84,8 +84,8 @@ if (argv['init']) {
 /*********** SYNC ***********/
 if (argv['sync']) {
     pull().then(() => __awaiter(this, void 0, void 0, function* () {
-        yield utils_1.delay(3000);
         console.log('Start sync');
+        yield utils_1.delay(3000);
         // Init objects
         const syncRequest = new sync_request_1.SyncRequest();
         if (argv['purge']) {

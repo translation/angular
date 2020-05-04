@@ -213,7 +213,7 @@ La librairie va récupérer les traductions existantes sans
 
 Voici un exemple complet pour build une application dans chaque langue.
 
-![Exemple](hhttps://i.ibb.co/5j28bjH/exemple.png)
+![Exemple](images/exemple.png)
 
 <br />
 

@@ -213,7 +213,7 @@ La librairie va récupérer les traductions existantes sans
 
 Voici un exemple complet pour build une application dans chaque langue.
 
-![Exemple](https://dev.azure.com/becorellia/_git/ngx-translation-io?path=%2Fimages%2Fexemple.png&version=GBmaster)
+![Exemple](hhttps://i.ibb.co/5j28bjH/exemple.png)
 
 <br />
 

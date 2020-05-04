@@ -213,6 +213,10 @@ La librairie va récupérer les traductions existantes sans
 
 Voici un exemple complet pour build une application dans chaque langue.
 
+Rien de plus simple, il suffit de lancer une commande :
+```bash
+npm run build
+```
 ![Exemple](images/exemple.png)
 
 <br />

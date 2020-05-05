@@ -15,10 +15,10 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
-    * [Générer les fichiers XLIFF](#generer-les-fichiers-XLIFF)
+    * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
     * [Xliffmerge](#xliffmerge)
-* [Installation](#installation)
 * [Type de traduction](#type-de-traduction)
+* [Installation](#installation)
 * [Configuration](#configuration)
 * [Usage](#usage)
     * [Init](#init)
@@ -34,7 +34,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ### Générer les fichiers XLIFF
 Pour utiliser le package ngx-translation-io, il faut posséder les différents fichier xliffs. <br />
-Un fichier par langue.
+**Un fichier xliff par langue.**
 
 Afin de générer ces fichiers, il y a deux étapes :
 1. Générer le fichier de traductions de base avec la commande que fourni Angular (xi18n) ===> "i18n-template".
@@ -81,16 +81,6 @@ La propriété "languages" est la seule propriétée qui doit réellement être 
 
 <br />
 
-## Installation
-
-Une fois que vous avez vos fichiers de traductions, il suffit d'installer le package NPM et de le configurer
-
-```bash
-npm i @corellia/ngx-translation-io@latest
-```
-
-<br />
-
 ## Type de traduction
 
 Il est important de savoir qu'il y a deux types de traductions sur Translation.io. <br />
@@ -118,6 +108,16 @@ par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étan
 - Exemple
 ```html
     <div i18n>Hello source</div>
+```
+
+<br />
+
+## Installation
+
+Une fois que vous avez vos fichiers de traductions, il suffit d'installer le package NPM et de le [configurer](#configuration)
+
+```bash
+npm i @corellia/ngx-translation-io@latest
 ```
 
 <br />
@@ -162,6 +162,23 @@ Fichier : 'tio.config.json'
     - `language` : Le code de la langue target. (Le code doit être le même que celui indiqué dans Translation.io)
     - `file` : Where is located your target xliff file
 
+
+#### Proxy
+
+Il est possible de définir un proxy, pour cela, rien de plus simple :
+
+Fichier : 'tio.config.json'
+```js
+{
+    "api_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+    "i18n_key": "TIO",
+    .
+    .
+    .
+    "proxy": "http://1.1.1.1:8080"
+}
+```
+
 <br />
 
 ## Usage
@@ -171,7 +188,7 @@ Fichier : 'tio.config.json'
 Itialize your project and push existing translations to Translation.io with:
 
 ```bash
-tio --init --options=tio.config.json
+npm run tio --init --options=tio.config.json
 ```
 Cette commande est, en principe, utilisé qu'une seule fois par projet. Elle permet d'initialiser les traductions existantes dans Translation.io.<br />
 Pour toutes les autres actions, voir le SYNC
@@ -181,7 +198,7 @@ Pour toutes les autres actions, voir le SYNC
 To send new translatable keys/strings and get new translations from Translation.io, simply run:
 
 ```bash
-tio --sync --options=tio.config.json
+npm run tio --sync --options=tio.config.json
 ```
 
 #### Sync & Purge
@@ -189,7 +206,7 @@ tio --sync --options=tio.config.json
 If you need to remove unused keys/strings from Translation.io, using the current application as reference.
 
 ```bash
-tio --sync --purge --options=tio.config.json
+npm run tio --sync --purge --options=tio.config.json
 ```
 
 As the name says, this operation will also perform a sync at the same time.
@@ -201,7 +218,7 @@ Warning : all keys that are not present in the current application will be **per
 Si vous avez besoin de synchroniser sans modifier les données présentes dans Translation.io
 
 ```bash
-tio --sync --readonly --options=tio.config.json
+npm run tio --sync --readonly --options=tio.config.json
 ```
 La librairie va récupérer les traductions existantes sans 
 - ajouter les nouveaux segments
@@ -211,15 +228,31 @@ La librairie va récupérer les traductions existantes sans
 
 ## Exemple
 
+### Init d'un projet
+
+Dés que vous avez [vos fichiers XLIFF](#générer-les-fichiers-XLIFF), il suffit de lancer la commande permettant d'initialiser le projet
+
+Il suffit de lancer une commande :
+```bash
+npm run translationio-init
+```
+Fichier : package.json
+![Exemple-init](images/exemple-init.png)
+
+<br />
+
+### Build complet d'une APP en plusieurs langues
 Voici un exemple complet pour build une application dans chaque langue.
 
-Rien de plus simple, il suffit de lancer une commande :
+Il suffit de lancer une commande :
 ```bash
 npm run build
 ```
-![Exemple](images/exemple.png)
+Fichier : package.json
+![Exemple-build](images/exemple-build.png)
 
 <br />
 
 ## Licence
+
 The MIT License (MIT). Please see [License File](LICENSE) for more information.

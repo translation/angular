@@ -38,7 +38,7 @@ const apiKey: string = options.api_key.trim();
 // Proxy arg.
 let proxyUrl: string = '';
 if (options.proxy) {
-  proxyUrl = options.proxy.url.trim() + ':' + options.proxy.port.trim();
+  proxyUrl = options.proxy.trim();
 }
 
 

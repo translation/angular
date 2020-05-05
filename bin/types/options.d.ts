@@ -3,13 +3,9 @@ export declare class Options {
     i18n_key: string;
     source_language: I18nFile;
     target_languages: I18nFile[];
-    proxy: ProxyOption;
+    proxy: string;
 }
 export declare class I18nFile {
     language: string;
     file: string;
-}
-export declare class ProxyOption {
-    url: string;
-    port: string;
 }

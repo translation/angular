@@ -42,7 +42,7 @@ const apiKey = options.api_key.trim();
 // Proxy arg.
 let proxyUrl = '';
 if (options.proxy) {
-    proxyUrl = options.proxy.url.trim() + ':' + options.proxy.port.trim();
+    proxyUrl = options.proxy.trim();
 }
 /*********** INIT ***********/
 if (argv['init']) {

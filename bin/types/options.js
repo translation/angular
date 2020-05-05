@@ -6,7 +6,7 @@ class Options {
         this.i18n_key = '';
         this.source_language = new I18nFile;
         this.target_languages = [];
-        this.proxy = new ProxyOption();
+        this.proxy = '';
     }
 }
 exports.Options = Options;
@@ -17,11 +17,4 @@ class I18nFile {
     }
 }
 exports.I18nFile = I18nFile;
-class ProxyOption {
-    constructor() {
-        this.url = '';
-        this.port = '';
-    }
-}
-exports.ProxyOption = ProxyOption;
 //# sourceMappingURL=options.js.map

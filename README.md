@@ -15,8 +15,8 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
-    * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
     * [Xliffmerge](#xliffmerge)
+    * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
 * [Type de traduction](#type-de-traduction)
 * [Installation](#installation)
 * [Configuration](#configuration)
@@ -32,32 +32,16 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Avant de commencer
 
-### Générer les fichiers XLIFF
-Pour utiliser le package ngx-translation-io, il faut posséder les différents fichier xliffs. <br />
-**Un fichier xliff par langue.**
-
-Afin de générer ces fichiers, il y a deux étapes :
-1. Générer le fichier de traductions de base avec la commande que fourni Angular (xi18n) ===> "i18n-template".
-2. Pour chaque langue de votre site, générer le bon fichier de traduction XLIFF avec le package [xliffmerge](#xliffmerge) ===> "i18n-merge"
-
-Pour ce faire, il suffit d'ajouter ces commandes dans le package.json de votre Angular application
-```json
-    "i18n-templates": "ng xi18n --output-path locale",
-    "i18n-merge": "xliffmerge --profile xliffmerge.json",
-```
-- `i18n-templates` : Cette commande permet de générer le fichier de traduction en fonction des balises i18n présentes dans votre site
-- `i18n-merge` : Grâce au fichier précedemment créé par "i18n-template", cette commande permet de générer, pour chaque langues, le bon fichier de traduction
-
-et de les exécuter, dans cet ordre, grâce à une commande commune :
-```json
-    "i18n-exec": "npm run i18n-templates && npm run i18n-merge",
-```
-
 ### Xliffmerge
 Il est nécessaire d'utiliser le package [xliffmerge](https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
 
 Package **xliffmerge** : https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport
 
+##### Why ?
+Pour éviter de faire cette partie de la documentation officielle à la main :
+- https://angular.io/guide/i18n#create-the-translation-files
+
+Once the package is installed, you'll have to create a configuration file in the root folder of your Angular app <br />
 Voici les options à configurer pour le package xliffmerge :
 
 Fichier : 'xliffmerge.json'
@@ -80,6 +64,27 @@ La propriété "languages" est la seule propriétée qui doit réellement être 
         - le site est en français, anglais et néerlandais ===> ["fr", "en", "nl"]
         - le site est en anglais et espagnol ===> ["en", "es"]
 - `i18nFile` : Le nom du fichier généré par la commande "i18n-templates"
+
+### Générer les fichiers XLIFF
+Pour utiliser le package ngx-translation-io, il faut posséder les différents fichier XLIFF. <br />
+**Un fichier XLIFF par langue.**
+
+Afin de générer ces fichiers, il y a deux étapes :
+1. Générer le fichier de traductions de base avec la commande que fourni Angular (xi18n) ===> "i18n-template".
+2. Pour chaque langue de votre site, générer le bon fichier de traduction XLIFF avec le package [xliffmerge](#xliffmerge) ===> "i18n-merge"
+
+Pour ce faire, il suffit d'ajouter ces commandes dans le package.json de votre Angular application
+```json
+    "i18n-templates": "ng xi18n --output-path src/locale",
+    "i18n-merge": "xliffmerge --profile xliffmerge.json",
+```
+- `i18n-templates` : Cette commande permet de générer le fichier de traduction en fonction des balises i18n présentes dans votre site
+- `i18n-merge` : Grâce au fichier précedemment créé par "i18n-template", cette commande permet de générer, pour chaque langues, le bon fichier de traduction
+
+et de les exécuter, dans cet ordre, grâce à une commande commune :
+```json
+    "i18n-exec": "npm run i18n-templates && npm run i18n-merge",
+```
 
 <br />
 
@@ -157,12 +162,12 @@ Fichier : 'tio.config.json'
         <div i18n="@@Goodbye"></div>            <!-- WRONG  ->  Traduction de type "SOURCE" -->
         <div i18n="@@TI_O_Goodbye"></div>       <!-- WRONG  ->  Traduction de type "SOURCE" -->
     ```
-- `source_language` : La configuration de la source. Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
+- `source_language` : La configuration de la source, c'est à dire, la langue princpale du site. Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
     - `language` : Le code de la langue source. (Le code doit être le même que celui indiqué dans Translation.io)
-    - `file` : Where is located your source xliff file
+    - `file` : Where is located your source XLIFF file
 - `target_languages` : La configuration des targets, c'est à dire, les autres langues du site. Pour chaque target, Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
     - `language` : Le code de la langue target. (Le code doit être le même que celui indiqué dans Translation.io)
-    - `file` : Where is located your target xliff file
+    - `file` : Where is located your target XLIFF file
 
 
 #### Proxy
@@ -203,6 +208,10 @@ To send new translatable keys/strings and get new translations from Translation.
 npm run tio --sync --options=tio.config.json
 ```
 
+> Pour les nouvelles traductions, il sera nécessaire de faire deux Syncs.
+>   - Le premier Sync va envoyer les nouvelles traductions sur Translation.io
+>   - Une fois que c'est traduit sur le site, le deuxième Sync va récupérer les traductions
+
 #### Sync & Purge
 
 If you need to remove unused keys/strings from Translation.io, using the current application as reference.
@@ -234,6 +243,8 @@ La librairie va récupérer les traductions existantes sans
 Dés que vous avez [vos fichiers XLIFF](#générer-les-fichiers-XLIFF), il ne reste plus qu'à initialiser votre projet Translation.io
 
 Pour cela, il suffit de lancer une commande :
+-   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
+-   et [initialiser] le projet sur Translation.io
 ```bash
 npm run translationio-init
 ```
@@ -242,15 +253,34 @@ Fichier : package.json
 
 <br />
 
+### Mettre à jour un projet
+Pour mettre à jour les traductions, c'est très simple :
+
+Il suffit de lancer une commande :
+-   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
+-   et [synchroniser] les nouvelles traductions et/ou modifications avec Translation.io
+```bash
+npm run translationio-sync
+```
+Fichier : package.json
+![Exemple-sync](images/exemple-sync.png)
+
+<br />
+
 ### Build complet d'une APP en plusieurs langues
 Voici un exemple complet pour build une application dans chaque langue.
 
 Il suffit de lancer une commande :
+-   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
+-   [synchroniser] avec Translation.io
+-   et build le projet avec les différentes traductions récupérées
 ```bash
 npm run build
 ```
 Fichier : package.json
 ![Exemple-build](images/exemple-build.png)
+
+>*N'oubliez pas de configurer le fichier angular.json avec les differentes configurations par langue pour pour que l'exemple fonctionne.  
 
 <br />
 

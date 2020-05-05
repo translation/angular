@@ -54,7 +54,9 @@ et de les exécuter, dans cet ordre, grâce à une commande commune :
 ```
 
 ### Xliffmerge
-Il est nécessaire d'utiliser le package [xliffmerge](https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
+Il est nécessaire d'utiliser le package [xliffmerge](https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
+
+Package **xliffmerge** : https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport
 
 Voici les options à configurer pour le package xliffmerge :
 

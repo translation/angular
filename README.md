@@ -136,16 +136,16 @@ Fichier : 'tio.config.json'
     "i18n_key": "TIO",
     "source_language": {
         "language": "fr-BE",
-        "file": "./src/assets/locale/messages.fr.xlf"
+        "file": "./src/locale/messages.fr.xlf"
     },
     "target_languages": [
         {
             "language": "en",
-            "file": "./src/assets/locale/messages.en.xlf"
+            "file": "./src/locale/messages.en.xlf"
         },
         {
             "language": "nl-BE",
-            "file": "./src/assets/locale/messages.nl.xlf"
+            "file": "./src/locale/messages.nl.xlf"
         }
     ]
 }

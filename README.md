@@ -229,10 +229,9 @@ La librairie va récupérer les traductions existantes sans
 ## Exemple
 
 ### Init d'un projet
+Dés que vous avez [vos fichiers XLIFF](#générer-les-fichiers-XLIFF), il ne reste plus qu'à initialiser votre projet Translation.io
 
-Dés que vous avez [vos fichiers XLIFF](#générer-les-fichiers-XLIFF), il suffit de lancer la commande permettant d'initialiser le projet
-
-Il suffit de lancer une commande :
+Pour cela, il suffit de lancer une commande :
 ```bash
 npm run translationio-init
 ```

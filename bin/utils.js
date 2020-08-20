@@ -38,8 +38,12 @@ function httpCall(request, url, value, proxy) {
         }
         if (request === 'POST') {
             try {
-                return yield axios.post(url, value)
-                    .then((res) => {
+                const headers = {
+                    'Content-Type': 'application/json',
+                };
+                return yield axios.post(url, value, {
+                    headers: headers
+                }).then((res) => {
                     console.log(res.data);
                     console.log('{ status: ' + res.status + ' }');
                     return res.data;

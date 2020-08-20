@@ -23,12 +23,16 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
     }
     if (request === 'POST') {
         try {
-            return await axios.post(url, value)
-                .then((res: any) => {
-                    console.log(res.data);
-                    console.log('{ status: ' + res.status + ' }');
-                    return res.data;
-                })
+            const headers = {
+                'Content-Type': 'application/json',
+            }
+            return await axios.post(url, value, {
+                headers: headers
+            }).then((res: any) => {
+                console.log(res.data);
+                console.log('{ status: ' + res.status + ' }');
+                return res.data;
+            })
         }
         catch (error) {
             logErrors(request, error);

@@ -52,26 +52,21 @@ Pour éviter de faire cette partie de la documentation officielle à la main :
 
 Once the package is installed, you'll have to add some configuration file in the "angular.json" file <br />
 
+Fichier : 'angular.json' <br />
 ![Exemple-xliffmerge](images/exemple-xliffmerge.png)
 
 Voici les options obligatoires à configurer pour le package xliffmerge :
-Fichier : 'angular.json'
 ```json
 {
-  "xliffmerge": {
-    "builder": "@ngx-i18nsupport/tooling:xliffmerge",
-    "options": {
-      "xliffmergeOptions": {
-        "i18nFormat": "xlf",
-        "srcDir": "src/locale",
-        "genDir": "src/locale",
-        "i18nFile": "messages.xlf",
-        "defaultLanguage": "fr",
-        "languages": ["fr", "nl", "en"],
-        "useSourceAsTarget": true,
-        "beautifyOutput": true
-      }
-    }
+  "xliffmergeOptions": {
+    "i18nFormat": "xlf",
+    "srcDir": "src/locale",
+    "genDir": "src/locale",
+    "i18nFile": "messages.xlf",
+    "defaultLanguage": "fr",
+    "languages": ["fr", "nl", "en"],
+    "useSourceAsTarget": true,
+    "beautifyOutput": true
   }
 }
 ```
@@ -271,7 +266,7 @@ Pour cela, il suffit de lancer une commande :
 ```bash
 npm run translationio-init
 ```
-Fichier : package.json
+Fichier : 'package.json' <br />
 ![Exemple-init](images/exemple-init.png)
 
 <br />
@@ -285,7 +280,7 @@ Il suffit de lancer une commande :
 ```bash
 npm run translationio-sync
 ```
-Fichier : package.json
+Fichier : 'package.json' <br />
 ![Exemple-sync](images/exemple-sync.png)
 
 <br />
@@ -300,7 +295,7 @@ Il suffit de lancer une commande :
 ```bash
 npm run build
 ```
-Fichier : package.json
+Fichier : 'package.json' <br />
 ![Exemple-build](images/exemple-build.png)
 
 >*N'oubliez pas de configurer le fichier "angular.json" avec les differentes configurations par langue pour pour que l'exemple fonctionne. <br /> Vous pouvez trouver un exemple complet dans le projet "sample" du repository.

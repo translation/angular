@@ -15,7 +15,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
-    * [Localize](#localize)
+    * [$localize (Angular 10)](#$localize-angular-10)
     * [Xliffmerge](#xliffmerge)
     * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
 * [Type de traduction](#type-de-traduction)
@@ -33,7 +33,9 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Avant de commencer
 
-### Localize
+### $localize (Angular 10)
+> La fonction "$localize" a été introduit en Angular 9 mais la commande permettant d'extraire les traducitons ("ng xi18n") ne permet pas l'extractions des traductions présentes dans le typescript avant la version Angular 10. Il n'est donc pas conseillé d'utiliser la fonction "$localize" en Angular 9 avec le package ngx-translation-io. <br />Plus d'informations [ici](https://github.com/angular/angular/pull/32912).
+
 Afin de bénéficier de toutes les fonctionnalités liées à l'internationalisation fourni par Angular, n'oubliez pas d'ajouter le package [localize](https://angular.io/guide/i18n#add-the-localize-package) à votre solution :
 ```bash
 ng add @angular/localize
@@ -42,9 +44,12 @@ ng add @angular/localize
 ### Xliffmerge
 Il est nécessaire d'utiliser le package [xliffmerge](https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
 
-Package **xliffmerge** : https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport
-
 Si vous desirez des explications détaillées sur l'installation du package, veuillez consulter son [wiki](https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli).
+
+##### Installation
+```bash
+ng add @ngx-i18nsupport/tooling --i18nLocale=fr --languages fr,en,nl
+```
 
 ##### Why ?
 Pour éviter de faire cette partie de la documentation officielle à la main :
@@ -116,7 +121,9 @@ c'est que vous dirigez vers l'approche de type "KEY".
 ```html
     <div i18n="@@TIO_MYAPP_HelloKey">Hello key</div>
 ```
-```js
+
+A partir d'Angular 10 :
+```js 
     $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
 ```
 >Attention : Si vous ne commencez pas vos [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance) 
@@ -131,6 +138,8 @@ par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étan
 ```html
     <div i18n>Hello source</div>
 ```
+
+A partir d'Angular 10 :
 ```js
     $localize `Hello source from JS`
 ```

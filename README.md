@@ -15,6 +15,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
+    * [Localize](#localize)
     * [Xliffmerge](#xliffmerge)
     * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
 * [Type de traduction](#type-de-traduction)
@@ -32,29 +33,45 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Avant de commencer
 
+### Localize
+Afin de bénéficier de toutes les fonctionnalités liées à l'internationalisation fourni par Angular, n'oubliez pas d'ajouter le package [localize](https://angular.io/guide/i18n#add-the-localize-package) à votre solution :
+```bash
+ng add @angular/localize
+```
+
 ### Xliffmerge
 Il est nécessaire d'utiliser le package [xliffmerge](https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
 
 Package **xliffmerge** : https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport
 
+Si vous desirez des explications détaillées sur l'installation du package, veuillez consulter son [wiki](https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli).
+
 ##### Why ?
 Pour éviter de faire cette partie de la documentation officielle à la main :
 - https://angular.io/guide/i18n#create-the-translation-files
 
-Once the package is installed, you'll have to create a configuration file in the root folder of your Angular app <br />
-Voici les options à configurer pour le package xliffmerge :
+Once the package is installed, you'll have to add some configuration file in the "angular.json" file <br />
 
-Fichier : 'xliffmerge.json'
-```js
+![Exemple-xliffmerge](images/exemple-xliffmerge.png)
+
+Voici les options obligatoires à configurer pour le package xliffmerge :
+Fichier : 'angular.json'
+```json
 {
-  "xliffmergeOptions": {
-    "srcDir": "src/locale",
-    "genDir": "src/locale",
-    "useSourceAsTarget": true,
-    "defaultLanguage": "fr",
-    "beautifyOutput": true,
-    "languages": ["fr", "en", "nl"],
-    "i18nFile": "messages.xlf",
+  "xliffmerge": {
+    "builder": "@ngx-i18nsupport/tooling:xliffmerge",
+    "options": {
+      "xliffmergeOptions": {
+        "i18nFormat": "xlf",
+        "srcDir": "src/locale",
+        "genDir": "src/locale",
+        "i18nFile": "messages.xlf",
+        "defaultLanguage": "fr",
+        "languages": ["fr", "nl", "en"],
+        "useSourceAsTarget": true,
+        "beautifyOutput": true
+      }
+    }
   }
 }
 ```
@@ -76,14 +93,14 @@ Afin de générer ces fichiers, il y a deux étapes :
 Pour ce faire, il suffit d'ajouter ces commandes dans le package.json de votre Angular application
 ```json
     "i18n-templates": "ng xi18n --output-path src/locale",
-    "i18n-merge": "xliffmerge --profile xliffmerge.json",
+    "i18n-merge": "ng run sample:xliffmerge",
 ```
 - `i18n-templates` : Cette commande permet de générer le fichier de traduction en fonction des balises i18n présentes dans votre site
-- `i18n-merge` : Grâce au fichier précedemment créé par "i18n-template", cette commande permet de générer, pour chaque langues, le bon fichier de traduction
+- `i18n-merge` : Grâce au fichier précedemment créé par "i18n-template", cette commande permet de générer, pour chaque langues, le bon fichier de traduction. <br /> 'sample' = name of your angular project configured in the "angular.json" file.
 
 et de les exécuter, dans cet ordre, grâce à une commande commune :
 ```json
-    "i18n-exec": "npm run i18n-templates && npm run i18n-merge",
+    "i18n": "npm run i18n-templates && npm run i18n-merge",
 ```
 
 <br />
@@ -104,6 +121,9 @@ c'est que vous dirigez vers l'approche de type "KEY".
 ```html
     <div i18n="@@TIO_MYAPP_HelloKey">Hello key</div>
 ```
+```js
+    $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
+```
 >Attention : Si vous ne commencez pas vos [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance) 
 par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étant des traductions de type **"SOURCE"** et non de type **"KEY"**.
 
@@ -115,6 +135,9 @@ par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étan
 - Exemple
 ```html
     <div i18n>Hello source</div>
+```
+```js
+    $localize `Hello source from JS`
 ```
 
 <br />
@@ -135,9 +158,9 @@ Go to your Translation.io account page and create a new project.
 Once the project is created, you'll have to create a configuration file in the root folder of your Angular app
 
 Fichier : 'tio.config.json'
-```js
+```json
 {
-    "api_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "api_key": "YOUR API KEY",
     "i18n_key": "TIO",
     "source_language": {
         "language": "fr-BE",
@@ -175,7 +198,7 @@ Fichier : 'tio.config.json'
 Il est possible de définir un proxy, pour cela, rien de plus simple :
 
 Fichier : 'tio.config.json'
-```js
+```json
 {
     "api_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
     "i18n_key": "TIO",

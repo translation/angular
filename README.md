@@ -15,7 +15,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
-    * [$localize (Angular 10)](#$localize-angular-10)
+    * [Angular 10 - $localize](#angular-10---$localize)
     * [Xliffmerge](#xliffmerge)
     * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
 * [Type de traduction](#type-de-traduction)
@@ -33,7 +33,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Avant de commencer
 
-### $localize (Angular 10)
+### Angular 10 - $localize
 > La fonction "$localize" a été introduit en Angular 9 mais la commande permettant d'extraire les traducitons ("ng xi18n") ne permet pas l'extractions des traductions présentes dans le typescript avant la version Angular 10. Il n'est donc pas conseillé d'utiliser la fonction "$localize" en Angular 9 avec le package ngx-translation-io. <br />Plus d'informations [ici](https://github.com/angular/angular/pull/32912).
 
 Afin de bénéficier de toutes les fonctionnalités liées à l'internationalisation fourni par Angular, n'oubliez pas d'ajouter le package [localize](https://angular.io/guide/i18n#add-the-localize-package) à votre solution :

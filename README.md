@@ -1,4 +1,4 @@
-# Translation.io for Angular
+# [Translation.io](https://translation.io) for Angular
 
 Add this package to localize your Angular application.<br />
 
@@ -123,9 +123,9 @@ c'est que vous dirigez vers l'approche de type "KEY".
     <div i18n="@@TIO_MYAPP_HelloKey">Hello key</div>
 ```
 
-A partir d'Angular 10 :
+A partir d'Angular 10, on peut traduire depuis le typescript via la fonction $localize :
 ```js 
-    $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
+    helloKeyFromJS = $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
 ```
 >Attention : Si vous ne commencez pas vos [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance) 
 par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étant des traductions de type **"SOURCE"** et non de type **"KEY"**.
@@ -140,9 +140,9 @@ par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étan
     <div i18n>Hello source</div>
 ```
 
-A partir d'Angular 10 :
+A partir d'Angular 10, on peut traduire depuis le typescript via la fonction $localize :
 ```js
-    $localize `Hello source from JS`
+    helloSourceFromJS = $localize `Hello source from JS`
 ```
 
 <br />
@@ -220,7 +220,7 @@ Fichier : 'tio.config.json'
 
 #### Init
 
-Itialize your project and push existing translations to Translation.io with:
+Itialize your project and push existing translations to Translation.io with :
 
 ```bash
 npm run tio --init --options=tio.config.json
@@ -230,7 +230,7 @@ Pour toutes les autres actions, voir le SYNC
 
 #### Sync
 
-To send new translatable keys/strings and get new translations from Translation.io, simply run:
+To send new translatable keys/strings and get new translations from Translation.io, simply run :
 
 ```bash
 npm run tio --sync --options=tio.config.json

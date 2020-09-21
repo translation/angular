@@ -303,7 +303,7 @@ npm run build
 Fichier : package.json
 ![Exemple-build](images/exemple-build.png)
 
->*N'oubliez pas de configurer le fichier angular.json avec les differentes configurations par langue pour pour que l'exemple fonctionne.  
+>*N'oubliez pas de configurer le fichier "angular.json" avec les differentes configurations par langue pour pour que l'exemple fonctionne. <br /> Vous pouvez trouver un exemple complet dans le projet "sample" du repository.
 
 <br />
 

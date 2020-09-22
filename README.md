@@ -190,7 +190,7 @@ Fichier : 'tio.config.json'
         <div i18n="@@Goodbye"></div>            <!-- WRONG  ->  Traduction de type "SOURCE" -->
         <div i18n="@@TI_O_Goodbye"></div>       <!-- WRONG  ->  Traduction de type "SOURCE" -->
     ```
-- `source_language` : La configuration de la source, c'est à dire, la langue princpale du site. Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
+- `source_language` : La configuration de la source, c'est à dire, la langue principale du site. Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
     - `language` : Le code de la langue source. (Le code doit être le même que celui indiqué dans Translation.io)
     - `file` : Where is located your source XLIFF file
 - `target_languages` : La configuration des targets, c'est à dire, les autres langues du site. Pour chaque target, Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.

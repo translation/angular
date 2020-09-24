@@ -104,6 +104,10 @@ et de les exécuter, dans cet ordre, grâce à une commande commune :
     "i18n": "npm run i18n-templates && npm run i18n-merge",
 ```
 
+> En Angular 10, il sera peut être nécessaire d'ajouter le paramètre "--ivy" dans le script "xi18n" afin de récupérer les traductions dans le typescript. <br /> Pour plus d'informations, cliquez [ici](https://github.com/angular/angular/pull/32912)
+```json
+    "i18n-templates": "ng xi18n --ivy --output-path src/locale",
+```  
 <br />
 
 ## Type de traduction

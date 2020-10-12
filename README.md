@@ -49,8 +49,14 @@ Si vous desirez des explications détaillées sur l'installation du package, veu
 
 ##### Installation
 ```bash
-ng add @ngx-i18nsupport/tooling --i18nLocale=fr --languages fr,en,nl
+ng add @ngx-i18nsupport/tooling
 ```
+##### Configuration exemple :
+- Which translation file format would you like to use ? <b>xlf</b>
+- Which default language do you use in your template ? <b>fr</b>
+- Which languages would you like to configure ? <b>fr,nl,en</b>
+
+> Votre langue par défaut doit se trouver dans la liste des langues à configurer.
 
 ##### Why ?
 Pour éviter de faire cette partie de la documentation officielle à la main :

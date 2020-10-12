@@ -51,7 +51,7 @@ Si vous desirez des explications détaillées sur l'installation du package, veu
 ```bash
 ng add @ngx-i18nsupport/tooling
 ```
-##### Configuration exemple :
+##### Exemple de configuration :
 - Which translation file format would you like to use ? <b>xlf</b>
 - Which default language do you use in your template ? <b>fr</b>
 - Which languages would you like to configure ? <b>fr,nl,en</b>

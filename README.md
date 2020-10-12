@@ -186,14 +186,9 @@ Fichier : 'tio.config.json'
         }
     ]
 }
-````
+```
 - `api_key` : La clé API votre projet Translation.io
-- `i18n_key` : Préfix à utiliser pour chaque traduction qui utilise le système "KEY".<br /> Si le préfix n'est pas correct ou indiqué, la traduction est définie comme type "SOURCE"
-    ```html
-        <div i18n="@@TIOHelloWorld"></div>      <!-- GOOD   ->  Traduction de type "KEY" -->
-        <div i18n="@@Goodbye"></div>            <!-- WRONG  ->  Traduction de type "SOURCE" -->
-        <div i18n="@@TI_O_Goodbye"></div>       <!-- WRONG  ->  Traduction de type "SOURCE" -->
-    ```
+- `i18n_key` : Préfix à utiliser pour chaque traduction qui utilise le système "KEY". [Voir exemples.](#utilisation-du-préfix)
 - `source_language` : La configuration de la source, c'est à dire, la langue principale du site. Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
     - `language` : Le code de la langue source. (Le code doit être le même que celui indiqué dans Translation.io)
     - `file` : Where is located your source XLIFF file
@@ -202,7 +197,7 @@ Fichier : 'tio.config.json'
     - `file` : Where is located your target XLIFF file
 
 
-#### Proxy
+### Proxy
 
 Il est possible de définir un proxy, pour cela, rien de plus simple :
 
@@ -216,6 +211,30 @@ Fichier : 'tio.config.json'
     .
     "proxy": "http://1.1.1.1:8080"
 }
+```
+
+<br />
+
+#### Utilisation du préfix
+Si le préfix n'est pas correctement utilisé, la traduction sera définie comme type "SOURCE"
+
+```html
+    <div i18n="@@TIOHelloWorld"></div>      <!-- GOOD   ->  Traduction de type "KEY" -->
+    <div i18n="@@TIO_HelloWorld"></div>     <!-- GOOD   ->  Traduction de type "KEY" -->
+
+    <div i18n></div>                        <!-- WRONG  ->  Traduction de type "SOURCE" -->
+    <div i18n="Goodbye"></div>              <!-- WRONG  ->  Traduction de type "SOURCE" -->
+    <div i18n="@@Goodbye"></div>            <!-- WRONG  ->  Traduction de type "SOURCE" -->
+    <div i18n="@@TI_O_Goodbye"></div>       <!-- WRONG  ->  Traduction de type "SOURCE" -->
+```
+```js
+    helloKeyFromJS = $localize`:@@TIOHelloWorldJS: Hello key from JS`;      // GOOD  ->  Traduction de type "KEY"
+    helloKeyFromJS = $localize`:@@TIO_HelloWorldJS: Hello key from JS`;     // GOOD  ->  Traduction de type "KEY"
+
+    helloKeyFromJS = $localize `Hello key from JS`;                         // WRONG ->  Traduction de type "SOURCE"
+    helloKeyFromJS = $localize`:GoodbyeJS: Hello key from JS`;              // WRONG ->  Traduction de type "SOURCE"
+    helloKeyFromJS = $localize`:@@GoodbyeJS: Hello key from JS`;            // WRONG ->  Traduction de type "SOURCE"
+    helloKeyFromJS = $localize`:@@TI_O_GoodbyeJS: Hello key from JS`;       // WRONG ->  Traduction de type "SOURCE"
 ```
 
 <br />
@@ -276,7 +295,7 @@ Dés que vous avez [vos fichiers XLIFF](#générer-les-fichiers-XLIFF), il ne re
 
 Pour cela, il suffit de lancer une commande :
 -   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
--   et [initialiser] le projet sur Translation.io
+-   et [initialiser](#init) le projet sur Translation.io
 ```bash
 build-i18n-and-translationio-init
 ```
@@ -290,7 +309,7 @@ Pour mettre à jour les traductions, c'est très simple :
 
 Il suffit de lancer une commande :
 -   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
--   et [synchroniser] les nouvelles traductions et/ou modifications avec Translation.io
+-   et [synchroniser](#sync) les nouvelles traductions et/ou modifications avec Translation.io
 ```bash
 build-i18n-and-translationio-sync
 ```
@@ -304,7 +323,7 @@ Voici un exemple complet pour build une application dans chaque langue.
 
 Il suffit de lancer une commande :
 -   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
--   [synchroniser] avec Translation.io
+-   [synchroniser](#sync) avec Translation.io
 -   et build le projet avec les différentes traductions récupérées
 ```bash
 npm run build

@@ -13,6 +13,9 @@
     "start-en": "ng serve --configuration=en",
   
     "build": "npm run i18n && npm run translationio-sync && npm run build-app",
+  
+    "build-i18n-and-translationio-init": "npm run i18n && npm run translationio-init",
+    "build-i18n-and-translationio-sync": "npm run i18n && npm run translationio-sync",
 
     "i18n": "npm run i18n-templates && npm run i18n-merge",
     "i18n-templates": "ng xi18n --output-path src/locale",

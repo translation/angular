@@ -49,14 +49,8 @@ Si vous desirez des explications détaillées sur l'installation du package, veu
 
 ##### Installation
 ```bash
-ng add @ngx-i18nsupport/tooling
+npm i @ngx-i18nsupport/tooling
 ```
-##### Exemple de configuration :
-- Which translation file format would you like to use ? <b>xlf</b>
-- Which default language do you use in your template ? <b>fr</b>
-- Which languages would you like to configure ? <b>fr,nl,en</b>
-
-> Votre langue par défaut doit se trouver dans la liste des langues à configurer.
 
 ##### Why ?
 Pour éviter de faire cette partie de la documentation officielle à la main :
@@ -65,7 +59,7 @@ Pour éviter de faire cette partie de la documentation officielle à la main :
 Once the package is installed, you'll have to add some configuration file in the "angular.json" file <br />
 
 Fichier : 'angular.json' <br />
-![Exemple-xliffmerge](images/exemple-xliffmerge.png)
+![Exemple-xliffmerge](pictures/exemple-xliffmerge.png)
 
 Voici les options obligatoires à configurer pour le package xliffmerge :
 ```json
@@ -284,10 +278,10 @@ Pour cela, il suffit de lancer une commande :
 -   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
 -   et [initialiser] le projet sur Translation.io
 ```bash
-npm run translationio-init
+build-i18n-and-translationio-init
 ```
 Fichier : 'package.json' <br />
-![Exemple-init](images/exemple-init.png)
+![Exemple-init](pictures/exemple-init.png)
 
 <br />
 
@@ -298,10 +292,10 @@ Il suffit de lancer une commande :
 -   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
 -   et [synchroniser] les nouvelles traductions et/ou modifications avec Translation.io
 ```bash
-npm run translationio-sync
+build-i18n-and-translationio-sync
 ```
 Fichier : 'package.json' <br />
-![Exemple-sync](images/exemple-sync.png)
+![Exemple-sync](pictures/exemple-sync.png)
 
 <br />
 
@@ -316,7 +310,7 @@ Il suffit de lancer une commande :
 npm run build
 ```
 Fichier : 'package.json' <br />
-![Exemple-build](images/exemple-build.png)
+![Exemple-build](pictures/exemple-build.png)
 
 >*N'oubliez pas de configurer le fichier "angular.json" avec les differentes configurations par langue pour pour que l'exemple fonctionne. <br /> Vous pouvez trouver un exemple complet dans le projet "sample" du repository.
 

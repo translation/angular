@@ -1,5 +1,6 @@
 
 import * as xmlDom from 'xmldom';
+import axios from 'axios';
 import { PullSegmentResponse, PullGroupedResponse } from './types/pull/pull.response';
 const xmlSerializer = new xmlDom.XMLSerializer();
 
@@ -13,11 +14,11 @@ export function getXMLElementToString(nodeName: string, xmlElement: Element): st
 }
 
 export async function httpCall(request: string, url: string, value: any, proxy: string): Promise<any> {
-    let axios = require('axios');
+    let httpAxios = axios.create();
     if (proxy) {
         const httpsProxyAgent = require('https-proxy-agent');
         const agent = new httpsProxyAgent(proxy);
-        axios = axios.create({
+        httpAxios = axios.create({
             httpsAgent: agent
         });
     }
@@ -26,7 +27,7 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
             const headers = {
                 'Content-Type': 'application/json',
             }
-            return await axios.post(url, value, {
+            return httpAxios.post(url, value, {
                 headers: headers
             }).then((res: any) => {
                 console.log(res.data);
@@ -39,7 +40,7 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
         }
     } else {
         try {
-            return await axios.get(url + value)
+            return httpAxios.get(url + value)
                 .then((res: any) => {
                     console.log(res.data);
                     console.log('{ status: ' + res.status + ' }');

@@ -1,3 +1,4 @@
+import reader from 'fs';
 import * as xmlDom from 'xmldom';
 import { Options } from './types/options';
 import { getXMLElementToString, httpCall, getUniqueSegmentFromPull, delay } from './utils';
@@ -6,14 +7,13 @@ import { SyncRequest, SyncSegmentRequest } from './types/sync/sync.request';
 import { SyncResponse } from './types/sync/sync.response';
 import { PullResponse, PullSegmentResponse } from './types/pull/pull.response';
 const domParser = new xmlDom.DOMParser();
-const reader = require('fs');
 
 
 
 // Get CLI arguments
 const argv = require('minimist')(process.argv.slice(2));
 const options: Options = JSON.parse(
-  reader.readFileSync(argv['options'])
+  reader.readFileSync(argv['options'], 'utf8')
 );
 
 // Set arguments 
@@ -85,9 +85,10 @@ if (argv['init']) {
   }
   const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
   // We post the JSON into translation.io
-  httpCall('POST', url, initRequest, proxyUrl).then(() => {
-    console.log('Init successful !');
-  });
+  httpCall('POST', url, initRequest, proxyUrl).then(
+    () => { console.log('Init successful !') },
+    () => { console.log('Init error !') }
+  );
 }
 
 
@@ -138,11 +139,14 @@ if (argv['sync']) {
 
     const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    httpCall('POST', url, syncRequest, proxyUrl).then((response: SyncResponse) => {
+    try {
+      const response: SyncResponse = await httpCall('POST', url, syncRequest, proxyUrl);
       console.log('Sync successful !');
       merge(response);
-    });
-  })
+    } catch {
+      console.log('Sync error !');
+    }
+  }).catch(err => console.log(err));
 }
 
 
@@ -153,7 +157,8 @@ export async function pull(): Promise<any> {
   const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
   const params = '&timestamp=0';
   // We post the JSON into translation.io
-  httpCall('GET', url, params, proxyUrl).then((response: PullResponse) => {
+  try {
+    const response: PullResponse = await httpCall('GET', url, params, proxyUrl);
     if (response.source_edits.length > 0) {
       const files = targetFiles.slice();
       files.push(sourceFile);
@@ -190,7 +195,7 @@ export async function pull(): Promise<any> {
           }
         }
 
-        require('fs').writeFile(files[x], xml, (err: any) => {
+        reader.writeFile(files[x], xml, (err: any) => {
           if (err) {
             console.error('Write file', err);
           }
@@ -198,7 +203,9 @@ export async function pull(): Promise<any> {
       }
       console.log('Pull successful !');
     }
-  });
+  } catch {
+    console.log('Pull error !');
+  }
 }
 
 
@@ -256,7 +263,7 @@ export function merge(sync: SyncResponse): void {
         }
       }
     }
-    require('fs').writeFile(targetFiles[x], xml, (err: any) => {
+    reader.writeFile(targetFiles[x], xml, (err: any) => {
       if (err) {
         console.error('Write file', err);
       }

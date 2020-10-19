@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -15,15 +18,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = __importDefault(require("fs"));
 const xmlDom = __importStar(require("xmldom"));
 const utils_1 = require("./utils");
 const init_request_1 = require("./types/init/init.request");
 const sync_request_1 = require("./types/sync/sync.request");
 const domParser = new xmlDom.DOMParser();
-const reader = require('fs');
 // Get CLI arguments
 const argv = require('minimist')(process.argv.slice(2));
-const options = JSON.parse(reader.readFileSync(argv['options']));
+const options = JSON.parse(fs_1.default.readFileSync(argv['options'], 'utf8'));
 // Set arguments 
 // Type of extract
 const i18nKey = options.i18n_key.trim();
@@ -54,7 +57,7 @@ if (argv['init']) {
     // For each target languages, we do some process
     for (let x = 0; x < initRequest.target_languages.length; x++) {
         // Get and read file for the current target language
-        const raw = reader.readFileSync(targetFiles[x], 'utf8');
+        const raw = fs_1.default.readFileSync(targetFiles[x], 'utf8');
         const xml = domParser.parseFromString(raw, 'text/xml');
         const transUnits = xml.getElementsByTagName('trans-unit');
         const segments = [];
@@ -77,9 +80,7 @@ if (argv['init']) {
     }
     const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    utils_1.httpCall('POST', url, initRequest, proxyUrl).then(() => {
-        console.log('Init successful !');
-    });
+    utils_1.httpCall('POST', url, initRequest, proxyUrl).then(() => { console.log('Init successful !'); }, () => { console.log('Init error !'); });
 }
 /*********** SYNC ***********/
 if (argv['sync']) {
@@ -99,7 +100,7 @@ if (argv['sync']) {
         syncRequest.source_language = sourceLanguage;
         syncRequest.target_languages = targetLanguages.slice();
         // Get and read file "source" for the sync
-        const raw = reader.readFileSync(sourceFile, 'utf8');
+        const raw = fs_1.default.readFileSync(sourceFile, 'utf8');
         const xml = domParser.parseFromString(raw, 'text/xml');
         const transUnits = xml.getElementsByTagName('trans-unit');
         const segments = [];
@@ -118,11 +119,15 @@ if (argv['sync']) {
         syncRequest.segments = segments.slice();
         const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
         // We post the JSON into translation.io
-        utils_1.httpCall('POST', url, syncRequest, proxyUrl).then((response) => {
+        try {
+            const response = yield utils_1.httpCall('POST', url, syncRequest, proxyUrl);
             console.log('Sync successful !');
             merge(response);
-        });
-    }));
+        }
+        catch (_a) {
+            console.log('Sync error !');
+        }
+    })).catch(err => console.log(err));
 }
 /*********** PULL ***********/
 function pull() {
@@ -131,7 +136,8 @@ function pull() {
         const url = 'https://translation.io/api/v1/source_edits/pull.json?api_key=' + apiKey;
         const params = '&timestamp=0';
         // We post the JSON into translation.io
-        utils_1.httpCall('GET', url, params, proxyUrl).then((response) => {
+        try {
+            const response = yield utils_1.httpCall('GET', url, params, proxyUrl);
             if (response.source_edits.length > 0) {
                 const files = targetFiles.slice();
                 files.push(sourceFile);
@@ -142,7 +148,7 @@ function pull() {
                 // For each languages, we do some process
                 for (let x = 0; x < languages.length; x++) {
                     // Get and read file for the current language
-                    const raw = reader.readFileSync(files[x], 'utf8');
+                    const raw = fs_1.default.readFileSync(files[x], 'utf8');
                     const xml = domParser.parseFromString(raw, 'text/xml');
                     const transUnits = xml.getElementsByTagName('trans-unit');
                     for (let t = 0; t < transUnits.length; t++) {
@@ -161,7 +167,7 @@ function pull() {
                             }
                         }
                     }
-                    require('fs').writeFile(files[x], xml, (err) => {
+                    fs_1.default.writeFile(files[x], xml, (err) => {
                         if (err) {
                             console.error('Write file', err);
                         }
@@ -169,7 +175,10 @@ function pull() {
                 }
                 console.log('Pull successful !');
             }
-        });
+        }
+        catch (_a) {
+            console.log('Pull error !');
+        }
     });
 }
 exports.pull = pull;
@@ -179,7 +188,7 @@ function merge(sync) {
     // For each target files, we do some process
     for (let x = 0; x < targetFiles.length; x++) {
         // Get and read file for the current target language
-        const raw = reader.readFileSync(targetFiles[x], 'utf8');
+        const raw = fs_1.default.readFileSync(targetFiles[x], 'utf8');
         const xml = domParser.parseFromString(raw, 'text/xml');
         const transUnits = xml.getElementsByTagName('trans-unit');
         const key_segments = sync.segments[targetLanguages[x]].filter(x => !!x.key);
@@ -225,7 +234,7 @@ function merge(sync) {
                 }
             }
         }
-        require('fs').writeFile(targetFiles[x], xml, (err) => {
+        fs_1.default.writeFile(targetFiles[x], xml, (err) => {
             if (err) {
                 console.error('Write file', err);
             }

@@ -1,11 +1,11 @@
 {
   "name": "@corellia/ngx-translation-io",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "",
   "main": "bin/index.js",
   "dependencies": {
     "@types/minimist": "^1.2.0",
-    "@types/xmldom": "^0.1.29",
+    "@types/xmldom": "^0.1.30",
     "axios": "^0.19.2",
     "https-proxy-agent": "^2.2.4",
     "minimist": "^1.2.5",
@@ -15,7 +15,7 @@
     "xmldom": "^0.1.31"
   },
   "devDependencies": {
-    "@types/node": "^12.12.37"
+    "@types/node": "^12.12.68"
   },
   "keywords": [
     "cli",

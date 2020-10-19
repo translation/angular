@@ -14,8 +14,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const xmlDom = __importStar(require("xmldom"));
+const axios_1 = __importDefault(require("axios"));
 const xmlSerializer = new xmlDom.XMLSerializer();
 function getXMLElementToString(nodeName, xmlElement) {
     const regexNode = new RegExp('<' + nodeName + ' .*?>');
@@ -28,11 +32,11 @@ function getXMLElementToString(nodeName, xmlElement) {
 exports.getXMLElementToString = getXMLElementToString;
 function httpCall(request, url, value, proxy) {
     return __awaiter(this, void 0, void 0, function* () {
-        let axios = require('axios');
+        let httpAxios = axios_1.default.create();
         if (proxy) {
             const httpsProxyAgent = require('https-proxy-agent');
             const agent = new httpsProxyAgent(proxy);
-            axios = axios.create({
+            httpAxios = axios_1.default.create({
                 httpsAgent: agent
             });
         }
@@ -41,7 +45,7 @@ function httpCall(request, url, value, proxy) {
                 const headers = {
                     'Content-Type': 'application/json',
                 };
-                return yield axios.post(url, value, {
+                return httpAxios.post(url, value, {
                     headers: headers
                 }).then((res) => {
                     console.log(res.data);
@@ -55,7 +59,7 @@ function httpCall(request, url, value, proxy) {
         }
         else {
             try {
-                return yield axios.get(url + value)
+                return httpAxios.get(url + value)
                     .then((res) => {
                     console.log(res.data);
                     console.log('{ status: ' + res.status + ' }');

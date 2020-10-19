@@ -87,7 +87,7 @@ if (argv['init']) {
   // We post the JSON into translation.io
   httpCall('POST', url, initRequest, proxyUrl).then(
     () => { console.log('Init successful !') },
-    () => { console.log('Init error !') }
+    err => { console.log('Init error !', err) }
   );
 }
 
@@ -143,10 +143,10 @@ if (argv['sync']) {
       const response: SyncResponse = await httpCall('POST', url, syncRequest, proxyUrl);
       console.log('Sync successful !');
       merge(response);
-    } catch {
-      console.log('Sync error !');
+    } catch(err) {
+      console.log('Sync error !', err);
     }
-  }).catch(err => console.log(err));
+  });
 }
 
 
@@ -195,7 +195,7 @@ export async function pull(): Promise<any> {
           }
         }
 
-        reader.writeFile(files[x], xml, (err: any) => {
+        reader.writeFile(files[x], xml + "", (err: any) => {
           if (err) {
             console.error('Write file', err);
           }
@@ -203,8 +203,8 @@ export async function pull(): Promise<any> {
       }
       console.log('Pull successful !');
     }
-  } catch {
-    console.log('Pull error !');
+  } catch(err) {
+    console.log('Pull error !', err);
   }
 }
 
@@ -263,7 +263,7 @@ export function merge(sync: SyncResponse): void {
         }
       }
     }
-    reader.writeFile(targetFiles[x], xml, (err: any) => {
+    reader.writeFile(targetFiles[x], xml + "", (err: any) => {
       if (err) {
         console.error('Write file', err);
       }

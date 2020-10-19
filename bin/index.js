@@ -80,7 +80,7 @@ if (argv['init']) {
     }
     const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    utils_1.httpCall('POST', url, initRequest, proxyUrl).then(() => { console.log('Init successful !'); }, () => { console.log('Init error !'); });
+    utils_1.httpCall('POST', url, initRequest, proxyUrl).then(() => { console.log('Init successful !'); }, err => { console.log('Init error !', err); });
 }
 /*********** SYNC ***********/
 if (argv['sync']) {
@@ -124,10 +124,10 @@ if (argv['sync']) {
             console.log('Sync successful !');
             merge(response);
         }
-        catch (_a) {
-            console.log('Sync error !');
+        catch (err) {
+            console.log('Sync error !', err);
         }
-    })).catch(err => console.log(err));
+    }));
 }
 /*********** PULL ***********/
 function pull() {
@@ -167,7 +167,7 @@ function pull() {
                             }
                         }
                     }
-                    fs_1.default.writeFile(files[x], xml, (err) => {
+                    fs_1.default.writeFile(files[x], xml + "", (err) => {
                         if (err) {
                             console.error('Write file', err);
                         }
@@ -176,8 +176,8 @@ function pull() {
                 console.log('Pull successful !');
             }
         }
-        catch (_a) {
-            console.log('Pull error !');
+        catch (err) {
+            console.log('Pull error !', err);
         }
     });
 }
@@ -234,7 +234,7 @@ function merge(sync) {
                 }
             }
         }
-        fs_1.default.writeFile(targetFiles[x], xml, (err) => {
+        fs_1.default.writeFile(targetFiles[x], xml + "", (err) => {
             if (err) {
                 console.error('Write file', err);
             }

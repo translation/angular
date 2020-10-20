@@ -41,34 +41,28 @@ function httpCall(request, url, value, proxy) {
             });
         }
         if (request === 'POST') {
-            try {
-                const headers = {
-                    'Content-Type': 'application/json',
-                };
-                return httpAxios.post(url, value, {
-                    headers: headers
-                }).then((res) => {
-                    console.log(res.data);
-                    console.log('{ status: ' + res.status + ' }');
-                    return res.data;
-                });
-            }
-            catch (error) {
-                logErrors(request, error);
-            }
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            return httpAxios.post(url, value, {
+                headers: headers
+            }).then((res) => {
+                console.log(res.data);
+                console.log('{ status: ' + res.status + ' }');
+                return res.data;
+            }, error => {
+                return logErrors(request, error);
+            });
         }
         else {
-            try {
-                return httpAxios.get(url + value)
-                    .then((res) => {
-                    console.log(res.data);
-                    console.log('{ status: ' + res.status + ' }');
-                    return res.data;
-                });
-            }
-            catch (error) {
-                logErrors(request, error);
-            }
+            return httpAxios.get(url + value)
+                .then((res) => {
+                console.log(res.data);
+                console.log('{ status: ' + res.status + ' }');
+                return res.data;
+            }, error => {
+                return logErrors(request, error);
+            });
         }
     });
 }
@@ -123,6 +117,7 @@ function logErrors(request, error) {
         console.error(error.message);
     }
     console.error(error.config);
+    return Promise.reject();
 }
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

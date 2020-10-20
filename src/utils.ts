@@ -23,33 +23,29 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
         });
     }
     if (request === 'POST') {
-        try {
-            const headers = {
-                'Content-Type': 'application/json',
-            }
-            return httpAxios.post(url, value, {
-                headers: headers
-            }).then((res: any) => {
+        const headers = {
+            'Content-Type': 'application/json',
+        }
+        return httpAxios.post(url, value, {
+            headers: headers
+        }).then((res: any) => {
+            console.log(res.data);
+            console.log('{ status: ' + res.status + ' }');
+            return res.data;
+        }, error => {
+            return logErrors(request, error);
+        });
+
+    } else {
+        return httpAxios.get(url + value)
+            .then((res: any) => {
                 console.log(res.data);
                 console.log('{ status: ' + res.status + ' }');
                 return res.data;
-            })
-        }
-        catch (error) {
-            logErrors(request, error);
-        }
-    } else {
-        try {
-            return httpAxios.get(url + value)
-                .then((res: any) => {
-                    console.log(res.data);
-                    console.log('{ status: ' + res.status + ' }');
-                    return res.data;
-                })
-        }
-        catch (error) {
-            logErrors(request, error);
-        }
+            }, error => {
+                return logErrors(request, error);
+            });
+
     }
 }
 
@@ -83,7 +79,7 @@ export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegm
 
 
 
-function logErrors(request: string, error: any): void {
+function logErrors(request: string, error: any): Promise<void> {
     console.error('HTTP ' + request + ' error : ');
     if (error.response) {
         console.error('{ error.response }');
@@ -104,6 +100,7 @@ function logErrors(request: string, error: any): void {
         console.error(error.message);
     }
     console.error(error.config);
+    return Promise.reject();
 }
 
 export function delay(ms: number) {

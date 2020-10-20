@@ -143,10 +143,10 @@ if (argv['sync']) {
       const response: SyncResponse = await httpCall('POST', url, syncRequest, proxyUrl);
       console.log('Sync successful !');
       merge(response);
-    } catch(err) {
-      console.log('Sync error !', err);
+    } catch {
+      console.log('Sync error !');
     }
-  });
+  }, () => {});
 }
 
 
@@ -201,10 +201,12 @@ export async function pull(): Promise<any> {
           }
         });
       }
-      console.log('Pull successful !');
     }
-  } catch(err) {
-    console.log('Pull error !', err);
+    console.log('Pull successful !');
+    return Promise.resolve();
+  } catch {
+    console.log('Pull error !');
+    return Promise.reject();
   }
 }
 

@@ -124,10 +124,10 @@ if (argv['sync']) {
             console.log('Sync successful !');
             merge(response);
         }
-        catch (err) {
-            console.log('Sync error !', err);
+        catch (_a) {
+            console.log('Sync error !');
         }
-    }));
+    }), () => { });
 }
 /*********** PULL ***********/
 function pull() {
@@ -173,11 +173,13 @@ function pull() {
                         }
                     });
                 }
-                console.log('Pull successful !');
             }
+            console.log('Pull successful !');
+            return Promise.resolve();
         }
-        catch (err) {
-            console.log('Pull error !', err);
+        catch (_a) {
+            console.log('Pull error !');
+            return Promise.reject();
         }
     });
 }

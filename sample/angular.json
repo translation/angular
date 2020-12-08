@@ -33,7 +33,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/sample",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,6 +50,7 @@
           },
           "configurations": {
             "production-fr": {
+              "deleteOutputPath": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -59,7 +60,6 @@
               "localize": [
                 "fr"
               ],
-              "outputPath": "dist/fr",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -83,6 +83,7 @@
               ]
             },
             "production-nl": {
+              "deleteOutputPath": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -92,7 +93,6 @@
               "localize": [
                 "nl"
               ],
-              "outputPath": "dist/nl",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -116,6 +116,7 @@
               ]
             },
             "production-en": {
+              "deleteOutputPath": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -125,7 +126,6 @@
               "localize": [
                 "en"
               ],
-              "outputPath": "dist/en",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

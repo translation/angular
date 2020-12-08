@@ -35,7 +35,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ### Depuis Angular 10
 #### $localize
-> La fonction "$localize" a été introduit en Angular 9 mais la commande permettant d'extraire les traducitons ("ng xi18n") ne permet pas l'extractions des traductions présentes dans le typescript avant la version Angular 10. Il n'est donc pas conseillé d'utiliser la fonction "$localize" en Angular 9 avec le package ngx-translation-io. <br />Plus d'informations [ici](https://github.com/angular/angular/pull/32912).
+> :warning: La fonction "$localize" a été introduit en Angular 9 mais la commande permettant d'extraire les traducitons ("ng xi18n") ne permet pas l'extractions des traductions présentes dans le typescript avant la version Angular 10. Il n'est donc pas conseillé d'utiliser la fonction "$localize" en Angular 9 avec le package ngx-translation-io. <br />Plus d'informations [ici](https://github.com/angular/angular/pull/32912).
 
 Afin de bénéficier de toutes les fonctionnalités liées à l'internationalisation fourni par Angular, n'oubliez pas d'ajouter le package [localize](https://angular.io/guide/i18n#add-the-localize-package) à votre solution :
 ```bash
@@ -91,6 +91,8 @@ Afin de générer ces fichiers, il y a deux étapes :
 1. Générer le fichier de traductions de base avec la commande que fourni Angular (xi18n) ===> "i18n-template".
 2. Pour chaque langue de votre site, générer le bon fichier de traduction XLIFF avec le package [xliffmerge](#xliffmerge) ===> "i18n-merge"
 
+> :warning: A partir d'Angular 11, la commande "ng xi18n" devient "ng extract-i18n".
+
 Pour ce faire, il suffit d'ajouter ces commandes dans le package.json de votre Angular application
 ```json
     "i18n-templates": "ng xi18n --output-path src/locale",
@@ -108,6 +110,11 @@ et de les exécuter, dans cet ordre, grâce à une commande commune :
 ```json
     "i18n-templates": "ng xi18n --ivy --output-path src/locale",
 ```  
+
+> A partir d'Angular 11, il n'est plus nécessaire d'indiquer le paramètre "--ivy" dans le scrypt "xi18n"
+```json
+    "i18n-templates": "ng xi18n --output-path src/locale",
+```
 <br />
 
 ## Type de traduction
@@ -131,7 +138,7 @@ A partir d'Angular 10, on peut traduire depuis le typescript via la fonction $lo
 ```js 
     helloKeyFromJS = $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
 ```
->Attention : Si vous ne commencez pas vos [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance) 
+> :warning: Si vous ne commencez pas vos [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance) 
 par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étant des traductions de type **"SOURCE"** et non de type **"KEY"**.
 
 #### Source

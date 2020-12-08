@@ -6,7 +6,7 @@ Il permet de simplifier la traduction des fichiers XLIFF 1.2 en passant par une 
 Aucune modification des fichiers XLIFF n'est nécessaire.<br />
 
 Ce package fonctionne avec les versions récentes d'Angular. <br />
-Il a été testé avec les versions 6, 7, 8, 9.& 10<br />
+Il a été testé avec les versions 6, 7, 8, 9, 10 & 11<br />
 Il supporte uniquement les versions XLIFF 1.2.
 
 Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez consulter la [documentation officielle](https://angular.io/guide/i18n).

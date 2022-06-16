@@ -86,8 +86,8 @@ if (argv['init']) {
   const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
   // We post the JSON into translation.io
   httpCall('POST', url, initRequest, proxyUrl).then(
-    () => { console.log('Init successful !') },
-    err => { console.log('Init error !', err) }
+    () => { console.log('Init successful !'); },
+    err => { console.log('Init error !', err); }
   );
 }
 
@@ -146,7 +146,7 @@ if (argv['sync']) {
     } catch {
       console.log('Sync error !');
     }
-  }, () => {});
+  }, () => { });
 }
 
 

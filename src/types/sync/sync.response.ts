@@ -1,10 +1,10 @@
 export class SyncResponse {
     project: {
         name: string;
-        url: string
+        url: string;
     } = { name: '', url: '' };
-    segments: { 
-        [language: string]: SyncSegmentResponse[]; 
+    segments: {
+        [language: string]: SyncSegmentResponse[];
     } = {};
     unused_segment_ids: any[] = [];
 }
@@ -13,7 +13,7 @@ export class SyncResponse {
 
 export class SyncSegmentResponse {
     type: string = '';
-    key?: string
+    key?: string;
     source: string = '';
     target: string = '';
 }

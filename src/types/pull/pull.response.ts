@@ -1,7 +1,7 @@
 export class PullResponse {
     project: {
         name: string;
-        url: string
+        url: string;
     } = { name: '', url: '' };
     source_edits: PullSegmentResponse[] = [];
     timestamp: number = 0;

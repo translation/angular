@@ -4,18 +4,14 @@
   "description": "",
   "main": "bin/index.js",
   "dependencies": {
-    "@types/minimist": "^1.2.0",
-    "@types/xmldom": "^0.1.30",
-    "axios": "^0.19.2",
+    "@types/minimist": "^1.2.2",
+    "@types/xmldom": "^0.1.31",
+    "axios": "^0.27.2",
+    "eslint": "^8.17.0",
     "https-proxy-agent": "^2.2.4",
-    "minimist": "^1.2.5",
-    "ngx-i18nsupport": "^0.17.1",
-    "tslint": "^5.20.1",
+    "minimist": "^1.2.6",
     "typescript": "3.2.4",
-    "xmldom": "^0.1.31"
-  },
-  "devDependencies": {
-    "@types/node": "^12.12.68"
+    "xmldom": "^0.6.0"
   },
   "keywords": [
     "cli",

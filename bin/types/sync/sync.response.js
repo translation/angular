@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SyncSegmentResponse = exports.SyncResponse = void 0;
 class SyncResponse {
     constructor() {
         this.project = { name: '', url: '' };

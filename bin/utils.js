@@ -1,26 +1,22 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const xmlDom = __importStar(require("xmldom"));
+exports.delay = exports.getUniqueSegmentFromPull = exports.httpCall = exports.getXMLElementToString = void 0;
+const xmldom_1 = __importDefault(require("@xmldom/xmldom"));
 const axios_1 = __importDefault(require("axios"));
-const xmlSerializer = new xmlDom.XMLSerializer();
+const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
+const xmlSerializer = new xmldom_1.default.XMLSerializer();
 function getXMLElementToString(nodeName, xmlElement) {
     const regexNode = new RegExp('<' + nodeName + ' .*?>');
     return xmlSerializer.serializeToString(xmlElement)
@@ -34,8 +30,7 @@ function httpCall(request, url, value, proxy) {
     return __awaiter(this, void 0, void 0, function* () {
         let httpAxios = axios_1.default.create();
         if (proxy) {
-            const httpsProxyAgent = require('https-proxy-agent');
-            const agent = new httpsProxyAgent(proxy);
+            const agent = (0, https_proxy_agent_1.default)(proxy);
             httpAxios = axios_1.default.create({
                 httpsAgent: agent
             });

@@ -1,7 +1,8 @@
 
-import * as xmlDom from 'xmldom';
+import xmlDom from '@xmldom/xmldom';
 import axios from 'axios';
-import { PullSegmentResponse, PullGroupedResponse } from './types/pull/pull.response';
+import httpsProxyAgent from 'https-proxy-agent';
+import { PullGroupedResponse, PullSegmentResponse } from './types/pull/pull.response';
 const xmlSerializer = new xmlDom.XMLSerializer();
 
 export function getXMLElementToString(nodeName: string, xmlElement: Element): string {
@@ -16,8 +17,7 @@ export function getXMLElementToString(nodeName: string, xmlElement: Element): st
 export async function httpCall(request: string, url: string, value: any, proxy: string): Promise<any> {
     let httpAxios = axios.create();
     if (proxy) {
-        const httpsProxyAgent = require('https-proxy-agent');
-        const agent = new httpsProxyAgent(proxy);
+        const agent = httpsProxyAgent(proxy);
         httpAxios = axios.create({
             httpsAgent: agent
         });
@@ -25,7 +25,7 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
     if (request === 'POST') {
         const headers = {
             'Content-Type': 'application/json',
-        }
+        };
         return httpAxios.post(url, value, {
             headers: headers
         }).then((res: any) => {
@@ -62,7 +62,7 @@ export function getUniqueSegmentFromPull(array: PullSegmentResponse[]): PullSegm
             const data: PullGroupedResponse = {
                 key: response.key,
                 segments: [response]
-            }
+            };
             groupedSegments.push(data);
         }
     });
@@ -103,6 +103,6 @@ function logErrors(request: string, error: any): Promise<void> {
     return Promise.reject();
 }
 
-export function delay(ms: number) {
+export function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

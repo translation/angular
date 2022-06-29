@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.I18nFile = exports.Options = void 0;
 class Options {
     constructor() {
         this.api_key = '';

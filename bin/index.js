@@ -1,31 +1,27 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.merge = exports.pull = void 0;
+const xmldom_1 = __importDefault(require("@xmldom/xmldom"));
 const fs_1 = __importDefault(require("fs"));
-const xmlDom = __importStar(require("xmldom"));
-const utils_1 = require("./utils");
+const minimist_1 = __importDefault(require("minimist"));
 const init_request_1 = require("./types/init/init.request");
 const sync_request_1 = require("./types/sync/sync.request");
-const domParser = new xmlDom.DOMParser();
+const utils_1 = require("./utils");
+const domParser = new xmldom_1.default.DOMParser();
 // Get CLI arguments
-const argv = require('minimist')(process.argv.slice(2));
+const argv = (0, minimist_1.default)(process.argv.slice(2));
 const options = JSON.parse(fs_1.default.readFileSync(argv['options'], 'utf8'));
 // Set arguments 
 // Type of extract
@@ -65,8 +61,8 @@ if (argv['init']) {
             const id = transUnits[t].getAttribute('id');
             if (id && (segments.findIndex(x => x.key === id) === -1)) {
                 const initSegmentRequest = new init_request_1.InitSegmentRequest(id, i18nKey);
-                const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
-                const target_string = utils_1.getXMLElementToString('target', transUnits[t].getElementsByTagName('target')[0]);
+                const source_string = (0, utils_1.getXMLElementToString)('source', transUnits[t].getElementsByTagName('source')[0]);
+                const target_string = (0, utils_1.getXMLElementToString)('target', transUnits[t].getElementsByTagName('target')[0]);
                 initSegmentRequest.source = source_string;
                 // If texts are equals -> we set the target "empty"
                 initSegmentRequest.target = (source_string === target_string) ? '' : target_string;
@@ -80,13 +76,13 @@ if (argv['init']) {
     }
     const url = 'https://translation.io/api/v1/segments/init.json?api_key=' + apiKey;
     // We post the JSON into translation.io
-    utils_1.httpCall('POST', url, initRequest, proxyUrl).then(() => { console.log('Init successful !'); }, err => { console.log('Init error !', err); });
+    (0, utils_1.httpCall)('POST', url, initRequest, proxyUrl).then(() => { console.log('Init successful !'); }, err => { console.log('Init error !', err); });
 }
 /*********** SYNC ***********/
 if (argv['sync']) {
-    pull().then(() => __awaiter(this, void 0, void 0, function* () {
+    pull().then(() => __awaiter(void 0, void 0, void 0, function* () {
         console.log('Start sync');
-        yield utils_1.delay(3000);
+        yield (0, utils_1.delay)(3000);
         // Init objects
         const syncRequest = new sync_request_1.SyncRequest();
         if (argv['purge']) {
@@ -108,7 +104,7 @@ if (argv['sync']) {
             const id = transUnits[t].getAttribute('id');
             if (id && (segments.findIndex(x => x.key === id) === -1)) {
                 const syncSegmentRequest = new sync_request_1.SyncSegmentRequest(id, i18nKey);
-                const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
+                const source_string = (0, utils_1.getXMLElementToString)('source', transUnits[t].getElementsByTagName('source')[0]);
                 syncSegmentRequest.source = source_string;
                 segments.push(syncSegmentRequest);
             }
@@ -120,7 +116,7 @@ if (argv['sync']) {
         const url = 'https://translation.io/api/v1/segments/sync.json?api_key=' + apiKey;
         // We post the JSON into translation.io
         try {
-            const response = yield utils_1.httpCall('POST', url, syncRequest, proxyUrl);
+            const response = yield (0, utils_1.httpCall)('POST', url, syncRequest, proxyUrl);
             console.log('Sync successful !');
             merge(response);
         }
@@ -137,14 +133,14 @@ function pull() {
         const params = '&timestamp=0';
         // We post the JSON into translation.io
         try {
-            const response = yield utils_1.httpCall('GET', url, params, proxyUrl);
+            const response = yield (0, utils_1.httpCall)('GET', url, params, proxyUrl);
             if (response.source_edits.length > 0) {
                 const files = targetFiles.slice();
                 files.push(sourceFile);
                 const languages = targetLanguages.slice();
                 languages.push(sourceLanguage);
                 // Remove old edits from response
-                const segments = utils_1.getUniqueSegmentFromPull(response.source_edits);
+                const segments = (0, utils_1.getUniqueSegmentFromPull)(response.source_edits);
                 // For each languages, we do some process
                 for (let x = 0; x < languages.length; x++) {
                     // Get and read file for the current language
@@ -197,7 +193,7 @@ function merge(sync) {
         const source_segments = sync.segments[targetLanguages[x]].filter(x => !x.key);
         for (let t = 0; t < transUnits.length; t++) {
             const id = transUnits[t].getAttribute('id');
-            const source_string = utils_1.getXMLElementToString('source', transUnits[t].getElementsByTagName('source')[0]);
+            const source_string = (0, utils_1.getXMLElementToString)('source', transUnits[t].getElementsByTagName('source')[0]);
             const target = transUnits[t].getElementsByTagName('target')[0];
             if (id && id.startsWith(i18nKey)) {
                 const index = key_segments.findIndex(x => x.key === id);

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SyncSegmentRequest = exports.SyncRequest = void 0;
 class SyncRequest {
     constructor() {
         this.source_language = '';

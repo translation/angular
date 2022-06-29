@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PullGroupedResponse = exports.PullSegmentResponse = exports.PullResponse = void 0;
 class PullResponse {
     constructor() {
         this.project = { name: '', url: '' };

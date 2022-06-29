@@ -1,17 +1,18 @@
+import xmlDom from '@xmldom/xmldom';
 import reader from 'fs';
-import * as xmlDom from 'xmldom';
-import { Options } from './types/options';
-import { getXMLElementToString, httpCall, getUniqueSegmentFromPull, delay } from './utils';
+import minimist from 'minimist';
 import { InitRequest, InitSegmentRequest } from './types/init/init.request';
+import { Options } from './types/options';
+import { PullResponse, PullSegmentResponse } from './types/pull/pull.response';
 import { SyncRequest, SyncSegmentRequest } from './types/sync/sync.request';
 import { SyncResponse } from './types/sync/sync.response';
-import { PullResponse, PullSegmentResponse } from './types/pull/pull.response';
+import { delay, getUniqueSegmentFromPull, getXMLElementToString, httpCall } from './utils';
 const domParser = new xmlDom.DOMParser();
 
 
 
 // Get CLI arguments
-const argv = require('minimist')(process.argv.slice(2));
+const argv = minimist(process.argv.slice(2));
 const options: Options = JSON.parse(
   reader.readFileSync(argv['options'], 'utf8')
 );

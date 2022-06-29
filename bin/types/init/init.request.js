@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InitSegmentRequest = exports.InitRequest = void 0;
 class InitRequest {
     constructor() {
         this.source_language = '';

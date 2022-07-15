@@ -22,6 +22,7 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
             httpsAgent: agent
         });
     }
+
     if (request === 'POST') {
         const headers = {
             'Content-Type': 'application/json',
@@ -35,7 +36,6 @@ export async function httpCall(request: string, url: string, value: any, proxy: 
         }, error => {
             return logErrors(request, error);
         });
-
     } else {
         return httpAxios.get(url + value)
             .then((res: any) => {

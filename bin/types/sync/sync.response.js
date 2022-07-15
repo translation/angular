@@ -11,7 +11,6 @@ class SyncResponse {
 exports.SyncResponse = SyncResponse;
 class SyncSegmentResponse {
     constructor() {
-        this.type = '';
         this.source = '';
         this.target = '';
     }

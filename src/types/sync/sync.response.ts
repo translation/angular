@@ -12,7 +12,7 @@ export class SyncResponse {
 
 
 export class SyncSegmentResponse {
-    type: string = '';
+    type!: 'key' | 'source';
     key?: string;
     source: string = '';
     target: string = '';

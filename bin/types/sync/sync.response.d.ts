@@ -9,7 +9,7 @@ export declare class SyncResponse {
     unused_segment_ids: any[];
 }
 export declare class SyncSegmentResponse {
-    type: string;
+    type: 'key' | 'source';
     key?: string;
     source: string;
     target: string;

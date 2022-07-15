@@ -65,18 +65,9 @@ if (argv['init']) {
       if (id && (segments.findIndex(x => x.key === id) === -1)) {
         const initSegmentRequest = new InitSegmentRequest(id, i18nKey);
 
-        const source_string = getXMLElementToString(
-          'source',
-          transUnits[t].getElementsByTagName('source')[0]
-        );
-        const target_string = getXMLElementToString(
-          'target',
-          transUnits[t].getElementsByTagName('target')[0]
-        );
+        initSegmentRequest.addSourceAndTarget(transUnits[t]);
+        initSegmentRequest.addOptions(transUnits[t], initSegmentRequest.type);
 
-        initSegmentRequest.source = source_string;
-        // If texts are equals -> we set the target "empty"
-        initSegmentRequest.target = (source_string === target_string) ? '' : target_string;
         segments.push(initSegmentRequest);
       } else {
         console.error(id ? 'Duplicated ids' + id : 'Id not set');
@@ -125,11 +116,9 @@ if (argv['sync']) {
       if (id && (segments.findIndex(x => x.key === id) === -1)) {
         const syncSegmentRequest = new SyncSegmentRequest(id, i18nKey);
 
-        const source_string = getXMLElementToString(
-          'source',
-          transUnits[t].getElementsByTagName('source')[0]
-        );
-        syncSegmentRequest.source = source_string;
+        syncSegmentRequest.addSource(transUnits[t]);
+        // We add optionals parameters if we find some
+        syncSegmentRequest.addOptions(transUnits[t], syncSegmentRequest.type);
 
         segments.push(syncSegmentRequest);
       } else {

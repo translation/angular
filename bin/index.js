@@ -61,11 +61,8 @@ if (argv['init']) {
             const id = transUnits[t].getAttribute('id');
             if (id && (segments.findIndex(x => x.key === id) === -1)) {
                 const initSegmentRequest = new init_request_1.InitSegmentRequest(id, i18nKey);
-                const source_string = (0, utils_1.getXMLElementToString)('source', transUnits[t].getElementsByTagName('source')[0]);
-                const target_string = (0, utils_1.getXMLElementToString)('target', transUnits[t].getElementsByTagName('target')[0]);
-                initSegmentRequest.source = source_string;
-                // If texts are equals -> we set the target "empty"
-                initSegmentRequest.target = (source_string === target_string) ? '' : target_string;
+                initSegmentRequest.addSourceAndTarget(transUnits[t]);
+                initSegmentRequest.addOptions(transUnits[t], initSegmentRequest.type);
                 segments.push(initSegmentRequest);
             }
             else {
@@ -104,8 +101,9 @@ if (argv['sync']) {
             const id = transUnits[t].getAttribute('id');
             if (id && (segments.findIndex(x => x.key === id) === -1)) {
                 const syncSegmentRequest = new sync_request_1.SyncSegmentRequest(id, i18nKey);
-                const source_string = (0, utils_1.getXMLElementToString)('source', transUnits[t].getElementsByTagName('source')[0]);
-                syncSegmentRequest.source = source_string;
+                syncSegmentRequest.addSource(transUnits[t]);
+                // We add optionals parameters if we find some
+                syncSegmentRequest.addOptions(transUnits[t], syncSegmentRequest.type);
                 segments.push(syncSegmentRequest);
             }
             else {

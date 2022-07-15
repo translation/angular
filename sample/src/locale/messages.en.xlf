@@ -7,7 +7,7 @@
         <target state="new">Hello key</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="df99b461913896e10e963446bf6ae79c168e1389" datatype="html">
@@ -15,7 +15,145 @@
         <target state="new">Hello source</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b54fdff08e4fd56b630da873ccf43cc94a132623" datatype="html">
+        <source>Meaning/Description</source>
+        <target state="new">Meaning/Description</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <note priority="1" from="description">description</note>
+        <note priority="1" from="meaning">meaning</note>
+      </trans-unit>
+      <trans-unit id="844871436178d86392e54daf643d69ccdb1c7f12" datatype="html">
+        <source>Meaning</source>
+        <target state="new">Meaning</target>
+        <note priority="1" from="meaning">meaningOnly</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/test/test.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="db47927572a9f6950d781229309ab3f3078d3737" datatype="html">
+        <source>Meaning but considered as a description</source>
+        <target state="new">Meaning but considered as a description</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <note priority="1" from="description">meaningOnly</note>
+      </trans-unit>
+      <trans-unit id="eec715de352a6b114713b30b640d319fa78207a0" datatype="html">
+        <source>Description</source>
+        <target state="new">Description</target>
+        <note priority="1" from="description">descriptionOnly</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="136a88d4b52036262ec29640a917e9d4891c2b26" datatype="html">
+        <source>Description 2</source>
+        <target state="new">Description 2</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <note priority="1" from="description">descriptionOnly</note>
+      </trans-unit>
+      <trans-unit id="e60055441834ab4856725bcf53fb8461299ef963" datatype="html">
+        <source>Updated <x id="ICU" equiv-text="{minutes, plural, =0 {...} =1 {...} other {...}}"/> and it was cool</source>
+        <target state="new">Updated <x id="ICU" equiv-text="{minutes, plural, =0 {...} =1 {...} other {...}}"/> and it was cool</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5a134dee893586d02bffc9611056b9cadf9abfad" datatype="html">
+        <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes ago} }</source>
+        <target state="new">{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes ago} }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1256bbbf3c11003068a814995dc039fea3b902c0" datatype="html">
+        <source>The author is <x id="ICU" equiv-text="{gender, select, male {...} female {...} other {...}}"/> and he is cool</source>
+        <target state="new">The author is <x id="ICU" equiv-text="{gender, select, male {...} female {...} other {...}}"/> and he is cool</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eff74b75ab7364b6fa888f1cbfae901aaaf02295" datatype="html">
+        <source>{VAR_SELECT, select, male {male} female {female} other {other} }</source>
+        <target state="new">{VAR_SELECT, select, male {male} female {female} other {other} }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="972cb0cf3e442f7b1c00d7dab168ac08d6bdf20c" datatype="html">
+        <source>Updated: <x id="ICU" equiv-text="{minutes, plural, =0 {...} =1 {...} other {...}}"/></source>
+        <target state="new">Updated: <x id="ICU" equiv-text="{minutes, plural, =0 {...} =1 {...} other {...}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7151c2e67748b726f0864fc443861d45df21d706" datatype="html">
+        <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes ago by {VAR_SELECT, select, male {male} female {female} other {other} }} }</source>
+        <target state="new">{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes ago by {VAR_SELECT, select, male {male} female {female} other {other} }} }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0cf6f59040e9f44b98bb210972f1a1a1ca1e8d33" datatype="html">
+        <source>Updated: 
+  <x id="ICU" equiv-text="{minutes, plural, =0 {...} =1 {...} other {...}}"/> 
+  by the one and only, mister the
+  <x id="ICU_1" equiv-text="{gender, select, male {...} female {...} other {...}}"/>
+</source>
+        <target state="new">Updated: 
+  <x id="ICU" equiv-text="{minutes, plural, =0 {...} =1 {...} other {...}}"/> 
+  by the one and only, mister the
+  <x id="ICU_1" equiv-text="{gender, select, male {...} female {...} other {...}}"/>
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a2b196730bf3dc232859ce8427fbcc10b21cc792" datatype="html">
+        <source>{VAR_PLURAL, plural, =0 {just nowX} =1 {one minute agoX} other {<x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes agoX} }</source>
+        <target state="new">{VAR_PLURAL, plural, =0 {just nowX} =1 {one minute agoX} other {<x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes agoX} }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="714c68b900b9e10d0a3ca14f99add67bba86a1c1" datatype="html">
+        <source>{VAR_SELECT, select, male {maleX} female {femaleX} other {otherX} }</source>
+        <target state="new">{VAR_SELECT, select, male {maleX} female {femaleX} other {otherX} }</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f2081dbd0b230b2e61d03f870d85af5b54aed1ba" datatype="html">
+        <source>Meaning</source>
+        <target state="new">Meaning</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/test/test.component.html</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
     </body>

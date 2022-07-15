@@ -26,3 +26,29 @@
   -->
   </ul>
 </div>
+
+
+<div i18n="meaning|description">Meaning/Description</div>
+<div i18n="meaningOnly|">Meaning</div>
+<div i18n="meaningOnly">Meaning but considered as a description</div>
+<div i18n="|descriptionOnly">Description</div>
+<div i18n="descriptionOnly">Description 2</div>
+
+<span i18n>Updated {minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago}} and it was cool</span>
+
+<span i18n>The author is {gender, select, male {male} female {female} other {other}} and he is cool</span>
+
+<span i18n>Updated: {minutes, plural,
+  =0 {just now}
+  =1 {one minute ago}
+  other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
+</span>
+
+
+<span i18n>Updated: 
+  {minutes, plural, =0 {just nowX} =1 {one minute agoX} other {{{minutes}} minutes agoX}} 
+  by the one and only, mister the
+  {gender, select, male {maleX} female {femaleX} other {otherX}}
+</span>
+
+<app-test></app-test>

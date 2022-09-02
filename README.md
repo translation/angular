@@ -1,3 +1,5 @@
+# :warning: Cette solution ne fonctionne pas avec les versions d'Angular >= 13
+
 # [Translation.io](https://translation.io) for Angular
 
 Add this package to localize your Angular application.<br />
@@ -5,8 +7,7 @@ Add this package to localize your Angular application.<br />
 Il permet de simplifier la traduction des fichiers XLIFF 1.2 en passant par une interface **simple** et **épurée**.<br />
 Aucune modification des fichiers XLIFF n'est nécessaire.<br />
 
-Ce package fonctionne avec les versions récentes d'Angular. <br />
-Il a été testé avec les versions 6, 7, 8, 9, 10 & 11<br />
+Cette solution fonctionne avec les versions d'Angular >= 6 && < 13  <br />
 Il supporte uniquement les versions XLIFF 1.2.
 
 Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez consulter la [documentation officielle](https://angular.io/guide/i18n).

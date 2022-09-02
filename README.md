@@ -5,9 +5,8 @@ Add this package to localize your Angular application.<br />
 Il permet de simplifier la traduction des fichiers XLIFF 1.2 en passant par une interface **simple** et **épurée**.<br />
 Aucune modification des fichiers XLIFF n'est nécessaire.<br />
 
-Ce package fonctionne avec les versions récentes d'Angular. <br />
-Il a été testé avec les versions 6, 7, 8, 9, 10 & 11<br />
-Il supporte uniquement les versions XLIFF 1.2.
+Cette solution fonctionne avec les versions d'Angular >= 13 <br />
+Le package supporte uniquement les versions XLIFF 1.2.
 
 Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez consulter la [documentation officielle](https://angular.io/guide/i18n).
 
@@ -15,7 +14,6 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
-    * [Depuis Angular 10](#depuis-angular-10)
     * [ng-extract-i18n-merge](#ng-extract-i18n-merge)
     * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
 * [Type de traduction](#type-de-traduction)
@@ -32,16 +30,6 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 <br />
 
 ## Avant de commencer
-
-### Depuis Angular 10
-#### $localize
-> :warning: La fonction "$localize" a été introduit en Angular 9 mais la commande permettant d'extraire les traducitons ("ng xi18n") ne permet pas l'extractions des traductions présentes dans le typescript avant la version Angular 10. Il n'est donc pas conseillé d'utiliser la fonction "$localize" en Angular 9 avec le package ngx-translation-io. <br />Plus d'informations [ici](https://github.com/angular/angular/pull/32912).
-
-Afin de bénéficier de toutes les fonctionnalités liées à l'internationalisation fourni par Angular, n'oubliez pas d'ajouter le package [localize](https://angular.io/guide/i18n#add-the-localize-package) à votre solution :
-```bash
-ng add @angular/localize
-```
-
 ### ng-extract-i18n-merge
 Il est nécessaire d'utiliser le package [ng-extract-i18n-merge](https://github.com/daniel-sc/ng-extract-i18n-merge) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
 
@@ -81,7 +69,7 @@ Voici les options obligatoires à configurer pour le package :
 }
 ```
 La propriété "targetFiles" est la seule propriétée qui doit réellement être modifiée en fonction de votre configuration :
-- `languages` : Les différentes langues de votre site
+- `targetFiles` : Les différentes langues de votre site
     - Exemples : 
         - le site est en français, anglais et néerlandais ===> ["messages.fr.xlf", "messages.en.xlf", "messages.nl.xlf"]
         - le site est en anglais et espagnol ===> ["messages.en.xlf", "messages.es.xlf"]
@@ -91,24 +79,14 @@ Pour utiliser le package ngx-translation-io, il faut posséder les différents f
 **Un fichier XLIFF par langue.**
 
 Afin de générer ces fichiers, il y a une seule étape :
-1. Générer le fichier de traductions de base avec la commande que fourni Angular ===> "extract-i18n".
-Cette commande étant override par la librarie 
+1. Générer le fichier de traductions de base avec la commande que fourni Angular ===> "extract-i18n". <br />
+Cette commande étant override par la librarie ng-extract-i18n-merge, elle vous créera tous les fichiers XLIFF
 
 Pour ce faire, il suffit d'ajouter une commande dans le package.json de votre Angular application
 ```json
-    "extract": "ng extract-i18n"
+    "i18n": "ng extract-i18n"
 ```
-- `extract` : Cette commande permet de générer les fichiers de traduction en fonction des balises i18n présentes dans votre site
 
-> En Angular 10, il sera peut être nécessaire d'ajouter le paramètre "--ivy" dans le script "xi18n" afin de récupérer les traductions dans le typescript. <br /> Pour plus d'informations, cliquez [ici](https://github.com/angular/angular/pull/32912)
-```json
-    "i18n-templates": "ng xi18n --ivy --output-path src/locale",
-```  
-
-> A partir d'Angular 11, il n'est plus nécessaire d'indiquer le paramètre "--ivy" dans le scrypt "xi18n"
-```json
-    "i18n-templates": "ng xi18n --output-path src/locale",
-```
 <br />
 
 ## Type de traduction
@@ -127,8 +105,6 @@ c'est que vous dirigez vers l'approche de type "KEY".
 ```html
     <div i18n="@@TIO_MYAPP_HelloKey">Hello key</div>
 ```
-
-A partir d'Angular 10, on peut traduire depuis le typescript via la fonction $localize :
 ```js 
     helloKeyFromJS = $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
 ```
@@ -144,8 +120,6 @@ par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étan
 ```html
     <div i18n>Hello source</div>
 ```
-
-A partir d'Angular 10, on peut traduire depuis le typescript via la fonction $localize :
 ```js
     helloSourceFromJS = $localize `Hello source from JS`
 ```
@@ -173,7 +147,7 @@ Fichier : 'tio.config.json'
     "api_key": "YOUR API KEY",
     "i18n_key": "TIO",
     "source_language": {
-        "language": "fr-BE",
+        "language": "fr",
         "file": "./src/locale/messages.fr.xlf"
     },
     "target_languages": [
@@ -182,9 +156,9 @@ Fichier : 'tio.config.json'
             "file": "./src/locale/messages.en.xlf"
         },
         {
-            "language": "nl-BE",
+            "language": "nl",
             "file": "./src/locale/messages.nl.xlf"
-        }
+        },
     ]
 }
 ```

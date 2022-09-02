@@ -16,6 +16,10 @@
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
+          "en": {
+            "translation": "src/locale/messages.en.xlf",
+            "baseHref": "/en/"
+          },
           "fr": {
             "translation": "src/locale/messages.fr.xlf",
             "baseHref": "/fr/"
@@ -23,10 +27,6 @@
           "nl": {
             "translation": "src/locale/messages.nl.xlf",
             "baseHref": "/nl/"
-          },
-          "en": {
-            "translation": "src/locale/messages.en.xlf",
-            "baseHref": "/en/"
           }
         }
       },
@@ -81,11 +81,22 @@
               "sourceMap": true,
               "namedChunks": true
             },
+            "en": {
+              "localize": [
+                "en"
+              ]
+            },
             "fr": {
               "localize": [
                 "fr"
               ]
+            },
+            "nl": {
+              "localize": [
+                "nl"
+              ]
             }
+      
           },
           "defaultConfiguration": "production"
         },
@@ -98,8 +109,14 @@
             "development": {
               "browserTarget": "angular-tio-example:build:development"
             },
+            "en": {
+              "browserTarget": "angular-tio-example:build:development,en"
+            },
             "fr": {
               "browserTarget": "angular-tio-example:build:development,fr"
+            },
+            "nl": {
+              "browserTarget": "angular-tio-example:build:development,nl"
             }
           },
           "defaultConfiguration": "development"
@@ -112,9 +129,9 @@
             "includeContext": true,
             "outputPath": "src/locale",
             "targetFiles": [
+              "messages.en.xlf",
               "messages.fr.xlf",
-              "messages.nl.xlf",
-              "messages.en.xlf"
+              "messages.nl.xlf"
             ]
           }
         },
@@ -139,7 +156,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "angular-tio-example:serve:fr"
+            "devServerTarget": "angular-tio-example:serve:en"
           },
           "configurations": {
             "production": {

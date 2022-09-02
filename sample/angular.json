@@ -14,7 +14,6 @@
       "sourceRoot": "src",
       "prefix": "app",
       "i18n": {
-        "sourceLocale": "en-US",
         "locales": {
           "en": {
             "translation": "src/locale/messages.en.xlf",
@@ -34,7 +33,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "localize": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -52,6 +50,11 @@
           },
           "configurations": {
             "production": {
+              "localize": [
+                "fr",
+                "nl",
+                "en"
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -96,7 +99,6 @@
                 "nl"
               ]
             }
-      
           },
           "defaultConfiguration": "production"
         },

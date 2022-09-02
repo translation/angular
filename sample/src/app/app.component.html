@@ -2,8 +2,14 @@
   Hello i18n!
 </h1>
 
-<ng-container i18n>I don't output any element</ng-container>
+<ng-container i18n>Hello source</ng-container> <br />
+<ng-container i18n>{{helloSourceFromJS}}</ng-container> <br />
+<hr /> <br />
+<ng-container i18n i18n="@@TIO_MYAPP_HelloKey">Hello key</ng-container> <br />
+<ng-container i18n>{{helloKeyFromJS}}</ng-container> <br />
 
+<br />
+<br />
 <br />
 
 <img [src]="logo" i18n-title title="Angular logo" alt="Angular logo"/>

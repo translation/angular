@@ -35,7 +35,7 @@ Il est nécessaire d'utiliser le package [ng-extract-i18n-merge](https://github.
 
 Si vous desirez des explications détaillées sur l'installation du package, veuillez consulter son [git](https://github.com/daniel-sc/ng-extract-i18n-merge).
 
-##### Installation
+##### Ajouter le package
 ```bash
 ng add ng-extract-i18n-merge
 ```

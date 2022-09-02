@@ -5,13 +5,28 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "start:fr": "ng serve --configuration=fr",
-    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "e2e": "ng e2e",
-    "extract": "ng extract-i18n"
+
+    "start": "npm run start-fr",
+    "start-fr": "ng serve --configuration=fr",
+    "start-nl": "ng serve --configuration=nl",
+    "start-en": "ng serve --configuration=en",
+
+    "build": "npm run i18n && npm run translationio-sync && npm run build-prod",
+
+    "build-i18n-and-translationio-init": "npm run i18n && npm run translationio-init",
+    "build-i18n-and-translationio-sync": "npm run i18n && npm run translationio-sync",
+
+    "i18n": "ng extract-i18n",
+
+    "translationio-init": "tio --init --options=tio.config.json",
+    "translationio-sync": "tio --sync --options=tio.config.json",
+    "translationio-sync-readonly": "tio --sync --readonly --options=tio.config.json",
+    "translationio-sync-purge": "tio --sync --purge --options=tio.config.json",
+
+    "build-prod": "ng build --configuration production"
   },
   "private": true,
   "dependencies": {

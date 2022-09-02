@@ -16,7 +16,7 @@ Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez 
 ## Table of contents
 * [Avant de commencer](#avant-de-commencer)
     * [Depuis Angular 10](#depuis-angular-10)
-    * [Xliffmerge](#xliffmerge)
+    * [ng-extract-i18n-merge](#ng-extract-i18n-merge)
     * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
 * [Type de traduction](#type-de-traduction)
 * [Installation](#installation)
@@ -42,69 +42,63 @@ Afin de bénéficier de toutes les fonctionnalités liées à l'internationalisa
 ng add @angular/localize
 ```
 
-### Xliffmerge
-Il est nécessaire d'utiliser le package [xliffmerge](https://www.npmjs.com/package/@ngx-i18nsupport/ngx-i18nsupport) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
+### ng-extract-i18n-merge
+Il est nécessaire d'utiliser le package [ng-extract-i18n-merge](https://github.com/daniel-sc/ng-extract-i18n-merge) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
 
-Si vous desirez des explications détaillées sur l'installation du package, veuillez consulter son [wiki](https://github.com/martinroob/ngx-i18nsupport/wiki/Tutorial-for-using-xliffmerge-with-angular-cli).
+Si vous desirez des explications détaillées sur l'installation du package, veuillez consulter son [git](https://github.com/daniel-sc/ng-extract-i18n-merge).
 
 ##### Installation
 ```bash
-npm i @ngx-i18nsupport/tooling
+ng add ng-extract-i18n-merge
 ```
 
 ##### Why ?
 Pour éviter de faire cette partie de la documentation officielle à la main :
 - https://angular.io/guide/i18n#create-the-translation-files
 
-Once the package is installed, you'll have to add some configuration file in the "angular.json" file <br />
+Once the package is installed, it will add some configurations in the "angular.json" file <br />
 
 Fichier : 'angular.json' <br />
-![Exemple-xliffmerge](pictures/exemple-xliffmerge.png)
+![Exemple-ng-extract-i18n-merge](pictures/exemple-ng-extract-i18n-merge.png)
 
-Voici les options obligatoires à configurer pour le package xliffmerge :
+Voici les options obligatoires à configurer pour le package :
 ```json
 {
-  "xliffmergeOptions": {
-    "i18nFormat": "xlf",
-    "srcDir": "src/locale",
-    "genDir": "src/locale",
-    "i18nFile": "messages.xlf",
-    "defaultLanguage": "fr",
-    "languages": ["fr", "nl", "en"],
-    "useSourceAsTarget": true,
-    "beautifyOutput": true
-  }
+    "extract-i18n": {
+        "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
+        "options": {
+            "browserTarget": "angular-tio-example:build:build",
+            "format": "xlf",
+            "includeContext": true,
+            "outputPath": "src/locale",
+            "targetFiles": [
+                "messages.fr.xlf",
+                "messages.nl.xlf",
+                "messages.en.xlf"
+            ]
+        }
+    }
 }
 ```
-La propriété "languages" est la seule propriétée qui doit réellement être modifiée en fonction de votre configuration :
+La propriété "targetFiles" est la seule propriétée qui doit réellement être modifiée en fonction de votre configuration :
 - `languages` : Les différentes langues de votre site
     - Exemples : 
-        - le site est en français, anglais et néerlandais ===> ["fr", "en", "nl"]
-        - le site est en anglais et espagnol ===> ["en", "es"]
-- `i18nFile` : Le nom du fichier généré par la commande "i18n-templates"
+        - le site est en français, anglais et néerlandais ===> ["messages.fr.xlf", "messages.en.xlf", "messages.nl.xlf"]
+        - le site est en anglais et espagnol ===> ["messages.en.xlf", "messages.es.xlf"]
 
 ### Générer les fichiers XLIFF
 Pour utiliser le package ngx-translation-io, il faut posséder les différents fichier XLIFF. <br />
 **Un fichier XLIFF par langue.**
 
-Afin de générer ces fichiers, il y a deux étapes :
-1. Générer le fichier de traductions de base avec la commande que fourni Angular (xi18n) ===> "i18n-template".
-2. Pour chaque langue de votre site, générer le bon fichier de traduction XLIFF avec le package [xliffmerge](#xliffmerge) ===> "i18n-merge"
+Afin de générer ces fichiers, il y a une seule étape :
+1. Générer le fichier de traductions de base avec la commande que fourni Angular ===> "extract-i18n".
+Cette commande étant override par la librarie 
 
-> :warning: A partir d'Angular 11, la commande "ng xi18n" devient "ng extract-i18n".
-
-Pour ce faire, il suffit d'ajouter ces commandes dans le package.json de votre Angular application
+Pour ce faire, il suffit d'ajouter une commande dans le package.json de votre Angular application
 ```json
-    "i18n-templates": "ng xi18n --output-path src/locale",
-    "i18n-merge": "ng run sample:xliffmerge",
+    "extract": "ng extract-i18n"
 ```
-- `i18n-templates` : Cette commande permet de générer le fichier de traduction en fonction des balises i18n présentes dans votre site
-- `i18n-merge` : Grâce au fichier précedemment créé par "i18n-template", cette commande permet de générer, pour chaque langues, le bon fichier de traduction. <br /> 'sample' = name of your angular project configured in the "angular.json" file.
-
-et de les exécuter, dans cet ordre, grâce à une commande commune :
-```json
-    "i18n": "npm run i18n-templates && npm run i18n-merge",
-```
+- `extract` : Cette commande permet de générer les fichiers de traduction en fonction des balises i18n présentes dans votre site
 
 > En Angular 10, il sera peut être nécessaire d'ajouter le paramètre "--ivy" dans le script "xi18n" afin de récupérer les traductions dans le typescript. <br /> Pour plus d'informations, cliquez [ici](https://github.com/angular/angular/pull/32912)
 ```json

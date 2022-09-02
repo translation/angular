@@ -8,24 +8,18 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "e2e": "ng e2e",
-
     "start": "npm run start-en",
     "start-en": "ng serve --configuration=en",
     "start-fr": "ng serve --configuration=fr",
     "start-nl": "ng serve --configuration=nl",
-
     "build": "npm run i18n && npm run translationio-sync && npm run build-prod",
-
     "build-i18n-and-translationio-init": "npm run i18n && npm run translationio-init",
     "build-i18n-and-translationio-sync": "npm run i18n && npm run translationio-sync",
-
     "i18n": "ng extract-i18n",
-
     "translationio-init": "tio --init --options=tio.config.json",
     "translationio-sync": "tio --sync --options=tio.config.json",
     "translationio-sync-readonly": "tio --sync --readonly --options=tio.config.json",
     "translationio-sync-purge": "tio --sync --purge --options=tio.config.json",
-
     "build-prod": "ng build --configuration production"
   },
   "private": true,
@@ -39,6 +33,7 @@
     "@angular/platform-browser": "^14.1.0-next",
     "@angular/platform-browser-dynamic": "^14.1.0-next",
     "@angular/router": "^14.1.0-next",
+    "@corellia/ngx-translation-io": "^4.0.0",
     "angular-in-memory-web-api": "~0.14.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

@@ -1,17 +1,9 @@
 {
-  "name": "@corellia/ngx-translation-io",
-  "version": "4.0.0",
+  "name": "@translation/angular",
+  "version": "1.0.0",
   "description": "",
-  "main": "bin/index.js",
-  "scripts": {
-    "build": "tsc",
-    "init": "node bin/index.js --init --options=tio.config.json",
-    "sync": "node bin/index.js --sync --options=tio.config.json",
-    "test": "node ./bin/ngx-translation-io"
-  },
+  "main": "src2/index.js",
   "dependencies": {
-    "@types/minimist": "^1.2.2",
-    "@types/xmldom": "^0.1.31",
     "@xmldom/xmldom": "^0.8.2",
     "axios": "^0.27.2",
     "eslint": "^8.17.0",
@@ -29,9 +21,8 @@
     "ngx-translation-io"
   ],
   "bin": {
-    "@corellia/ngx-translation-io": "./bin/ngx-translation-io",
-    "ngx-translation-io": "./bin/ngx-translation-io",
-    "tio": "./bin/ngx-translation-io"
+    "translation": "./src2/translation",
+    "tio": "./src2/translation"
   },
   "publishConfig": {
     "access": "public"

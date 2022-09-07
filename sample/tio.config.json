@@ -1,18 +1,5 @@
 {
     "api_key": "YOUR API KEY",
-    "i18n_key": "SAMPLE_TIO",
-    "source_language": {
-        "language": "en",
-        "file": "./src/locale/messages.en.xlf"
-    },
-    "target_languages": [
-        {
-            "language": "fr",
-            "file": "./src/locale/messages.fr.xlf"
-        },
-        {
-            "language": "nl",
-            "file": "./src/locale/messages.nl.xlf"
-        }
-    ]
+    "source_locale": "en",
+    "target_locales": ["fr", "nl"]
 }

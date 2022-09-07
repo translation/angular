@@ -124,17 +124,11 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "angular-tio-example:build",
-            "format": "xlf",
-            "includeContext": true,
-            "outputPath": "src/locale",
-            "targetFiles": [
-              "messages.en.xlf",
-              "messages.fr.xlf",
-              "messages.nl.xlf"
-            ]
+            "format": "xlf2",
+            "outputPath": "src/locale"
           }
         },
         "test": {
@@ -168,5 +162,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

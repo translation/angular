@@ -3,14 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "src2/index.js",
-  "dependencies": {
-    "@xmldom/xmldom": "^0.8.2",
-    "axios": "^0.27.2",
-    "eslint": "^8.17.0",
-    "https-proxy-agent": "^5.0.1",
-    "minimist": "^1.2.6",
-    "typescript": "4.7.3"
-  },
   "keywords": [
     "tio",
     "translationio",
@@ -29,6 +21,12 @@
   },
   "author": "corellia",
   "license": "MIT",
+  "dependencies": {
+    "@xmldom/xmldom": "^0.8.2",
+    "axios": "^0.27.2",
+    "https-proxy-agent": "^5.0.1",
+    "minimist": "^1.2.6"
+  },
   "devDependencies": {
     "@types/node": "^18.0.0"
   }

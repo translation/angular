@@ -11,11 +11,11 @@ class Base {
     )
   }
 
-  sourceLanguage() {
+  sourceLocale() {
     return this.options()['source_locale'].trim()
   }
 
-  targetLanguages() {
+  targetLocales() {
     return this.options()['target_locales'].map((locale) => locale.trim())
   }
 }

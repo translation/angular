@@ -8,8 +8,8 @@ class Init extends Base {
   run() {
     console.log('Init.run()')
     console.log(this.configFile)
-    console.log(this.sourceLanguage())
-    console.log(this.targetLanguages())
+    console.log(this.sourceLocale())
+    console.log(this.targetLocales())
   }
 }
 

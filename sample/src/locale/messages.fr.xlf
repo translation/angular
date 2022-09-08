@@ -14,7 +14,7 @@
       </trans-unit>
       <trans-unit id="392942015236586892" datatype="html">
         <source>Angular logo</source>
-        <target>Logo d&apos;Angular</target>
+        <target>Logo d'Angular</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">15</context>
@@ -30,7 +30,7 @@
       </trans-unit>
       <trans-unit id="2002272803511843863" datatype="html">
         <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago}}</source>
-        <target state="new">{VAR_PLURAL, plural, =0 {à l&apos;instant} =1 {il y a une minute} other {il y a <x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes} }</target>
+        <target state="new">{VAR_PLURAL, plural, =0 {à l'instant} =1 {il y a une minute} other {il y a <x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">18</context>
@@ -38,7 +38,7 @@
       </trans-unit>
       <trans-unit id="3560311772637911677" datatype="html">
         <source>The author is <x id="ICU" equiv-text="{gender, select, male {male} female {female} other {other}}" xid="7670372064920373295"/></source>
-        <target state="new">L&apos;auteur est <x id="ICU" equiv-text="{gender, select, male {...} female {...} other {...}}"/></target>
+        <target state="new">L'auteur est <x id="ICU" equiv-text="{gender, select, male {...} female {...} other {...}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">22</context>
@@ -62,7 +62,7 @@
       </trans-unit>
       <trans-unit id="2508975984005233379" datatype="html">
         <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago by {VAR_SELECT, select, male {male} female {female} other {other}}}}</source>
-        <target state="new">{VAR_PLURAL, plural, =0 {à l&apos;instant} =1 {il y a une minute} other {il y a <x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes par {VAR_SELECT, select, male {un homme} female {une femme} other {autre} }} }</target>
+        <target state="new">{VAR_PLURAL, plural, =0 {à l'instant} =1 {il y a une minute} other {il y a <x id="INTERPOLATION" equiv-text="{{minutes}}"/> minutes par {VAR_SELECT, select, male {un homme} female {une femme} other {autre} }} }</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">24,27</context>

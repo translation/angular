@@ -1,6 +1,5 @@
 const fs = require('fs')
-const { DOMParser, XMLSerializer } = require('@xmldom/xmldom')
-
+const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 
 class Base {
   constructor(configFile) {
@@ -13,61 +12,153 @@ class Base {
     )
   }
 
-  sourceLocale() {
+  sourceLanguage() {
     return this.options()['source_locale'].trim()
   }
 
-  targetLocales() {
+  targetLanguages() {
     return this.options()['target_locales'].map(locale => locale.trim())
   }
 
+  apiKey() {
+    return this.options()['api_key']
+  }
+
+  endpoint() {
+    return this.options()['endpoint'] || 'https://translation.io/api'
+  }
+
+  // localeTemplatePath() {
+  //   return this.options()['locale_template_path'] || `./src/locale/messages.{locale}.xlf`
+  // }
+
+  sourceFile() {
+    return './src/locale/messages.xlf'
+  }
+
+  targetFile(language) {
+    return `./src/locale/messages.${language}.xlf`
+  }
+
   convertXmlUnitsToSegments(xmlUnits) {
-    //console.log(xmlUnits)
     return Array.from(xmlUnits).map(xmlUnit =>
       this.convertXmlUnitToSegment(xmlUnit)
     )
   }
 
   convertXmlUnitToSegment(xmlUnit) {
-    //console.log(xmlUnit)
-
-    return {
-      type: 'source',
-      source: new XMLSerializer().serializeToString(
-        xmlUnit.getElementsByTagName("source")[0].childNodes[1]
-      )
+    let segment = {
+      type:       'source',
+      source:     this.xmlUnitSource(xmlUnit),
+      target:     this.xmlUnitTarget(xmlUnit),
+      context:    this.xmlUnitContext(xmlUnit),
+      comment:    this.xmlUnitComment(xmlUnit),
+      references: this.xmlUnitReferences(xmlUnit)
     }
 
+    // Remove keys with undefined value
+    Object.keys(segment).forEach(key => segment[key] === undefined ? delete segment[key] : {});
 
-    // y = x.childNodes[0];
-    // z = y.nodeValue;
+    return segment;
+  }
 
-    // return {
-    //   type: 'source',
-    //   source:
-    //   target:
-    //   context:
-    //   comment:
-    //   references:
-    // }
+  xmlUnitSource(xmlUnit) {
+    if (typeof xmlUnit.source === 'string' || xmlUnit.source instanceof String) {
+      return xmlUnit.source
+    } else {
+      return xmlUnit.source['#text']
+    }
+  }
 
-    // const sourceElement = transUnits.getElementsByTagName('source')[0];
-    // if (sourceElement) {
-    //     this.source = (0, utils_1.getXMLElementToString)('source', sourceElement);
-    // }
-    // // We need to process first the source and then the target
-    // this.addTarget(transUnits);
+  xmlUnitTarget(xmlUnit) {
+    if (xmlUnit.target) {
+      if (typeof xmlUnit.target === 'string' || xmlUnit.target instanceof String) {
+        return xmlUnit.target
+      } else {
+        return xmlUnit.target['#text']
+      }
+    } else {
+      return ''
+    }
+  }
 
-    // <trans-unit id="introductionHeader" datatype="html">
-    //   <source> Hello i18n! </source>
-    //   <target state="new"> Hello i18n! </target>
-    //   <context-group purpose="location">
-    //     <context context-type="sourcefile">src/app/app.component.html</context>
-    //     <context context-type="linenumber">1,3</context>
-    //   </context-group>
-    //   <note priority="1" from="description">An introduction header for this sample</note>
-    //   <note priority="1" from="meaning">User welcome</note>
-    // </trans-unit>
+  // To put existing unit notes into array (even if just one)
+  xmlUnitNotes(xmlUnit) {
+    let notes = []
+
+    if (xmlUnit.note) {
+      if (Array.isArray(xmlUnit.note)) {
+        notes = xmlUnit.note
+      } else { // object
+        notes = [xmlUnit.note]
+      }
+    }
+
+    return notes
+  }
+
+  // To put existing context groups into array (even if just one)
+  xmlUnitContextGroups(xmlUnit) {
+    let contextGroups = []
+
+    if (xmlUnit['context-group']) {
+      if (Array.isArray(xmlUnit['context-group'])) {
+        contextGroups = xmlUnit['context-group']
+      } else { // object
+        contextGroups = [xmlUnit['context-group']]
+      }
+    }
+
+    return contextGroups
+  }
+
+  xmlUnitContext(xmlUnit) {
+    const notes = this.xmlUnitNotes(xmlUnit)
+
+    const contextNote = notes.find(note => note['@_from'] === 'meaning')
+
+    if (contextNote) {
+      return contextNote['#text']
+    } else {
+      return undefined
+    }
+  }
+
+  xmlUnitComment(xmlUnit) {
+    const notes = this.xmlUnitNotes(xmlUnit)
+
+    const contextNote = notes.find(note => note['@_from'] === 'description')
+
+    if (contextNote) {
+      return contextNote['#text']
+    } else {
+      return undefined
+    }
+  }
+
+  xmlUnitReferences(xmlUnit) {
+    let contextGroups = this.xmlUnitContextGroups(xmlUnit)
+
+    contextGroups = contextGroups.filter(contextGroup => contextGroup['@_purpose'] === 'location')
+
+    return contextGroups.map(contextGroup => {
+      const sourceFile = contextGroup.context.find(context => context['@_context-type'] == 'sourcefile')['#text']
+      const lineNumber = contextGroup.context.find(context => context['@_context-type'] == 'linenumber')['#text']
+
+      return `${sourceFile}:${lineNumber}`
+    })
+  }
+
+  findExistingTarget(sourceSegment, targetSegments) {
+    const targetSegment = targetSegments.find(targetSegment => {
+      return sourceSegment.type === targetSegment.type && sourceSegment.source === targetSegment.source && sourceSegment.context === targetSegment.context
+    })
+
+    if (targetSegment) {
+      return targetSegment['target']
+    } else {
+      return ''
+    }
   }
 }
 

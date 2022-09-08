@@ -40,6 +40,7 @@ class Init extends Base {
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
 
+      // For "init", we want to send source text from ".xlf" files, associated with existing translations from ".{locale}.xlf" files
       let translatedSourceSegment = sourceSegments.map(sourceSegment => {
         return Object.assign({}, sourceSegment, { target: this.findExistingTarget(sourceSegment, targetSegments) })
       })

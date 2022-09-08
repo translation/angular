@@ -2,7 +2,6 @@ const Base = require('./base')
 
 const fs = require('fs')
 const axios = require('axios').default
-const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 
 class Init extends Base {
   constructor(configFile) {
@@ -13,13 +12,8 @@ class Init extends Base {
     console.log('Init.run()')
     console.log(this.configFile)
 
-    const xmlParser = new XMLParser({
-      ignoreAttributes: false,
-      stopNodes:        ['*.source', '*.target'] // https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v4/2.XMLparseOptions.md#stopnodes
-    })
-
     const sourceRaw      = fs.readFileSync(this.sourceFile())
-    const sourceXml      = xmlParser.parse(sourceRaw)
+    const sourceXml      = this.xmlParser().parse(sourceRaw)
     const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
     const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
 
@@ -34,8 +28,8 @@ class Init extends Base {
       let   targetSegments = []
 
       if (fs.existsSync(targetFile)) {
-        const targetRaw      = fs.readFileSync(this.targetFile(language))
-        const targetXml      = xmlParser.parse(targetRaw)
+        const targetRaw      = fs.readFileSync(targetFile)
+        const targetXml      = this.xmlParser().parse(targetRaw)
         const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
@@ -52,12 +46,48 @@ class Init extends Base {
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(
-           response => console.log(response.status, response.data),
-           error    => console.log(error.message)
+           response => this.writeTargetFiles(response.data),
+           error    => console.log(error.response.data)
          )
 
     // console.log(request)
     //console.log(JSON.stringify(request, null, 4));
+  }
+
+  writeTargetFiles(response) {
+    this.targetLanguages().forEach(language => {
+      const targetFile = this.targetFile(language)
+
+      // 1. Remove target .xlf file
+      if (fs.existsSync(targetFile)) {
+        fs.unlinkSync(targetFile)
+      }
+
+      // 2. Recreate it from generated .xlf template
+      fs.copyFileSync(this.sourceFile(), targetFile)
+
+      // 3. Populate it with targets from Translation.io
+      const targetRaw      = fs.readFileSync(targetFile)
+      const targetXml      = this.xmlParser().parse(targetRaw)
+      const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
+
+      const translatedTargetSegments = response.segments[language]
+
+      translatedTargetSegments.forEach(translatedTargetSegment => {
+        const targetXmlUnit = targetXmlUnits.find(targetXmlUnit =>
+          this.xmlUnitSource(targetXmlUnit) === translatedTargetSegment.source && this.xmlUnitContext(targetXmlUnit) === translatedTargetSegment.context
+        )
+
+        // Overwrite Xml target value of this segment
+        if (targetXmlUnit) {
+          targetXmlUnit.target = translatedTargetSegment.target
+        }
+      })
+
+      const translatedTargetRaw = this.xmlBuilder().build(targetXml)
+
+      fs.writeFileSync(targetFile, translatedTargetRaw);
+    })
   }
 }
 

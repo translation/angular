@@ -40,6 +40,22 @@ class Base {
     return `./src/locale/messages.${language}.xlf`
   }
 
+  xmlParser() {
+    return new XMLParser({
+      ignoreAttributes: false,
+      processEntities:  false,                   // https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v4/5.Entities.md
+      stopNodes:        ['*.source', '*.target'] // https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/docs/v4/2.XMLparseOptions.md#stopnodes
+    })
+  }
+
+  xmlBuilder() {
+    return new XMLBuilder({
+      ignoreAttributes: false,
+      format:           true,
+      processEntities:  false
+    })
+  }
+
   convertXmlUnitsToSegments(xmlUnits) {
     return Array.from(xmlUnits).map(xmlUnit =>
       this.convertXmlUnitToSegment(xmlUnit)
@@ -151,7 +167,7 @@ class Base {
 
   findExistingTarget(sourceSegment, targetSegments) {
     const targetSegment = targetSegments.find(targetSegment => {
-      return sourceSegment.type === targetSegment.type && sourceSegment.source === targetSegment.source && sourceSegment.context === targetSegment.context
+      return sourceSegment.source === targetSegment.source && sourceSegment.context === targetSegment.context
     })
 
     if (targetSegment) {

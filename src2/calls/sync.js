@@ -1,5 +1,8 @@
 const Base = require('./base')
 
+const fs    = require('fs')
+const axios = require('axios').default
+
 class Init extends Base {
   constructor(configFile) {
     super(configFile)
@@ -7,7 +10,39 @@ class Init extends Base {
 
   run() {
     console.log('Sync.run()')
-    console.log(this.configFile)
+
+    // Prendre la source
+
+    const sourceRaw      = fs.readFileSync(this.sourceFile())
+    const sourceXml      = this.xmlParser().parse(sourceRaw)
+    const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
+    const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
+
+    // No need for target in sync request
+    sourceSegments.forEach(sourceSegment => delete sourceSegment['target'])
+
+    let request = {
+      source_language:  this.sourceLanguage(),
+      target_languages: this.targetLanguages(),
+      segments:         sourceSegments,
+      readonly:         false, // TODO: use tio option
+      purge:            false  // TODO: use tio option
+    }
+
+    // L'envoyer
+
+    const url = `${this.endpoint()}/v1/segments/sync.json?api_key=${this.apiKey()}`
+
+    axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
+         .then(
+           response => this.writeTargetFiles(response.data),
+           error    => {
+             console.error('HTTP REQUEST ERROR')
+             console.error(error.message)
+             if (error.response)
+               console.error(error.response.data)
+           }
+         )
   }
 }
 

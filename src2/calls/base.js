@@ -6,6 +6,8 @@ class Base {
     this.configFile = configFile || 'tio.config.json' // default config file
   }
 
+  /* OPTIONS */
+
   options() {
     return JSON.parse(
       fs.readFileSync(this.configFile)
@@ -31,6 +33,8 @@ class Base {
   // localeTemplatePath() {
   //   return this.options()['locale_template_path'] || `./src/locale/messages.{locale}.xlf`
   // }
+
+  /* XML Parser/Builder Utils */
 
   sourceFile() {
     return './src/locale/messages.xlf'
@@ -129,26 +133,31 @@ class Base {
   }
 
   xmlUnitContext(xmlUnit) {
-    const notes = this.xmlUnitNotes(xmlUnit)
-
+    const notes       = this.xmlUnitNotes(xmlUnit)
+    const id          = xmlUnit['@_id']
     const contextNote = notes.find(note => note['@_from'] === 'meaning')
+    const isCustomId  = (id) => !/^\d+$/.test(id) // to separate generated IDs with manual IDs
 
-    if (contextNote) {
-      return contextNote['#text']
+    if (isCustomId(id)) {
+      if (contextNote) {
+        return `${id} | ${contextNote['#text']}`
+      }
+      else {
+        return id.toString()
+      }
     } else {
-      return undefined
+      if (contextNote) {
+        return contextNote['#text']
+      }
     }
   }
 
   xmlUnitComment(xmlUnit) {
-    const notes = this.xmlUnitNotes(xmlUnit)
-
+    const notes       = this.xmlUnitNotes(xmlUnit)
     const contextNote = notes.find(note => note['@_from'] === 'description')
 
     if (contextNote) {
       return contextNote['#text']
-    } else {
-      return undefined
     }
   }
 
@@ -165,16 +174,41 @@ class Base {
     })
   }
 
-  findExistingTarget(sourceSegment, targetSegments) {
-    const targetSegment = targetSegments.find(targetSegment => {
-      return sourceSegment.source === targetSegment.source && sourceSegment.context === targetSegment.context
-    })
+  writeTargetFiles(response) {
+    this.targetLanguages().forEach(language => {
+      const targetFile = this.targetFile(language)
 
-    if (targetSegment) {
-      return targetSegment['target']
-    } else {
-      return ''
-    }
+      // 1. Remove target .xlf file
+      if (fs.existsSync(targetFile)) {
+        fs.unlinkSync(targetFile)
+      }
+
+      // 2. Recreate it from generated .xlf template
+      fs.copyFileSync(this.sourceFile(), targetFile)
+
+      // 3. Load XML and populate it with targets from Translation.io
+      const targetRaw      = fs.readFileSync(targetFile)
+      const targetXml      = this.xmlParser().parse(targetRaw)
+      const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
+
+      const translatedTargetSegments = response.segments[language]
+
+      translatedTargetSegments.forEach(translatedTargetSegment => {
+        const targetXmlUnit = targetXmlUnits.find(targetXmlUnit => {
+          return this.xmlUnitSource(targetXmlUnit) === translatedTargetSegment.source
+            && this.xmlUnitContext(targetXmlUnit) === translatedTargetSegment.context
+        })
+
+        // Overwrite XML target value of this segment
+        if (targetXmlUnit) {
+          targetXmlUnit.target = translatedTargetSegment.target
+        }
+      })
+
+      // 4. Build XML raw content and save it
+      const translatedTargetRaw = this.xmlBuilder().build(targetXml)
+      fs.writeFileSync(targetFile, translatedTargetRaw);
+    })
   }
 }
 

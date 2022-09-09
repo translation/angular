@@ -1,6 +1,6 @@
 const Base = require('./base')
 
-const fs = require('fs')
+const fs    = require('fs')
 const axios = require('axios').default
 
 class Init extends Base {
@@ -10,7 +10,6 @@ class Init extends Base {
 
   run() {
     console.log('Init.run()')
-    console.log(this.configFile)
 
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
@@ -34,6 +33,8 @@ class Init extends Base {
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
 
+      //const targetSegmentsHash =
+
       // For "init", we want to send source text from ".xlf" files, associated with existing translations from ".{locale}.xlf" files
       let translatedSourceSegment = sourceSegments.map(sourceSegment => {
         return Object.assign({}, sourceSegment, { target: this.findExistingTarget(sourceSegment, targetSegments) })
@@ -47,47 +48,26 @@ class Init extends Base {
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(
            response => this.writeTargetFiles(response.data),
-           error    => console.log(error.response.data)
+           error    => {
+             console.error('HTTP REQUEST ERROR')
+             console.error(error.message)
+             if (error.response)
+               console.error(error.response.data)
+           }
          )
-
-    // console.log(request)
-    //console.log(JSON.stringify(request, null, 4));
   }
 
-  writeTargetFiles(response) {
-    this.targetLanguages().forEach(language => {
-      const targetFile = this.targetFile(language)
-
-      // 1. Remove target .xlf file
-      if (fs.existsSync(targetFile)) {
-        fs.unlinkSync(targetFile)
-      }
-
-      // 2. Recreate it from generated .xlf template
-      fs.copyFileSync(this.sourceFile(), targetFile)
-
-      // 3. Populate it with targets from Translation.io
-      const targetRaw      = fs.readFileSync(targetFile)
-      const targetXml      = this.xmlParser().parse(targetRaw)
-      const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
-
-      const translatedTargetSegments = response.segments[language]
-
-      translatedTargetSegments.forEach(translatedTargetSegment => {
-        const targetXmlUnit = targetXmlUnits.find(targetXmlUnit =>
-          this.xmlUnitSource(targetXmlUnit) === translatedTargetSegment.source && this.xmlUnitContext(targetXmlUnit) === translatedTargetSegment.context
-        )
-
-        // Overwrite Xml target value of this segment
-        if (targetXmlUnit) {
-          targetXmlUnit.target = translatedTargetSegment.target
-        }
-      })
-
-      const translatedTargetRaw = this.xmlBuilder().build(targetXml)
-
-      fs.writeFileSync(targetFile, translatedTargetRaw);
+  findExistingTarget(sourceSegment, targetSegments) {
+    const targetSegment = targetSegments.find(targetSegment => {
+      return sourceSegment.source === targetSegment.source
+        && sourceSegment.context === targetSegment.context
     })
+
+    if (targetSegment) {
+      return targetSegment['target']
+    } else {
+      return ''
+    }
   }
 }
 

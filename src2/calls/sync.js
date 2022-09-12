@@ -11,7 +11,7 @@ class Init extends Base {
   run() {
     console.log('Sync.run()')
 
-    // Prendre la source
+    // Extract source segments
 
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
@@ -29,7 +29,7 @@ class Init extends Base {
       purge:            false  // TODO: use tio option
     }
 
-    // L'envoyer
+    // Send source segments and save translated target segments
 
     const url = `${this.endpoint()}/v1/segments/sync.json?api_key=${this.apiKey()}`
 

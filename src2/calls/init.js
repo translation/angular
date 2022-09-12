@@ -33,11 +33,20 @@ class Init extends Base {
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
 
-      //const targetSegmentsHash =
+      // Create hash to get target segments in O(1)
+
+      const targetSegmentsHash = {}
+
+      targetSegments.forEach(targetSegment =>
+        targetSegmentsHash[this.uniqueIdentifier(targetSegment)] = targetSegment
+      )
 
       // For "init", we want to send source text from ".xlf" files, associated with existing translations from ".{locale}.xlf" files
       let translatedSourceSegment = sourceSegments.map(sourceSegment => {
-        return Object.assign({}, sourceSegment, { target: this.findExistingTarget(sourceSegment, targetSegments) })
+        const targetSegment = targetSegmentsHash[this.uniqueIdentifier(sourceSegment)]
+        const target        = targetSegment ? targetSegment.target : ''
+
+        return Object.assign({}, sourceSegment, { target: target })
       })
 
       request['segments'][language] = translatedSourceSegment
@@ -57,17 +66,8 @@ class Init extends Base {
          )
   }
 
-  findExistingTarget(sourceSegment, targetSegments) {
-    const targetSegment = targetSegments.find(targetSegment => {
-      return sourceSegment.source === targetSegment.source
-        && sourceSegment.context === targetSegment.context
-    })
-
-    if (targetSegment) {
-      return targetSegment['target']
-    } else {
-      return ''
-    }
+  uniqueIdentifier(segment) {
+    return `${segment.source}|||${segment.context}`
   }
 }
 

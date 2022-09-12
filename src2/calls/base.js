@@ -77,29 +77,35 @@ class Base {
     }
 
     // Remove keys with undefined value
-    Object.keys(segment).forEach(key => segment[key] === undefined ? delete segment[key] : {});
+    Object.keys(segment).forEach(key => segment[key] === undefined ? delete segment[key] : {})
 
-    return segment;
+    return segment
   }
 
   xmlUnitSource(xmlUnit) {
+    let source = ''
+
     if (typeof xmlUnit.source === 'string' || xmlUnit.source instanceof String) {
-      return xmlUnit.source
+      source = xmlUnit.source
     } else {
-      return xmlUnit.source['#text']
+      source = xmlUnit.source['#text']
     }
+
+    return this.unescape(source)
   }
 
   xmlUnitTarget(xmlUnit) {
+    let target = ''
+
     if (xmlUnit.target) {
       if (typeof xmlUnit.target === 'string' || xmlUnit.target instanceof String) {
-        return xmlUnit.target
+        target = xmlUnit.target
       } else {
-        return xmlUnit.target['#text']
+        target = xmlUnit.target['#text']
       }
-    } else {
-      return ''
     }
+
+    return this.unescape(target)
   }
 
   // To put existing unit notes into array (even if just one)
@@ -141,8 +147,7 @@ class Base {
     if (isCustomId(id)) {
       if (contextNote) {
         return `${id} | ${contextNote['#text']}`
-      }
-      else {
+      } else {
         return id.toString()
       }
     } else {
@@ -174,6 +179,26 @@ class Base {
     })
   }
 
+  unescape(text) {
+    return text.replace(/&quot;/g, '"')
+               .replace(/&apos;/g, "'")
+               .replace(/&lt;/g,   '<')
+               .replace(/&gt;/g,   '>')
+               .replace(/&amp;/g,  '&')
+  }
+
+  escape(text) {
+    return text.replace(/&/g, '&amp;') //<= start with
+               .replace(/>/g, '&gt;')
+               .replace(/</g, '&lt;')
+               .replace(/'/g, '&apos;')
+               .replace(/"/g, '&quot;')
+  }
+
+  uniqueIdentifier(segment) {
+    return `${segment.source}|||${segment.context}`
+  }
+
   writeTargetFiles(response) {
     this.targetLanguages().forEach(language => {
       const targetFile = this.targetFile(language)
@@ -186,28 +211,40 @@ class Base {
       // 2. Recreate it from generated .xlf template
       fs.copyFileSync(this.sourceFile(), targetFile)
 
-      // 3. Load XML and populate it with targets from Translation.io
+      // 3. Load XML and...
       const targetRaw      = fs.readFileSync(targetFile)
       const targetXml      = this.xmlParser().parse(targetRaw)
       const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
 
       const translatedTargetSegments = response.segments[language]
 
+
+
+
+      // Create hash to get target segments in O(1)
+      const targetXmlUnitsHash = {}
+      targetXmlUnits.forEach(targetXmlUnit => {
+        const targetSegment = this.convertXmlUnitToSegment(targetXmlUnit)
+        targetXmlUnitsHash[this.uniqueIdentifier(targetSegment)] = targetXmlUnit
+      })
+
+
+
+
+
+      // 4 ... populate it with targets from Translation.io
       translatedTargetSegments.forEach(translatedTargetSegment => {
-        const targetXmlUnit = targetXmlUnits.find(targetXmlUnit => {
-          return this.xmlUnitSource(targetXmlUnit) === translatedTargetSegment.source
-            && this.xmlUnitContext(targetXmlUnit) === translatedTargetSegment.context
-        })
+        let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
         // Overwrite XML target value of this segment
         if (targetXmlUnit) {
-          targetXmlUnit.target = translatedTargetSegment.target
+          targetXmlUnit.target = this.escape(translatedTargetSegment.target)
         }
       })
 
-      // 4. Build XML raw content and save it
+      // 5. Build XML raw content and save it
       const translatedTargetRaw = this.xmlBuilder().build(targetXml)
-      fs.writeFileSync(targetFile, translatedTargetRaw);
+      fs.writeFileSync(targetFile, translatedTargetRaw)
     })
   }
 }

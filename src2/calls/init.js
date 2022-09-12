@@ -35,11 +35,14 @@ class Init extends Base {
 
       // Create hash to get target segments in O(1)
 
-      const targetSegmentsHash = {}
 
+      const targetSegmentsHash = {}
       targetSegments.forEach(targetSegment =>
         targetSegmentsHash[this.uniqueIdentifier(targetSegment)] = targetSegment
       )
+
+
+
 
       // For "init", we want to send source text from ".xlf" files, associated with existing translations from ".{locale}.xlf" files
       let translatedSourceSegment = sourceSegments.map(sourceSegment => {
@@ -64,10 +67,6 @@ class Init extends Base {
                console.error(error.response.data)
            }
          )
-  }
-
-  uniqueIdentifier(segment) {
-    return `${segment.source}|||${segment.context}`
   }
 }
 

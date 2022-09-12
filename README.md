@@ -1,314 +1,350 @@
-# [Translation.io](https://translation.io) for Angular
+# [Translation.io](https://translation.io/angular) client for Angular
 
-Add this package to localize your Angular application.<br />
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
-Il permet de simplifier la traduction des fichiers XLIFF 1.2 en passant par une interface **simple** et **épurée**.<br />
-Aucune modification des fichiers XLIFF n'est nécessaire.<br />
+Add this package to localize your Angular application (see [Installation](#installation)).
 
-Cette solution fonctionne avec les versions d'Angular >= 13 <br />
-Le package supporte uniquement les versions XLIFF 1.2.
+Use the [official Angular i18n syntax](#localization-syntax-overview) in your components.
 
-Si vous avez besoin de plus d'informations sur l'internationalisation, veuillez consulter la [documentation officielle](https://angular.io/guide/i18n).
+Write only the source text in your Angular application, and keep it synchronized with your translators on [Translation.io](https://translation.io/angular).
+
+<a href="https://translation.io/laravel">
+  <img width="720px" alt="Translation.io interface" src="https://translation.io/gifs/translation.gif">
+</a>
+
+Need help? [contact@translation.io](mailto:contact@translation.io)
 
 
-
-## Table of contents
-* [Avant de commencer](#avant-de-commencer)
-    * [ng-extract-i18n-merge](#ng-extract-i18n-merge)
-    * [Générer les fichiers XLIFF](#générer-les-fichiers-XLIFF)
-* [Type de traduction](#type-de-traduction)
+Table of contents
+=================
+* [Localization syntax overview](#localization-syntax-overview)
+  * [i18n attribute in templates](#i18n-attribute-in-templates)
+  * [$localize for literal string in code](#$localize-for-literal-string-in-code)
 * [Installation](#installation)
-* [Configuration](#configuration)
 * [Usage](#usage)
-    * [Init](#init)
-    * [Sync](#sync)
-    * [Sync & Purge](#sync-&-purge)
-    * [Sync & Readonly](#sync-&-readonly)
-* [Exemple](#exemple)
+  * [Sync](#sync)
+  * [Read-only Sync](#read-only-sync)
+  * [Sync & purge](#sync-&-purge)
+* [Manage locales](#manage-locales)
+* [Localization syntax in details](#localization-syntax-in-details)
+* [List of clients for Translation.io](#list-of-clients-for-translationio)
+ * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
+ * [Laravel (PHP)](#laravel-php)
+ * [React, React Native and JavaScript](#react-react-native-and-javascript)
+ * [Others](#others)
 * [License](#license)
 
-<br />
 
-## Avant de commencer
-### ng-extract-i18n-merge
-Il est nécessaire d'utiliser le package [ng-extract-i18n-merge](https://github.com/daniel-sc/ng-extract-i18n-merge) afin de générer correctement et facilement les différents fichiers de traductions nécessaires au bon fonctionnement de ce package.
+## Localization syntax overview
+### i18n attribute in templates
 
-Si vous desirez des explications détaillées sur l'installation du package, veuillez consulter son [git](https://github.com/daniel-sc/ng-extract-i18n-merge).
+Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
 
-##### Ajouter le package
-```bash
-ng add ng-extract-i18n-merge
-```
-
-##### Why ?
-Pour éviter de faire cette partie de la documentation officielle à la main :
-- https://angular.io/guide/i18n#create-the-translation-files
-
-Once the package is installed, it will add some configurations in the "angular.json" file <br />
-
-Fichier : 'angular.json' <br />
-![Exemple-ng-extract-i18n-merge](pictures/exemple-ng-extract-i18n-merge.png)
-
-Voici les options obligatoires à configurer pour le package :
-```json
-{
-    "extract-i18n": {
-        "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
-        "options": {
-            "browserTarget": "angular-tio-example:build:build",
-            "format": "xlf",
-            "includeContext": true,
-            "outputPath": "src/locale",
-            "targetFiles": [
-                "messages.fr.xlf",
-                "messages.nl.xlf",
-                "messages.en.xlf"
-            ]
-        }
-    }
-}
-```
-La propriété "targetFiles" est la seule propriétée qui doit réellement être modifiée en fonction de votre configuration :
-- `targetFiles` : Les différentes langues de votre site
-    - Exemples : 
-        - le site est en français, anglais et néerlandais ===> ["messages.fr.xlf", "messages.en.xlf", "messages.nl.xlf"]
-        - le site est en anglais et espagnol ===> ["messages.en.xlf", "messages.es.xlf"]
-
-### Générer les fichiers XLIFF
-Pour utiliser le package ngx-translation-io, il faut posséder les différents fichier XLIFF. <br />
-**Un fichier XLIFF par langue.**
-
-Afin de générer ces fichiers, il y a une seule étape :
-1. Générer le fichier de traductions de base avec la commande que fourni Angular ===> "extract-i18n". <br />
-Cette commande étant override par la librarie ng-extract-i18n-merge, elle vous créera tous les fichiers XLIFF
-
-Pour ce faire, il suffit d'ajouter une commande dans le package.json de votre Angular application
-```json
-    "i18n": "ng extract-i18n"
-```
-
-<br />
-
-## Type de traduction
-
-Il est important de savoir qu'il y a deux types de traductions sur Translation.io. <br />
-Une traduction de type "KEY" et une traduction de type "SOURCE".
-
-Si vous décidez d'utiliser les tags "i18n" avec des [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance),
-c'est que vous dirigez vers l'approche de type "KEY".
-
-#### Key 
-- Il se base sur un id que vous lui donnez.
-- Cet id doit obligatoirement commencer par l'*[i18n_key](#configuration)*
-- Pour modifier le contenu "Hello key", il faut obligatoirement utiliser l'interface graphique Translation.io.
-- Exemple :
 ```html
-    <div i18n="@@TIO_MYAPP_HelloKey">Hello key</div>
+<h1 i18n>Welcome to our Angular app!</h1>
+<p i18n>This is a first paragraph.</p>
 ```
-```js 
-    helloKeyFromJS = $localize`:@@TIO_MYAPP_HelloKeyJS: Hello key from JS`
-```
-> :warning: Si vous ne commencez pas vos [id personnalisés](https://angular.io/guide/i18n#set-a-custom-id-for-persistence-and-maintenance) 
-par l'*[i18n_key](#configuration)*, vos traductions seront traitées comme étant des traductions de type **"SOURCE"** et non de type **"KEY"**.
 
-#### Source
-- Il se base sur son contenu, son texte.
-- Aucun id ne doit être spécifié, il suffit de mettre le tag "i18n".
-- Pour modifier le contenu "Hello source", il suffit de changer le texte présent dans la balise.
-    -   Une fois modifiée, la source devient alors une "nouvelle" traduction qu'il faut aller traduire dans Translation.io
-- Exemple
+Mark the attributes of HTML elements as translatable by using `i18n-{attribute_name}` attributes.
+
 ```html
-    <div i18n>Hello source</div>
-```
-```js
-    helloSourceFromJS = $localize `Hello source from JS`
+// Marking an image's title attribute as translatable
+<img [src]="example-image" i18n-title title="Example image title" />
 ```
 
-<br />
+### $localize for literal strings in code
+
+Mark text (literal strings) as translatable in your component code using `$localize` and surrounding the text with backticks ( \` ).
+
+```javascript
+// Marking a literal string as translatable
+$localize `Hello, we hope you will enjoy this app.`;
+```
+
+To explore the syntax more in details (using IDs, specifying plurals and interpolations), please check out the section [Localization syntax in details](#localization-syntax-in-details) below.
+
 
 ## Installation
 
-Une fois que vous avez vos fichiers de traductions, il suffit d'installer le package NPM et de le [configurer](#configuration)
+### 1. Install the localize package and set up your i18n options
+
+Make sure that you have Angular's [localize package](https://angular.io/guide/i18n-common-add-package) installed, or install it.
 
 ```bash
-npm i @corellia/ngx-translation-io@latest
+ng add @angular/localize
 ```
 
-<br />
+Configure the [i18n options](https://angular.io/guide/i18n-common-merge#define-locales-in-the-build-configuration) in the `angular.json` file at the root of your project.
 
-## Configuration
+### 2. Install the `@translation/angular` package
 
-Go to your Translation.io account page and create a new project.
-Once the project is created, you'll have to create a configuration file in the root folder of your Angular app
+Run the following command at the root of your project to install our package:
 
-Fichier : 'tio.config.json'
-```json
-{
-    "api_key": "YOUR API KEY",
-    "i18n_key": "TIO",
-    "source_language": {
-        "language": "fr",
-        "file": "./src/locale/messages.fr.xlf"
-    },
-    "target_languages": [
-        {
-            "language": "en",
-            "file": "./src/locale/messages.en.xlf"
-        },
-        {
-            "language": "nl",
-            "file": "./src/locale/messages.nl.xlf"
-        },
-    ]
-}
+```bash
+# NPM
+npm install @translation/angular
+
+# Yarn
+yarn add @translation/angular
 ```
-- `api_key` : La clé API votre projet Translation.io
-- `i18n_key` : Préfix à utiliser pour chaque traduction qui utilise le système "KEY". [Voir exemples.](#utilisation-du-préfix)
-- `source_language` : La configuration de la source, c'est à dire, la langue principale du site. Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
-    - `language` : Le code de la langue source. (Le code doit être le même que celui indiqué dans Translation.io)
-    - `file` : Where is located your source XLIFF file
-- `target_languages` : La configuration des targets, c'est à dire, les autres langues du site. Pour chaque target, Il faut renseigner le code de la langue et l'emplacement du fichier correspondant.
-    - `language` : Le code de la langue target. (Le code doit être le même que celui indiqué dans Translation.io)
-    - `file` : Where is located your target XLIFF file
 
+### 3. Create a new translation project
 
-### Proxy
+Sign in to our platform and create your new project [from the UI](https://translation.io/angular), selecting the appropriate source and target locales.
 
-Il est possible de définir un proxy, pour cela, rien de plus simple :
+### 4. Copy the generated `tio.config.json` file to the root of your application.
 
-Fichier : 'tio.config.json'
+This configuration file should look like this:
 ```json
 {
-    "api_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
-    "i18n_key": "TIO",
-    .
-    .
-    .
-    "proxy": "http://1.1.1.1:8080"
+  "api_key": "abcdefghijklmnopqrstuvwxyz123456",
+  "source_locale": "en",
+  "target_locales": ["fr", "es", "it"]
 }
 ```
 
-<br />
+### 5. Add scripts to your package.json
 
-#### Utilisation du préfix
-Si le préfix n'est pas correctement utilisé, la traduction sera définie comme type "SOURCE"
+To make your life easier, add these lines to the `package.json` at the root of your application:
 
-```html
-    <div i18n="@@TIOHelloWorld"></div>      <!-- GOOD   ->  Traduction de type "KEY" -->
-    <div i18n="@@TIO_HelloWorld"></div>     <!-- GOOD   ->  Traduction de type "KEY" -->
-
-    <div i18n></div>                        <!-- WRONG  ->  Traduction de type "SOURCE" -->
-    <div i18n="Goodbye"></div>              <!-- WRONG  ->  Traduction de type "SOURCE" -->
-    <div i18n="@@Goodbye"></div>            <!-- WRONG  ->  Traduction de type "SOURCE" -->
-    <div i18n="@@TI_O_Goodbye"></div>       <!-- WRONG  ->  Traduction de type "SOURCE" -->
-```
-```js
-    helloKeyFromJS = $localize`:@@TIOHelloWorldJS: Hello key from JS`;      // GOOD  ->  Traduction de type "KEY"
-    helloKeyFromJS = $localize`:@@TIO_HelloWorldJS: Hello key from JS`;     // GOOD  ->  Traduction de type "KEY"
-
-    helloKeyFromJS = $localize `Hello key from JS`;                         // WRONG ->  Traduction de type "SOURCE"
-    helloKeyFromJS = $localize`:GoodbyeJS: Hello key from JS`;              // WRONG ->  Traduction de type "SOURCE"
-    helloKeyFromJS = $localize`:@@GoodbyeJS: Hello key from JS`;            // WRONG ->  Traduction de type "SOURCE"
-    helloKeyFromJS = $localize`:@@TI_O_GoodbyeJS: Hello key from JS`;       // WRONG ->  Traduction de type "SOURCE"
+```json
+{
+  "scripts": {
+    "build": "npm run i18n && npm run translation-sync && npm run build-prod",
+    "build-i18n-and-translation-init": "npm run i18n && npm run translation-init",
+    "build-i18n-and-translation-sync": "npm run i18n && npm run translation-sync",
+    "i18n": "ng extract-i18n",
+    "translation-init": "tio init",
+    "translation-sync": "tio sync",
+    "translation-sync-readonly": "tio sync --readonly",
+    "translation-sync-purge": "tio sync --purge"
+  }
+}
 ```
 
-<br />
+### 6. Initialize your project
+
+To push your source keys and existing translations (if any) to Translation.io, run the following command:
+
+```bash
+# NPM
+npm run build-i18n-and-translation-init
+
+# YARN
+yarn build-i18n-and-translation-init
+```
+
 
 ## Usage
 
-#### Init
+### Sync
 
-Itialize your project and push existing translations to Translation.io with :
-
-```bash
-npm run tio --init --options=tio.config.json
-```
-Cette commande est, en principe, utilisé qu'une seule fois par projet. Elle permet d'initialiser les traductions existantes dans Translation.io.<br />
-Pour toutes les autres actions, voir le SYNC
-
-#### Sync
-
-To send new translatable keys/strings and get new translations from Translation.io, simply run :
+To push new translatable source keys/strings and get translations from Translation.io, simply run:
 
 ```bash
-npm run tio --sync --options=tio.config.json
+# NPM
+npm run build-i18n-and-translation-sync
+
+# YARN
+yarn build-i18n-and-translation-sync
 ```
 
-> Pour les nouvelles traductions, il sera nécessaire de faire deux Syncs.
->   - Le premier Sync va envoyer les nouvelles traductions sur Translation.io
->   - Une fois que c'est traduit sur le site, le deuxième Sync va récupérer les traductions
+### Read-only Sync
 
-#### Sync & Purge
-
-If you need to remove unused keys/strings from Translation.io, using the current application as reference.
+To retrieve translations without pushing new source keys, you can run:
 
 ```bash
-npm run tio --sync --purge --options=tio.config.json
+# NPM
+npm run translation-sync-readonly
+
+# YARN
+yarn translation-sync-readonly
 ```
 
-As the name says, this operation will also perform a sync at the same time.
+### Sync & Purge
 
-Warning : all keys that are not present in the current application will be **permanently deleted from Translation.io**.
-
-#### Sync & Readonly
-
-Si vous avez besoin de synchroniser sans modifier les données présentes dans Translation.io
+If you need to remove unused source keys/strings from Translation.io, using your current local application as reference, run the following command:
 
 ```bash
-npm run tio --sync --readonly --options=tio.config.json
+# NPM
+npm run translation-sync-purge
+
+# YARN
+yarn translation-sync-purge
 ```
-La librairie va récupérer les traductions existantes sans 
-- ajouter les nouveaux segments
-- mettre à jours les segments présents
 
-<br />
+**Warning:** all source keys/strings that are not present in your current local branch will be **permanently deleted from Translation.io**.
 
-## Exemple
 
-### Init d'un projet
-Dés que vous avez [vos fichiers XLIFF](#générer-les-fichiers-XLIFF), il ne reste plus qu'à initialiser votre projet Translation.io
+## Manage locales
 
-Pour cela, il suffit de lancer une commande :
--   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
--   et [initialiser](#init) le projet sur Translation.io
-```bash
-build-i18n-and-translationio-init
+### Add or remove locales
+
+You can add or remove a locale by updating `"target_locales": []` in your
+`tio.config.json` file, and syncing your project again.
+
+If you want to add a new locale with existing translations (for instance if you
+already have a translated XLF file in your project), you will need to create a
+new empty project on Translation.io and init your project for them to appear.
+
+### Edit locales
+
+To edit existing locales while keeping their translations (e.g. changing from `en` to `en-US`):
+
+ 1. Create a new project on Translation.io with the correct locales.
+ 2. Update the `tio.config.json` file with the new API key and correct locales.
+ 3. Adapt the locale codes in the  XLF files' names.
+ 4. Initialize your new project and check that everything went fine.
+ 5. Invite your collaborators in the new project.
+ 6. Remove the old project.
+
+Since you created a new project, the translation history and tags will unfortunately be lost.
+
+
+## Localization syntax in details
+
+### i18n attributes and $localize
+
+The text in a HTML element can be marked as translatable by using the `i18n` attribute in the components' templates.
+
+```html
+<h1 i18n>Welcome to our Angular app!</h1>
+<p i18n>This is a first paragraph.</p>
 ```
-Fichier : 'package.json' <br />
-![Exemple-init](pictures/exemple-init.png)
 
-<br />
+The attributes of HTML elements can also be marked as translatable by using `i18n-{attribute_name}` attributes.
 
-### Mettre à jour un projet
-Pour mettre à jour les traductions, c'est très simple :
-
-Il suffit de lancer une commande :
--   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
--   et [synchroniser](#sync) les nouvelles traductions et/ou modifications avec Translation.io
-```bash
-build-i18n-and-translationio-sync
+```html
+// Marking the title attribute of an image's  as translatable
+<img [src]="example-image" i18n-title title="Example image title" />
 ```
-Fichier : 'package.json' <br />
-![Exemple-sync](pictures/exemple-sync.png)
 
-<br />
+Literal strings in your component code can also be marked as translatable using `$localize` and surrounding the source text with backticks ( \` ).
 
-### Build complet d'une APP en plusieurs langues
-Voici un exemple complet pour build une application dans chaque langue.
-
-Il suffit de lancer une commande :
--   elle va [générer les fichiersx XLIFF](#générer-les-fichiers-XLIFF)
--   [synchroniser](#sync) avec Translation.io
--   et build le projet avec les différentes traductions récupérées
-```bash
-npm run build
+```javascript
+// Marking a literal string as translatable
+$localize `Hello, we hope you will enjoy this app.`;
 ```
-Fichier : 'package.json' <br />
-![Exemple-build](pictures/exemple-build.png)
 
->*N'oubliez pas de configurer le fichier "angular.json" avec les differentes configurations par langue pour pour que l'exemple fonctionne. <br /> Vous pouvez trouver un exemple complet dans le projet "sample" du repository.
+The official Angular documentation for the syntax can be found [here](https://angular.io/guide/i18n-common-prepare).
 
-<br />
+### Optional metadata for translation
+
+You can use metadata as the value of the i18n attribute to specify a custom ID, a meaning and a description.
+
+The syntax for the metadata is the following: `{meaning}|{description}@@{custom_id}`
+
+```html
+<h1 i18n="Welcome message|Message used on the homepage@@home-welcome-message">Welcome to our Angular app!</h1>
+```
+
+Metadata can also be used with `$localize`, but it must then be formatted as follows: `{meaning}:{description}@@{custom_id}:{source_text}`.
+
+```javascript
+let welcomeText = $localize `Welcome message:Message used on the homepage@@home-welcome-message:Welcome to our Angular app!`;
+```
+
+The official Angular documentation for optional metadata can be found [here](https://angular.io/guide/i18n-optional-manage-marked-text).
+
+#### Our recommendations for metadata
+
+The "unicity" of a source key is determined by its source text, its custom ID (if any) and its meaning (if any). The description plays no role in this unicity.
+
+If you choose to use custom IDs, make sure that your IDs are unique (or that you always use the same source text with the same ID), otherwise only the first source text will be associated with the ID ([see official documentation](https://angular.io/guide/i18n-optional-manage-marked-text#define-unique-custom-ids)).
+
+To avoid any problems, we strongly recommend that you opt for the use of "meanings" instead of IDs.
+**Note:** If you use a meaning without a description, make sure to add a pipe (`|`) after the meaning, otherwise it will be considered as a description.
+
+```html
+// Good use cases:
+
+  /*
+    1. The meaning helps distinguish between two keys with the same source text
+    -> This will result in two distinct source keys
+  */
+  <span i18n="Numbered day in a calendar|">Date</span> // Meaning only
+  <span i18n="Social meeting with someone|">Date</span> // Meaning only
+
+  /*
+    2. Adding a description after the meaning will be useful to translators
+    -> This will result in two distinct source keys
+  */
+  <span i18n="Verb|Text on a button used to report a problem">Report</span>
+  <span i18n="Noun|Title of the Report section in the app">Report</span>
+
+// Bad use cases:
+
+  /*
+    1. Using only descriptions, without meanings (note the missing pipe | )
+    -> This will result in only one source key
+  */
+  <label i18n="Label for the datepicker">Date</label>
+  ...
+  <option i18n="Type of event in a dropdown">Date</option>
+
+  /*
+    2. Using the same ID with two different source texts
+    -> This will result in only one source key (the first one)
+  */
+  <h2 i18n="@@section-title">First section</h2>
+  <h2 i18n="@@section-title">Second section</h2>
+```
+
+## List of clients for Translation.io
+
+Implementations were usually started by contributors for their own projects.
+The following are officially supported by [Translation.io](https://translation.io)
+and are well documented.
+
+We are thankful to all contributors for their hard work!
+
+### Ruby on Rails (Ruby)
+
+Officially supported on [https://translation.io/rails](https://translation.io/rails)
+
+ * GitHub: https://github.com/translation/rails
+ * RubyGems: https://rubygems.org/gems/translation/
+
+Credits: [@aurels](https://github.com/aurels), [@michaelhoste](https://github.com/michaelhoste)
+
+### Laravel (PHP)
+
+Officially supported on [https://translation.io/laravel](https://translation.io/laravel)
+
+ * GitHub: https://github.com/translation/laravel
+ * Packagist: https://packagist.org/packages/tio/laravel
+
+Credits: [@armandsar](https://github.com/armandsar), [@michaelhoste](https://github.com/michaelhoste)
+
+### React, React Native and JavaScript
+
+Officially supported on [https://translation.io/lingui](https://translation.io/lingui)
+
+Translation.io is directly integrated in the great
+[Lingui](https://lingui.js.org/) internationalization project.
+
+ * GitHub: https://github.com/translation/lingui
+ * NPM: https://www.npmjs.com/package/@translation/lingui
+
+### Angular
+
+Officially supported on [https://translation.io/angular](https://translation.io/angular)
+
+ * GitHub: https://github.com/translation/angular
+ * NPM: https://www.npmjs.com/package/@translation/angular
+
+### Others
+
+If you want to create a new client for your favorite language or framework, please read our
+[Create a Translation.io Library](https://translation.io/docs/create-library)
+guide and use the special
+[init](https://translation.io/docs/create-library#initialization) and
+[sync](https://translation.io/docs/create-library#synchronization) endpoints.
+
+You can also use the more [traditional API](https://translation.io/docs/api).
+
+Feel free to contact us on [contact@translation.io](mailto:contact@translation.io)
+if you need some help or if you want to share your library.
 
 ## Licence
 

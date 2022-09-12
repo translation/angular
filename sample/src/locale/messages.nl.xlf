@@ -2,7 +2,7 @@
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="introductionHeader" datatype="html">
-        <source> Hello i18n!
+        <source> Sentence with meaning (context), description (comment) and key
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
@@ -12,8 +12,8 @@
         <note priority="1" from="meaning">User welcome</note>
         <target></target>
       </trans-unit>
-      <trans-unit id="6867815284364561268" datatype="html">
-        <source> Small sentence with &quot;c&apos;est&quot;, stuff like   &lt; &amp; something like ! 🙂 michaël
+      <trans-unit id="4871932061828787093" datatype="html">
+        <source> Small sentence with &quot;c&apos;est&quot;, stuff like   &lt; &amp; something like ! 🙂 michaël =&gt; only meaning!
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
@@ -23,7 +23,7 @@
         <target></target>
       </trans-unit>
       <trans-unit id="myKeyIsTooGood" datatype="html">
-        <source> Blah
+        <source> Sentence with meaning (context) and key
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
@@ -33,7 +33,7 @@
         <target></target>
       </trans-unit>
       <trans-unit id="OnlySuperKey" datatype="html">
-        <source> Blorg
+        <source> Sentence with only key
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
@@ -57,14 +57,6 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">23</context>
-        </context-group>
-        <target></target>
-      </trans-unit>
-      <trans-unit id="TIO_MYAPP_HelloKey" datatype="html">
-        <source>Hello key</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
         <target></target>
@@ -73,7 +65,7 @@
         <source>Angular logo</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <target>Angular logo</target>
       </trans-unit>
@@ -81,7 +73,7 @@
         <source>Updated <x id="ICU" equiv-text="{minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago}}" xid="1887283401472369100"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">31</context>
         </context-group>
         <target>Updated <x id="ICU" equiv-text="{minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago}}" xid="1887283401472369100"/></target>
       </trans-unit>
@@ -89,7 +81,7 @@
         <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago}}</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">31</context>
         </context-group>
         <target>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago}}</target>
       </trans-unit>
@@ -97,7 +89,7 @@
         <source>The author is <x id="ICU" equiv-text="{gender, select, male {male} female {female} other {other}}" xid="7670372064920373295"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">35</context>
         </context-group>
         <target>The author is <x id="ICU" equiv-text="{gender, select, male {male} female {female} other {other}}" xid="7670372064920373295"/></target>
       </trans-unit>
@@ -105,7 +97,7 @@
         <source>{VAR_SELECT, select, male {male} female {female} other {other}}</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">35</context>
         </context-group>
         <target>{VAR_SELECT, select, male {male} female {female} other {other}}</target>
       </trans-unit>
@@ -117,7 +109,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">38,42</context>
+          <context context-type="linenumber">37,41</context>
         </context-group>
         <target></target>
       </trans-unit>
@@ -125,7 +117,7 @@
         <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago by {VAR_SELECT, select, male {male} female {female} other {other}}}}</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">38,41</context>
+          <context context-type="linenumber">37,40</context>
         </context-group>
         <target>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago by {VAR_SELECT, select, male {male} female {female} other {other}}}}</target>
       </trans-unit>
@@ -133,7 +125,7 @@
         <source>{VAR_PLURAL, plural, =0 {Updated: just now} =1 {Updated: one minute ago} other {Updated: <x id="INTERPOLATION"/> minutes ago by {VAR_SELECT, select, male {male} female {female} other {other}}}}</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">44,47</context>
+          <context context-type="linenumber">43,46</context>
         </context-group>
         <target></target>
       </trans-unit>
@@ -145,7 +137,7 @@
 </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">44,48</context>
+          <context context-type="linenumber">43,47</context>
         </context-group>
         <target></target>
       </trans-unit>

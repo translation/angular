@@ -177,12 +177,16 @@ class Base {
 
     contextGroups = contextGroups.filter(contextGroup => contextGroup['@_purpose'] === 'location')
 
-    return contextGroups.map(contextGroup => {
+    const references = contextGroups.map(contextGroup => {
       const sourceFile = contextGroup.context.find(context => context['@_context-type'] == 'sourcefile')['#text']
       const lineNumber = contextGroup.context.find(context => context['@_context-type'] == 'linenumber')['#text']
 
       return `${sourceFile}:${lineNumber}`
     })
+
+    if (references.length) {
+      return references
+    }
   }
 
   unescapeEntities(text) {

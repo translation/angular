@@ -3,7 +3,7 @@ const Base = require('./base')
 const fs    = require('fs')
 const axios = require('axios').default
 
-class Init extends Base {
+class Sync extends Base {
   constructor(configFile) {
     super(configFile)
   }
@@ -44,4 +44,4 @@ class Init extends Base {
   }
 }
 
-module.exports = Init
+module.exports = Sync

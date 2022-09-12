@@ -7,3 +7,4 @@ server.key
 .DS_Store
 src/assets
 TODO_LOCAL
+coverage

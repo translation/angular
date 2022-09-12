@@ -28,10 +28,10 @@ Table of contents
 * [Manage locales](#manage-locales)
 * [Localization syntax in details](#localization-syntax-in-details)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
- * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
- * [Laravel (PHP)](#laravel-php)
- * [React, React Native and JavaScript](#react-react-native-and-javascript)
- * [Others](#others)
+  * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
+  * [Laravel (PHP)](#laravel-php)
+  * [React, React Native and JavaScript](#react-react-native-and-javascript)
+  * [Others](#others)
 * [License](#license)
 
 

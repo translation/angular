@@ -215,7 +215,7 @@ The text in a HTML element can be marked as translatable by using the `i18n` att
 The attributes of HTML elements can also be marked as translatable by using `i18n-{attribute_name}` attributes.
 
 ```html
-// Marking the title attribute of an image's  as translatable
+// Marking the title attribute of an image as translatable
 <img [src]="example-image" i18n-title title="Example image title" />
 ```
 
@@ -289,6 +289,32 @@ To avoid any problems, we strongly recommend that you opt for the use of "meanin
   <h2 i18n="@@section-title">First section</h2>
   <h2 i18n="@@section-title">Second section</h2>
 ```
+
+### ICU expressions (plural and select)
+
+#### Pluralization
+
+Pluralization rules may vary from one locale to another, and it is recommended to use the plural syntax in your code to facilitate translation. This syntax is expressed as follows: `{ component_property, plural, pluralization_categories }`.
+
+```html
+<span i18n>{catsCount, plural, =0 {There are no cats in the room} =1 {There is one cat in the room} other {There are {{catsCount}} cats in the room}}</span>
+```
+
+The official Angular documentation for plurals can be found [here](https://angular.io/guide/i18n-common-prepare#mark-plurals).
+
+#### Select clause
+
+The select clause allows to display alternate text depending on the value of a variable. This syntax is expressed as follows: `{ component_property, select, selection_categories }`.
+
+```html
+<span i18n>The user is {gender, select, male {a man} female {a woman} other { other }}.</span>
+```
+
+The official Angular documentation for select clauses can be found [here](https://angular.io/guide/i18n-common-prepare#mark-alternates-and-nested-expressions).
+
+#### Our recommendations for plural and select expressions
+
+To facilitate the work of translators, try to avoid complicated or nested expressions.
 
 ## List of clients for Translation.io
 

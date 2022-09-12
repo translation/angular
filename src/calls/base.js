@@ -1,3 +1,5 @@
+const Interpolation = require('../utils/interpolation')
+
 const fs = require('fs')
 const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 
@@ -91,7 +93,9 @@ class Base {
       source = xmlUnit.source['#text']
     }
 
-    return this.unescape(source)
+    source = Interpolation.escape(source)['text']
+
+    return this.unescapeEntities(source)
   }
 
   xmlUnitTarget(xmlUnit) {
@@ -105,7 +109,9 @@ class Base {
       }
     }
 
-    return this.unescape(target)
+    target = Interpolation.escape(target)['text']
+
+    return this.unescapeEntities(target)
   }
 
   // To put existing unit notes into array (even if just one)
@@ -179,7 +185,7 @@ class Base {
     })
   }
 
-  unescape(text) {
+  unescapeEntities(text) {
     return text.replace(/&quot;/g, '"')
                .replace(/&apos;/g, "'")
                .replace(/&lt;/g,   '<')
@@ -187,8 +193,8 @@ class Base {
                .replace(/&amp;/g,  '&')
   }
 
-  escape(text) {
-    return text.replace(/&/g, '&amp;') //<= start with
+  escapeEntities(text) {
+    return text.replace(/&/g, '&amp;')
                .replace(/>/g, '&gt;')
                .replace(/</g, '&lt;')
                .replace(/'/g, '&apos;')
@@ -218,19 +224,13 @@ class Base {
 
       const translatedTargetSegments = response.segments[language]
 
-
-
-
-      // Create hash to get target segments in O(1)
+      // TODO extract: Create hash to get target segments in O(1)
       const targetXmlUnitsHash = {}
       targetXmlUnits.forEach(targetXmlUnit => {
         const targetSegment = this.convertXmlUnitToSegment(targetXmlUnit)
         targetXmlUnitsHash[this.uniqueIdentifier(targetSegment)] = targetXmlUnit
       })
-
-
-
-
+      ///
 
       // 4 ... populate it with targets from Translation.io
       translatedTargetSegments.forEach(translatedTargetSegment => {
@@ -238,7 +238,8 @@ class Base {
 
         // Overwrite XML target value of this segment
         if (targetXmlUnit) {
-          targetXmlUnit.target = this.escape(translatedTargetSegment.target)
+          const interpolations = Interpolation.escape(targetXmlUnit.source)['interpolations']
+          targetXmlUnit.target = Interpolation.unescape(this.escapeEntities(translatedTargetSegment.target), interpolations)
         }
       })
 

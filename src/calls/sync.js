@@ -11,8 +11,7 @@ class Init extends Base {
   run() {
     console.log('Sync.run()')
 
-    // Extract source segments
-
+    // 1. Extract source segments
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
     const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
@@ -29,8 +28,7 @@ class Init extends Base {
       purge:            false  // TODO: use tio option
     }
 
-    // Send source segments and save translated target segments
-
+    // 2. Send source segments and save translated target segments
     const url = `${this.endpoint()}/v1/segments/sync.json?api_key=${this.apiKey()}`
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})

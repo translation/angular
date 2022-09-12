@@ -9,12 +9,12 @@ class Interpolation {
   // to
   //'Hello <x0> and <x1>'
   static escape(text) {
-    const regexp         = /<x.*?\/>/g
+    const regexp         = /<x[\s\S]*?\/>/g         // Use [\s\S] instead of . for multiline matching => https://stackoverflow.com/a/16119722/1243212
     const interpolations = text.match(regexp) || [] // Because JS is sad and returns null instead of [] if no results
     let   escapedText    = `${text}`
 
     interpolations.forEach((interpolation, index) =>
-      escapedText = escapedText.replace(interpolation, `<x${index}>`)
+      escapedText = escapedText.replace(interpolation, `{x${index}}`)
     )
 
     return {
@@ -33,13 +33,13 @@ class Interpolation {
   // to
   // 'Hello <x id="INTERPOLATION" equiv-text="{{ otherName }}"/> and <x id="INTERPOLATION" equiv-text="{{ name }}"/>
   static unescape(escapedText, interpolations) {
-    const regexp               = /<x\d+?>/g
+    const regexp               = /{x\d+?}/g ///<x\d+?>/g
     const simpleInterpolations = escapedText.match(regexp) || []
 
     let text = `${escapedText}`
 
     simpleInterpolations.forEach((simpleInterpolation) => {
-      const index = parseInt(simpleInterpolation.replace('<x', '').replace('/>', ''))
+      const index = parseInt(simpleInterpolation.replace('{x', '').replace('}', ''))
       text = text.replace(simpleInterpolation, (interpolations[index] || ''))
     })
 
@@ -65,12 +65,12 @@ module.exports = Interpolation
 //   ]
 // }
 
-// Interpolation.unescape('Hello <x0> and <x1>', [
+// Interpolation.unescape('Hello {{x0}} and {{x1}}', [
 //   '<x id="INTERPOLATION" equiv-text="{{ name }}"/>',
 //   '<x id="INTERPOLATION" equiv-text="{{ otherName }}"/>'
 // ])
 
-// Interpolation.unescape('Hello <x1> and <x0>', [
+// Interpolation.unescape('Hello {{x1}} and {{x0}}', [
 //   '<x id="INTERPOLATION" equiv-text="{{ name }}"/>',
 //   '<x id="INTERPOLATION" equiv-text="{{ otherName }}"/>'
 // ])

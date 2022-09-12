@@ -1,25 +1,24 @@
 <h1 i18n="User welcome|An introduction header for this sample@@introductionHeader">
-  Hello i18n!
+  Sentence with meaning (context), description (comment) and key
 </h1>
 
 <h1 i18n="Text meaning|">
   Small sentence with "c'est", stuff like &nbsp; &lt; & something like !
   🙂
-  michaël
+  michaël => only meaning!
 </h1>
 
 <h1 i18n="Text context with key|@@myKeyIsTooGood">
-  Blah
+  Sentence with meaning (context) and key
 </h1>
 
 <h1 i18n="@@OnlySuperKey">
-  Blorg
+  Sentence with only key
 </h1>
 
 <ng-container i18n>Hello source</ng-container> <br />
 <ng-container i18n>{{helloSourceFromJS}}</ng-container> <br />
 <hr /> <br />
-<ng-container i18n="@@TIO_MYAPP_HelloKey">Hello key</ng-container> <br />
 <ng-container i18n>{{helloKeyFromJS}}</ng-container> <br />
 
 <br />
@@ -39,4 +38,10 @@
   =0 {just now}
   =1 {one minute ago}
   other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
+</span>
+
+<span i18n>{minutes, plural,
+  =0 {Updated: just now}
+  =1 {Updated: one minute ago}
+  other {Updated: {{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
 </span>

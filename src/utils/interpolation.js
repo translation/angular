@@ -9,8 +9,8 @@ class Interpolation {
   // to
   //'Hello <x0> and <x1>'
   static escape(text) {
-    const regexp         = /<x[\s\S]*?\/>/g         // Use [\s\S] instead of . for multiline matching => https://stackoverflow.com/a/16119722/1243212
-    const interpolations = text.match(regexp) || [] // Because JS is sad and returns null instead of [] if no results
+    const regexp         = /<x[\s\S]*?\/>/g // Use [\s\S] instead of . for multiline matching => https://stackoverflow.com/a/16119722/1243212
+    const interpolations = text.match(regexp) || []
     let   escapedText    = `${text}`
 
     interpolations.forEach((interpolation, index) =>
@@ -33,7 +33,7 @@ class Interpolation {
   // to
   // 'Hello <x id="INTERPOLATION" equiv-text="{{ otherName }}"/> and <x id="INTERPOLATION" equiv-text="{{ name }}"/>
   static unescape(escapedText, interpolations) {
-    const regexp               = /{x\d+?}/g ///<x\d+?>/g
+    const regexp               = /{x\d+?}/g
     const simpleInterpolations = escapedText.match(regexp) || []
 
     let text = `${escapedText}`

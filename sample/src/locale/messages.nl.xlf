@@ -151,7 +151,7 @@
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <target> Hello key from JS</target>
+        <target></target>
       </trans-unit>
     </body>
   </file>

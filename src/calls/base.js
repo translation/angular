@@ -94,8 +94,10 @@ class Base {
     }
 
     source = Interpolation.extract(source)['text']
+    source = source.trim()
+    source = this.unescapeEntities(source)
 
-    return this.unescapeEntities(source)
+    return source
   }
 
   xmlUnitTarget(xmlUnit) {
@@ -110,8 +112,10 @@ class Base {
     }
 
     target = Interpolation.extract(target)['text']
+    target = target.trim()
+    target = this.unescapeEntities(target)
 
-    return this.unescapeEntities(target)
+    return target
   }
 
   // To put existing unit notes into array (even if just one)

@@ -23,6 +23,28 @@ describe('convertXmlUnitToSegment', () => {
     })
   })
 
+  test('Ignore extra spaces at start and end of source/target', () => {
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="7670372064920373295" datatype="html">
+        <source>
+       Source Text   </source>
+        <target>
+
+        Target     Text
+
+        </target>
+      </trans-unit>
+    `)['trans-unit']
+
+    expect(
+      base.convertXmlUnitToSegment(xmlUnit)
+    ).toStrictEqual({
+       "type":   "source",
+       "source": "Source Text",
+       "target": "Target     Text",
+    })
+  })
+
   test('Convert simple with custom key', () => {
     const xmlUnit = base.xmlParser().parse(`
       <trans-unit id="customKey" datatype="html">

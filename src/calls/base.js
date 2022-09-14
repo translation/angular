@@ -8,7 +8,9 @@ class Base {
     this.configFile = configFile || 'tio.config.json' // default config file
   }
 
-  /* OPTIONS */
+  /*------------------*/
+  /* Config & Options */
+  /*------------------*/
 
   options() {
     return JSON.parse(
@@ -36,8 +38,6 @@ class Base {
   //   return this.options()['locale_template_path'] || `./src/locale/messages.{locale}.xlf`
   // }
 
-  /* XML Parser/Builder Utils */
-
   sourceFile() {
     return './src/locale/messages.xlf'
   }
@@ -45,6 +45,10 @@ class Base {
   targetFile(language) {
     return `./src/locale/messages.${language}.xlf`
   }
+
+  /*--------------------------*/
+  /* XML Parser/Builder Utils */
+  /*--------------------------*/
 
   xmlParser() {
     return new XMLParser({
@@ -209,11 +213,12 @@ class Base {
                .replace(/"/g, '&quot;')
   }
 
-  uniqueIdentifier(segment) {
-    return `${segment.source}|||${segment.context}`
-  }
+  /*----------------------------------------*/
+  /* Save target .xlf files after init/sync */
+  /*----------------------------------------*/
 
   writeTargetFiles(response) {
+    // For each target language
     this.targetLanguages().forEach(language => {
       const targetFile = this.targetFile(language)
 
@@ -225,36 +230,45 @@ class Base {
       // 2. Recreate it from generated .xlf template
       fs.copyFileSync(this.sourceFile(), targetFile)
 
-      // 3. Load XML and...
+      // 3. Load .xlf
       const targetRaw      = fs.readFileSync(targetFile)
       const targetXml      = this.xmlParser().parse(targetRaw)
       const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
 
+      // 4 Populate the loaded .xlf it with targets from Translation.io
       const translatedTargetSegments = response.segments[language]
+      const targetXmlUnitsHash       = this.buildXmlUnitsHash(targetXmlUnits)
 
-      // TODO extract: Create hash to get target segments in O(1)
-      const targetXmlUnitsHash = {}
-      targetXmlUnits.forEach(targetXmlUnit => {
-        const targetSegment = this.convertXmlUnitToSegment(targetXmlUnit)
-        targetXmlUnitsHash[this.uniqueIdentifier(targetSegment)] = targetXmlUnit
-      })
-      ///
-
-      // 4 ... populate it with targets from Translation.io
       translatedTargetSegments.forEach(translatedTargetSegment => {
         let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
-        // Overwrite XML target value of this segment
+        // Overwrite .xlf target value of this segment
         if (targetXmlUnit) {
           const interpolations = Interpolation.extract(targetXmlUnit.source)['interpolations']
           targetXmlUnit.target = Interpolation.recompose(this.escapeEntities(translatedTargetSegment.target), interpolations)
         }
       })
 
-      // 5. Build XML raw content and save it
+      // 5. Build new target .xlf raw content and save it
       const translatedTargetRaw = this.xmlBuilder().build(targetXml)
       fs.writeFileSync(targetFile, translatedTargetRaw)
     })
+  }
+
+  uniqueIdentifier(segment) {
+    return `${segment.source}|||${segment.context}`
+  }
+
+  // For O(1) search optimization
+  buildXmlUnitsHash(xmlUnits) {
+    let targetXmlUnitsHash = {}
+
+    xmlUnits.forEach(xmlUnit => {
+      const segment = this.convertXmlUnitToSegment(xmlUnit)
+      targetXmlUnitsHash[this.uniqueIdentifier(segment)] = xmlUnit
+    })
+
+    return targetXmlUnitsHash
   }
 }
 

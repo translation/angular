@@ -62,3 +62,33 @@ describe('convertXmlUnitToSegment', () => {
     })
   })
 })
+
+describe('recomposeTarget', () => {
+  beforeEach(() => {
+    base = new Base()
+  });
+
+  // fixed bug: {autres} was replaced with undefined
+  test('Generate correct XLF using target from Translation.io API', () => {
+    const segment = {
+      // We can ignore other fields here
+      "target": "{VAR_SELECT, select, male {un homme} female {une femme} other {autre} }",
+    }
+
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="7670372064920373295" datatype="html">
+        <source>Source Text</source>
+      </trans-unit>
+    `)['trans-unit']
+
+    xmlUnit.target = base.recomposeTarget(xmlUnit, segment)
+
+    expect(base.xmlBuilder().build(xmlUnit)).toEqual(
+      [
+        '<source>Source Text</source>',
+        '<target>{VAR_SELECT, select, male {un homme} female {une femme} other {autre} }</target>',
+        ''
+      ].join("\n")
+    )
+  })
+})

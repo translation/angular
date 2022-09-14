@@ -242,10 +242,8 @@ class Base {
       translatedTargetSegments.forEach(translatedTargetSegment => {
         let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
-        // Overwrite .xlf target value of this segment
         if (targetXmlUnit) {
-          const interpolations = Interpolation.extract(targetXmlUnit.source)['interpolations']
-          targetXmlUnit.target = Interpolation.recompose(this.escapeEntities(translatedTargetSegment.target), interpolations)
+          targetXmlUnit.target = this.recomposeTarget(targetXmlUnit, translatedTargetSegment)
         }
       })
 
@@ -253,6 +251,12 @@ class Base {
       const translatedTargetRaw = this.xmlBuilder().build(targetXml)
       fs.writeFileSync(targetFile, translatedTargetRaw)
     })
+  }
+
+  // Use XML segment and API segment to build back the target with existing interpolations
+  recomposeTarget(xmlUnit, segment) {
+    const interpolations = Interpolation.extract(xmlUnit.source)['interpolations']
+    return Interpolation.recompose(this.escapeEntities(segment.target), interpolations)
   }
 
   uniqueIdentifier(segment) {

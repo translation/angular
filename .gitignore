@@ -10,3 +10,5 @@ TODO_LOCAL
 coverage
 samples/sample-v10/.python-version
 samples/sample-v10/package-lock.json
+samples/sample-v11/.python-version
+samples/sample-v11/package-lock.json

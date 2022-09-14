@@ -30,11 +30,10 @@ class Interpolation {
   }
 
   static recompose(escapedText, interpolations) {
-    const regexp        = /{\w+?}/g
-    const substitutions = escapedText.match(regexp) || []
+    const substitutions = Object.keys(interpolations)
     let   text          = `${escapedText}`;
 
-    substitutions.filter(this.uniq).forEach((substitution) => {
+    substitutions.forEach((substitution) => {
       const extraction = interpolations[substitution]
 
       text = text.replace(new RegExp(substitution, 'g'), extraction)
@@ -65,10 +64,6 @@ class Interpolation {
   static renameKey(object, oldKey, newKey) {
     Object.defineProperty(object, newKey, Object.getOwnPropertyDescriptor(object, oldKey))
     delete object[oldKey]
-  }
-
-  static uniq(value, index, self) {
-    return self.indexOf(value) === index
   }
 }
 

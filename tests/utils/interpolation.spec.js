@@ -174,6 +174,15 @@ describe('Interpolation.recompose', () => {
         with <x id="INTERPOLATION"/> and <x id="INTERPOLATION" equiv-text="{{   stuff }}"/>
       `)
   })
+
+  // fixed bug: {autres} was replaced with undefined
+  test('A "select" ICU string managed as text should not try to replace ICU parts looking like variables (like {autres})', () => {
+    expect(
+      Interpolation.recompose('{VAR_SELECT, select, male {un homme} female {une femme} other {autre} }', {
+        // nothing to substitute
+      })
+    ).toEqual('{VAR_SELECT, select, male {un homme} female {une femme} other {autre} }')
+  })
 })
 
 describe('Interpolation.substitution', () => {

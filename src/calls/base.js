@@ -256,7 +256,25 @@ class Base {
   // Use XML segment and API segment to build back the target with existing interpolations
   recomposeTarget(xmlUnit, segment) {
     const interpolations = Interpolation.extract(xmlUnit.source)['interpolations']
-    return Interpolation.recompose(this.escapeEntities(segment.target), interpolations)
+    let   escapedTarget  = segment.target
+
+    // Detect ICU parts with double single-quotes and escape them
+    // cf. https://www.debuggex.com/r/WXSIJRjW816Z8dvZ
+    // or  https://regex101.com/r/44EyRw/1
+    let icuPartsWithQuotes = escapedTarget.match(/{[^{]*?('')[^}]*?}/g) || []
+
+    icuPartsWithQuotes.forEach((part) => {
+      const escapedPart = part.replace(/''/g, "'")
+      escapedTarget = escapedTarget.replace(part, escapedPart)
+    })
+
+    // Escape entities like ' and " to &apos; and &quot;
+    escapedTarget = this.escapeEntities(escapedTarget)
+
+    // Recompose {x} interpolations to <x id=INTERPOLATION .../>
+    escapedTarget = Interpolation.recompose(escapedTarget, interpolations)
+
+    return escapedTarget
   }
 
   uniqueIdentifier(segment) {

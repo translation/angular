@@ -93,7 +93,7 @@ class Base {
       source = xmlUnit.source['#text']
     }
 
-    source = Interpolation.escape(source)['text']
+    source = Interpolation.extract(source)['text']
 
     return this.unescapeEntities(source)
   }
@@ -109,7 +109,7 @@ class Base {
       }
     }
 
-    target = Interpolation.escape(target)['text']
+    target = Interpolation.extract(target)['text']
 
     return this.unescapeEntities(target)
   }
@@ -242,8 +242,8 @@ class Base {
 
         // Overwrite XML target value of this segment
         if (targetXmlUnit) {
-          const interpolations = Interpolation.escape(targetXmlUnit.source)['interpolations']
-          targetXmlUnit.target = Interpolation.unescape(this.escapeEntities(translatedTargetSegment.target), interpolations)
+          const interpolations = Interpolation.extract(targetXmlUnit.source)['interpolations']
+          targetXmlUnit.target = Interpolation.recompose(this.escapeEntities(translatedTargetSegment.target), interpolations)
         }
       })
 

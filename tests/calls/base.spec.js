@@ -119,6 +119,40 @@ describe('recomposeTarget', () => {
     )
   })
 
+  test('Generate correct XLF even when words with quotes inside ICU plural strings - works with multiline', () => {
+    const segment = {
+      // We can ignore other fields here
+      "source": `{VAR_PLURAL, plural,
+          one {the man and the animal}
+          other {other men and animals}}`,
+      "target": `{VAR_PLURAL, plural,
+          one {l''homme et l''animal}
+          other {d''autres hommes et des animaux}}`,
+    }
+
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="7670372064920373295" datatype="html">
+        <source>{VAR_PLURAL, plural,
+          one {the man and the animal}
+          other {other men and animals}}</source>
+      </trans-unit>
+    `)['trans-unit']
+
+    xmlUnit.target = base.recomposeTarget(xmlUnit, segment)
+
+    expect(base.xmlBuilder().build(xmlUnit)).toEqual(
+      [
+        `<source>{VAR_PLURAL, plural,
+          one {the man and the animal}
+          other {other men and animals}}</source>`,
+        `<target>{VAR_PLURAL, plural,
+          one {l&apos;homme et l&apos;animal}
+          other {d&apos;autres hommes et des animaux}}</target>`,
+        ''
+      ].join("\n")
+    )
+  })
+
   // fixed bug: Angular < 9 doesn't support extra space in "{ VAR_PLURAL" at ICU start of target
   // We need to remove it (it doesn't really matter for us)
   test('Remove extra space at the start of ICU (compatibility with Angular < 9)', () => {
@@ -152,6 +186,29 @@ describe('isIcuPluralString', () => {
   });
 
   test('Test on simple cases', () => {
+    // Classic tests
     expect(base.isIcuPluralString("Hello world")).toEqual(false)
+
+    // is_icu_plural_string.call("Bonjour l'espace"                          ).should == false
+    // is_icu_plural_string.call("{ count, plural, one {cat} other {cats} }" ).should == true
+    // is_icu_plural_string.call("{ count, plural2, one {cat} other {cats} }").should == false
+    // is_icu_plural_string.call("{ count plural, one {cat} other {cats} }"  ).should == false
+    // is_icu_plural_string.call("{ count, plural, one {cat} other {cats}"   ).should == false
+    // is_icu_plural_string.call("{ count, plural, something {hey}}"         ).should == false
+    // is_icu_plural_string.call("{ count, plural, hey}"                     ).should == false
+
+    // // With interpolations
+    // is_icu_plural_string.call("{ count, plural, one {Hello # cat} other {Hello # cats} }"            ).should == true
+    // is_icu_plural_string.call("{ count, plural, one {Hello {count} cat} other {Hello {count} cats} }").should == true
+    // is_icu_plural_string.call("{ count, plural, one {Hello {count} cat} two {Hello {count} cats} other {Hello {count} cats} }").should == true
+
+    // // 'other' plural form is mandatory in many implementations
+    // is_icu_plural_string.call("{ count, plural, one {cat} }").should == false
+
+    // // Extra spaces between cases shouldn't matter
+    // is_icu_plural_string.call("{count,      plural,      one    {cat} other {cats}       } ").should == true
+
+    // // 'several' is a case that doesn't exist (but accepted anyway in both parsing libraries? Weird!)
+    // is_icu_plural_string.call("{ count, plural, several {cat} other {cats} }").should == true
   })
 })

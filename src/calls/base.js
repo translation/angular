@@ -2,6 +2,7 @@ const Interpolation = require('../utils/interpolation')
 
 const fs = require('fs')
 const { XMLParser, XMLBuilder } = require('fast-xml-parser')
+const { parse: icuParse } = require('@formatjs/icu-messageformat-parser')
 
 class Base {
   constructor(configFile) {
@@ -258,15 +259,11 @@ class Base {
     const interpolations = Interpolation.extract(xmlUnit.source)['interpolations']
     let   escapedTarget  = segment.target
 
-    // Detect ICU parts with double single-quotes and escape them
-    // cf. https://www.debuggex.com/r/WXSIJRjW816Z8dvZ
-    // or  https://regex101.com/r/44EyRw/1
-    let icuPartsWithQuotes = escapedTarget.match(/{[^{]*?('')[^}]*?}/g) || []
-
-    icuPartsWithQuotes.forEach((part) => {
-      const escapedPart = part.replace(/''/g, "'")
-      escapedTarget = escapedTarget.replace(part, escapedPart)
-    })
+    // Detect ICU plural parts with double single-quotes and escape them
+    // Angular doesn't manage the whole ICU syntax so we fix the result from Translation.io
+    if (this.isIcuPluralString(escapedTarget)) {
+      escapedTarget = this.escapeDoubleSingleQuotesFromIcuPlural(escapedTarget)
+    }
 
     // Escape entities like ' and " to &apos; and &quot;
     escapedTarget = this.escapeEntities(escapedTarget)
@@ -291,6 +288,40 @@ class Base {
     })
 
     return targetXmlUnitsHash
+  }
+
+  escapeDoubleSingleQuotesFromIcuPlural(icuPlural) {
+    // cf. https://www.debuggex.com/r/KO9jkSfi2RVzHlVE
+    // or  https://regex101.com/r/y90mJu/1
+    let icuPartsWithQuotes = icuPlural.match(/(zero|one|two|few|many|other|=\d+)\s*{.*?''.*?}/g) || []
+
+    icuPartsWithQuotes.forEach((part) => {
+      const escapedPart = part.replace(/''/g, "'")
+      icuPlural = icuPlural.replace(part, escapedPart)
+    })
+
+    return icuPlural
+  }
+
+  isIcuPluralString(text) {
+    // Quick & Dirty ICU plural detection to avoid parsing each time ('s' flag = consider it like single line)
+    if (/^\s*{.*,\s*plural\s*,.*}\s*$/s.test(text)) {
+      try { // Will catch exception if not correctly parsed (or if missing keys on parsed result)
+        const icuNode = icuParse(text, {
+          ignoreTag:            true,  // HTML tags are not parsed as tokens
+          requiresOtherClause:  false, // an ICU without other is kinda stupid, but we tolerate it for the source
+          shouldParseSkeletons: false // Whether to parse number/datetime skeleton as tokens
+        })[0]
+
+        const cases = Object.keys(icuNode.options || {})
+
+        return icuNode.pluralType == 'cardinal' && cases.includes('other')
+      } catch (error) {
+        return false
+      }
+    } else {
+      return false
+    }
   }
 }
 

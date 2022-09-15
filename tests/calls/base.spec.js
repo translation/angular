@@ -93,9 +93,9 @@ describe('recomposeTarget', () => {
   })
 
   // fixed bug: 2 x single-quotes ('') should be replaced by a single one (&apos; after escape) if they are inside ICU strings
-  // T.io uses two single-quotes by default when recomposing ICU strings (it's totally valid!),
+  // T.io uses two single-quotes by default when recomposing ICU plural strings (it's totally valid!),
   // but Angular only accepts one and ignores the other syntax, so we need to adapt ouselves here (too specific to do on the backend!)
-  test('Generate correct XLF even when words with quotes inside ICU strings', () => {
+  test('Generate correct XLF even when words with quotes inside ICU plural strings', () => {
     const segment = {
       // We can ignore other fields here
       "target": "{VAR_PLURAL, plural, one {l''homme et l''animal} other {d''autres hommes et des animaux}}",

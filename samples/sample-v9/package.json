@@ -11,7 +11,14 @@
     "test": "ng test",
     "lint": "tslint ./src/**/*.ts -t verbose",
     "e2e": "ng e2e",
-    "extract": "ng xi18n --output-path=locale"
+    "extract": "ng xi18n --output-path=src/locale",
+    "i18n": "npm run extract",
+    "build-i18n-and-translation-init": "npm run i18n && npm run translation-init",
+    "build-i18n-and-translation-sync": "npm run i18n && npm run translation-sync",
+    "translation-init": "tio init",
+    "translation-sync": "tio sync",
+    "translation-sync-readonly": "tio sync --readonly",
+    "translation-sync-purge": "tio sync --purge"
   },
   "keywords": [],
   "author": "",
@@ -22,10 +29,12 @@
     "@angular/compiler": "~9.1.4",
     "@angular/core": "~9.1.4",
     "@angular/forms": "~9.1.4",
+    "@angular/localize": "~9.1.13",
     "@angular/platform-browser": "~9.1.4",
     "@angular/platform-browser-dynamic": "~9.1.4",
     "@angular/router": "~9.1.4",
     "@angular/upgrade": "~9.1.4",
+    "@translation/angular": "file:../../",
     "angular-in-memory-web-api": "~0.11.0",
     "rxjs": "~6.5.4",
     "zone.js": "~0.10.3"

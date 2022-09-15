@@ -259,10 +259,14 @@ class Base {
     const interpolations = Interpolation.extract(xmlUnit.source)['interpolations']
     let   escapedTarget  = segment.target
 
-    // Detect ICU plural parts with double single-quotes and escape them
-    // Angular doesn't manage the whole ICU syntax so we fix the result from Translation.io
-    if (this.isIcuPluralString(escapedTarget)) {
+    // Detect ICU plural parts and do extra excape
+    if (this.isIcuPluralString(segment.source) && this.isIcuPluralString(escapedTarget)) {
+      // Replace double single-quotes and escape them
+      // Angular doesn't manage the whole ICU syntax so we fix the result from Translation.io
       escapedTarget = this.escapeDoubleSingleQuotesFromIcuPlural(escapedTarget)
+
+      // Angular < 9 doesn't support extra space in "{ VAR_PLURAL" at ICU start
+      escapedTarget = escapedTarget.replace(/^{\sVAR_PLURAL,/, '{VAR_PLURAL,')
     }
 
     // Escape entities like ' and " to &apos; and &quot;

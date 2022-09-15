@@ -98,12 +98,13 @@ describe('recomposeTarget', () => {
   test('Generate correct XLF even when words with quotes inside ICU plural strings', () => {
     const segment = {
       // We can ignore other fields here
+      "source": "{VAR_PLURAL, plural, one {the man and the animal} other {other men and animals}}",
       "target": "{VAR_PLURAL, plural, one {l''homme et l''animal} other {d''autres hommes et des animaux}}",
     }
 
     const xmlUnit = base.xmlParser().parse(`
       <trans-unit id="7670372064920373295" datatype="html">
-        <source>Source Text</source>
+        <source>{VAR_PLURAL, plural, one {the man and the animal} other {other men and animals}}</source>
       </trans-unit>
     `)['trans-unit']
 
@@ -111,10 +112,46 @@ describe('recomposeTarget', () => {
 
     expect(base.xmlBuilder().build(xmlUnit)).toEqual(
       [
-        '<source>Source Text</source>',
+        '<source>{VAR_PLURAL, plural, one {the man and the animal} other {other men and animals}}</source>',
         "<target>{VAR_PLURAL, plural, one {l&apos;homme et l&apos;animal} other {d&apos;autres hommes et des animaux}}</target>",
         ''
       ].join("\n")
     )
+  })
+
+  // fixed bug: Angular < 9 doesn't support extra space in "{ VAR_PLURAL" at ICU start of target
+  // We need to remove it (it doesn't really matter for us)
+  test('Remove extra space at the start of ICU (compatibility with Angular < 9)', () => {
+    const segment = {
+      // We can ignore other fields here
+      "source": "{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{minutes} minutes ago} }",
+      "target": "{ VAR_PLURAL, plural, =0 {à l''instant} =1 {il y a une minute} one {il y a {minutes} minute} other {il y a {minutes} minutes} }",
+    }
+
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="7670372064920373295" datatype="html">
+        <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{minutes} minutes ago} }</source>
+      </trans-unit>
+    `)['trans-unit']
+
+    xmlUnit.target = base.recomposeTarget(xmlUnit, segment)
+
+    expect(base.xmlBuilder().build(xmlUnit)).toEqual(
+      [
+        '<source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{minutes} minutes ago} }</source>',
+        "<target>{VAR_PLURAL, plural, =0 {à l&apos;instant} =1 {il y a une minute} one {il y a {minutes} minute} other {il y a {minutes} minutes} }</target>",
+        ''
+      ].join("\n")
+    )
+  })
+})
+
+describe('isIcuPluralString', () => {
+  beforeEach(() => {
+    base = new Base()
+  });
+
+  test('Test on simple cases', () => {
+    expect(base.isIcuPluralString("Hello world")).toEqual(false)
   })
 })

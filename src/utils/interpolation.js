@@ -1,21 +1,27 @@
 class Interpolation {
-  // Convert
-  // 'Hello <x id="INTERPOLATION"/> and <x id="INTERPOLATION"/>'
-  // to
-  //'Hello <x0> and <x1>'
-  //----
-  // Convert
-  // 'Hello <x id="INTERPOLATION" equiv-text="{{ name }}"/> and <x id="INTERPOLATION" equiv-text="{{ otherName }}"/>'
-  // to
-  //'Hello <x0> and <x1>'
-  static escape(text) {
+  static extract(text) {
     const regexp         = /<x[\s\S]*?\/>/g // Use [\s\S] instead of . for multiline matching => https://stackoverflow.com/a/16119722/1243212
-    const interpolations = text.match(regexp) || []
+    const extractions    = text.match(regexp) || []
     let   escapedText    = `${text}`
+    let   interpolations = {}
 
-    interpolations.forEach((interpolation, index) =>
-      escapedText = escapedText.replace(interpolation, `{x${index}}`)
-    )
+    extractions.forEach((extraction) => {
+      const substitution = this.substitution(extraction, Object.keys(interpolations))
+
+      escapedText = escapedText.replace(extraction, substitution) // Replace in string
+      interpolations[substitution] = extraction                   // Save the substitution for "recompose"
+    })
+
+    // Don't number substitutions if only one the kind!
+    if (escapedText.includes('{x1}') && !escapedText.includes('{x2}')) {
+      escapedText = escapedText.replace('{x1}', '{x}')
+      this.renameKey(interpolations, '{x1}', '{x}')
+    }
+
+    if (escapedText.includes('{icu1}') && !escapedText.includes('{icu2}')) {
+      escapedText = escapedText.replace('{icu1}', '{icu}')
+      this.renameKey(interpolations, '{icu1}', '{icu}')
+    }
 
     return {
       text:           escapedText,
@@ -23,55 +29,42 @@ class Interpolation {
     }
   }
 
-  // Convert
-  //'Hello <x0> and <x1>' and ['<x id="INTERPOLATION"/>', '<x id="INTERPOLATION"/>']
-  // to
-  // 'Hello <x id="INTERPOLATION"/> and <x id="INTERPOLATION"/>'
-  //----
-  // Convert
-  //'Hello <x1> and <x0>' and ['<x id="INTERPOLATION" equiv-text="{{ name }}"/>', '<x id="INTERPOLATION" equiv-text="{{ otherName }}"/>']
-  // to
-  // 'Hello <x id="INTERPOLATION" equiv-text="{{ otherName }}"/> and <x id="INTERPOLATION" equiv-text="{{ name }}"/>
-  static unescape(escapedText, interpolations) {
-    const regexp               = /{x\d+?}/g
-    const simpleInterpolations = escapedText.match(regexp) || []
+  static recompose(escapedText, interpolations) {
+    const substitutions = Object.keys(interpolations)
+    let   text          = `${escapedText}`;
 
-    let text = `${escapedText}`
+    substitutions.forEach((substitution) => {
+      const extraction = interpolations[substitution]
 
-    simpleInterpolations.forEach((simpleInterpolation) => {
-      const index = parseInt(simpleInterpolation.replace('{x', '').replace('}', ''))
-      text = text.replace(simpleInterpolation, (interpolations[index] || ''))
+      text = text.replace(new RegExp(substitution, 'g'), extraction)
     })
 
     return text
   }
+
+  // Substitutes the interpolation with an appropriate variable (specific or index-generated)
+  // depending on already existing substitutions
+  static substitution(extraction, existingSubstitutions) {
+    let substitution
+
+    if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text=')) {
+      const variableName = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0]
+      substitution = `{${variableName.trim()}}`
+    } else if (extraction.includes('id="ICU')) {
+      const nextIndex = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
+      substitution = `{icu${nextIndex}}`
+    } else {
+      const nextIndex = (existingSubstitutions.join(" ").match(/{x\d+?}/g) || []).length + 1
+      substitution = `{x${nextIndex}}`
+    }
+
+    return substitution
+  }
+
+  static renameKey(object, oldKey, newKey) {
+    Object.defineProperty(object, newKey, Object.getOwnPropertyDescriptor(object, oldKey))
+    delete object[oldKey]
+  }
 }
 
 module.exports = Interpolation
-
-
-
-
-
-
-
-// const result = Interpolation.escape('Hello <x id="INTERPOLATION" equiv-text="{{ name }}"/> and <x id="INTERPOLATION" equiv-text="{{ otherName }}"/>')
-
-// {
-//   text: 'Hello <x0> and <x1>',
-//   interpolations: [
-//     '<x id="INTERPOLATION" equiv-text="{{ name }}"/>',
-//     '<x id="INTERPOLATION" equiv-text="{{ otherName }}"/>'
-//   ]
-// }
-
-// Interpolation.unescape('Hello {{x0}} and {{x1}}', [
-//   '<x id="INTERPOLATION" equiv-text="{{ name }}"/>',
-//   '<x id="INTERPOLATION" equiv-text="{{ otherName }}"/>'
-// ])
-
-// Interpolation.unescape('Hello {{x1}} and {{x0}}', [
-//   '<x id="INTERPOLATION" equiv-text="{{ name }}"/>',
-//   '<x id="INTERPOLATION" equiv-text="{{ otherName }}"/>'
-// ])
-

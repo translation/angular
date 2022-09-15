@@ -8,7 +8,9 @@ class Base {
     this.configFile = configFile || 'tio.config.json' // default config file
   }
 
-  /* OPTIONS */
+  /*------------------*/
+  /* Config & Options */
+  /*------------------*/
 
   options() {
     return JSON.parse(
@@ -36,8 +38,6 @@ class Base {
   //   return this.options()['locale_template_path'] || `./src/locale/messages.{locale}.xlf`
   // }
 
-  /* XML Parser/Builder Utils */
-
   sourceFile() {
     return './src/locale/messages.xlf'
   }
@@ -45,6 +45,10 @@ class Base {
   targetFile(language) {
     return `./src/locale/messages.${language}.xlf`
   }
+
+  /*--------------------------*/
+  /* XML Parser/Builder Utils */
+  /*--------------------------*/
 
   xmlParser() {
     return new XMLParser({
@@ -93,9 +97,11 @@ class Base {
       source = xmlUnit.source['#text']
     }
 
-    source = Interpolation.escape(source)['text']
+    source = Interpolation.extract(source)['text']
+    source = source.trim()
+    source = this.unescapeEntities(source)
 
-    return this.unescapeEntities(source)
+    return source
   }
 
   xmlUnitTarget(xmlUnit) {
@@ -109,9 +115,11 @@ class Base {
       }
     }
 
-    target = Interpolation.escape(target)['text']
+    target = Interpolation.extract(target)['text']
+    target = target.trim()
+    target = this.unescapeEntities(target)
 
-    return this.unescapeEntities(target)
+    return target
   }
 
   // To put existing unit notes into array (even if just one)
@@ -205,11 +213,12 @@ class Base {
                .replace(/"/g, '&quot;')
   }
 
-  uniqueIdentifier(segment) {
-    return `${segment.source}|||${segment.context}`
-  }
+  /*----------------------------------------*/
+  /* Save target .xlf files after init/sync */
+  /*----------------------------------------*/
 
   writeTargetFiles(response) {
+    // For each target language
     this.targetLanguages().forEach(language => {
       const targetFile = this.targetFile(language)
 
@@ -221,36 +230,67 @@ class Base {
       // 2. Recreate it from generated .xlf template
       fs.copyFileSync(this.sourceFile(), targetFile)
 
-      // 3. Load XML and...
+      // 3. Load .xlf
       const targetRaw      = fs.readFileSync(targetFile)
       const targetXml      = this.xmlParser().parse(targetRaw)
       const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
 
+      // 4 Populate the loaded .xlf it with targets from Translation.io
       const translatedTargetSegments = response.segments[language]
+      const targetXmlUnitsHash       = this.buildXmlUnitsHash(targetXmlUnits)
 
-      // TODO extract: Create hash to get target segments in O(1)
-      const targetXmlUnitsHash = {}
-      targetXmlUnits.forEach(targetXmlUnit => {
-        const targetSegment = this.convertXmlUnitToSegment(targetXmlUnit)
-        targetXmlUnitsHash[this.uniqueIdentifier(targetSegment)] = targetXmlUnit
-      })
-      ///
-
-      // 4 ... populate it with targets from Translation.io
       translatedTargetSegments.forEach(translatedTargetSegment => {
         let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
-        // Overwrite XML target value of this segment
         if (targetXmlUnit) {
-          const interpolations = Interpolation.escape(targetXmlUnit.source)['interpolations']
-          targetXmlUnit.target = Interpolation.unescape(this.escapeEntities(translatedTargetSegment.target), interpolations)
+          targetXmlUnit.target = this.recomposeTarget(targetXmlUnit, translatedTargetSegment)
         }
       })
 
-      // 5. Build XML raw content and save it
+      // 5. Build new target .xlf raw content and save it
       const translatedTargetRaw = this.xmlBuilder().build(targetXml)
       fs.writeFileSync(targetFile, translatedTargetRaw)
     })
+  }
+
+  // Use XML segment and API segment to build back the target with existing interpolations
+  recomposeTarget(xmlUnit, segment) {
+    const interpolations = Interpolation.extract(xmlUnit.source)['interpolations']
+    let   escapedTarget  = segment.target
+
+    // Detect ICU parts with double single-quotes and escape them
+    // cf. https://www.debuggex.com/r/WXSIJRjW816Z8dvZ
+    // or  https://regex101.com/r/44EyRw/1
+    let icuPartsWithQuotes = escapedTarget.match(/{[^{]*?('')[^}]*?}/g) || []
+
+    icuPartsWithQuotes.forEach((part) => {
+      const escapedPart = part.replace(/''/g, "'")
+      escapedTarget = escapedTarget.replace(part, escapedPart)
+    })
+
+    // Escape entities like ' and " to &apos; and &quot;
+    escapedTarget = this.escapeEntities(escapedTarget)
+
+    // Recompose {x} interpolations to <x id=INTERPOLATION .../>
+    escapedTarget = Interpolation.recompose(escapedTarget, interpolations)
+
+    return escapedTarget
+  }
+
+  uniqueIdentifier(segment) {
+    return `${segment.source}|||${segment.context}`
+  }
+
+  // For O(1) search optimization
+  buildXmlUnitsHash(xmlUnits) {
+    let targetXmlUnitsHash = {}
+
+    xmlUnits.forEach(xmlUnit => {
+      const segment = this.convertXmlUnitToSegment(xmlUnit)
+      targetXmlUnitsHash[this.uniqueIdentifier(segment)] = xmlUnit
+    })
+
+    return targetXmlUnitsHash
   }
 }
 

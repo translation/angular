@@ -11,17 +11,20 @@ class Init extends Base {
   run() {
     console.log('Init.run()')
 
-    const sourceRaw      = fs.readFileSync(this.sourceFile())
-    const sourceXml      = this.xmlParser().parse(sourceRaw)
-    const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
-    const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
-
+    // 1. Prepare Translation.io request
     let request = {
       source_language:  this.sourceLanguage(),
       target_languages: this.targetLanguages(),
       segments:         {}
     }
 
+    // 2. Load source .xlf as list of segments for Translation.io API
+    const sourceRaw      = fs.readFileSync(this.sourceFile())
+    const sourceXml      = this.xmlParser().parse(sourceRaw)
+    const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
+    const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
+
+    // 3. For each exising source segment, detect if any translation already exists in target .xlf files
     this.targetLanguages().forEach(language => {
       const targetFile     = this.targetFile(language)
       let   targetSegments = []
@@ -33,13 +36,10 @@ class Init extends Base {
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
 
-      // TODO: extract Create hash to get target segments in O(1)
-      const targetSegmentsHash = {}
-      targetSegments.forEach(targetSegment =>
-        targetSegmentsHash[this.uniqueIdentifier(targetSegment)] = targetSegment
-      )
+      const targetSegmentsHash = this.buildSegmentsHash(targetSegments)
 
-      // For "init", we want to send source text from ".xlf" files, associated with existing translations from ".{locale}.xlf" files
+      // Generate list of (maybe translated) target language segments to send to the API
+      // in order to populate the project for the first time.
       let translatedSourceSegment = sourceSegments.map(sourceSegment => {
         const targetSegment = targetSegmentsHash[this.uniqueIdentifier(sourceSegment)]
         const target        = targetSegment ? targetSegment.target : ''
@@ -62,6 +62,17 @@ class Init extends Base {
                console.error(error.response.data)
            }
          )
+  }
+
+  // For O(1) search optimization
+  buildSegmentsHash(segments) {
+    const segmentsHash = {}
+
+    segments.forEach(segment =>
+      segmentsHash[this.uniqueIdentifier(segment)] = segment
+    )
+
+    return segmentsHash
   }
 }
 

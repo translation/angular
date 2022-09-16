@@ -25,13 +25,8 @@ The Translation.io module has been added to the dependencies, with a relative pa
 
 The following scripts have been added, to execute the Translation.io module:
 ```
-  "i18n": "npm run extract",
-  "build-i18n-and-translation-init": "npm run i18n && npm run translation-init",
-  "build-i18n-and-translation-sync": "npm run i18n && npm run translation-sync",
-  "translation-init": "tio init",
-  "translation-sync": "tio sync",
-  "translation-sync-readonly": "tio sync --readonly",
-  "translation-sync-purge": "tio sync --purge"
+  "translation:init": "npm run extract && tio init",
+  "translation:sync": "npm run extract && tio sync"
 ```
 
 ### tio.config.json

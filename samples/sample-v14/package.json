@@ -11,7 +11,14 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "e2e": "ng e2e",
-    "extract": "ng extract-i18n --output-path=locale"
+    "extract": "ng extract-i18n --output-path=src/locale",
+    "i18n": "npm run extract",
+    "build-i18n-and-translation-init": "npm run i18n && npm run translation-init",
+    "build-i18n-and-translation-sync": "npm run i18n && npm run translation-sync",
+    "translation-init": "tio init",
+    "translation-sync": "tio sync",
+    "translation-sync-readonly": "tio sync --readonly",
+    "translation-sync-purge": "tio sync --purge"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +31,7 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "@translation/angular": "file:../../",
     "angular-in-memory-web-api": "~0.14.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

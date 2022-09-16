@@ -185,30 +185,33 @@ describe('isIcuPluralString', () => {
     base = new Base()
   });
 
-  test('Test on simple cases', () => {
+  test('Test on many cases', () => {
     // Classic tests
-    expect(base.isIcuPluralString("Hello world")).toEqual(false)
+    expect(base.isIcuPluralString("Hello world"                               )).toEqual(false)
+    expect(base.isIcuPluralString("{ count, plural, one {cat} other {cats} }" )).toEqual(true)
+    expect(base.isIcuPluralString("{ count, plural2, one {cat} other {cats} }")).toEqual(false)
+    expect(base.isIcuPluralString("{ count plural, one {cat} other {cats} }"  )).toEqual(false)
+    expect(base.isIcuPluralString("{ count, plural, one {cat} other {cats}"   )).toEqual(false)
+    expect(base.isIcuPluralString("{ count, plural, something {hey}}"         )).toEqual(false)
+    expect(base.isIcuPluralString("{ count, plural, hey}"                     )).toEqual(false)
 
-    // is_icu_plural_string.call("Bonjour l'espace"                          ).should == false
-    // is_icu_plural_string.call("{ count, plural, one {cat} other {cats} }" ).should == true
-    // is_icu_plural_string.call("{ count, plural2, one {cat} other {cats} }").should == false
-    // is_icu_plural_string.call("{ count plural, one {cat} other {cats} }"  ).should == false
-    // is_icu_plural_string.call("{ count, plural, one {cat} other {cats}"   ).should == false
-    // is_icu_plural_string.call("{ count, plural, something {hey}}"         ).should == false
-    // is_icu_plural_string.call("{ count, plural, hey}"                     ).should == false
+    // With interpolations
+    expect(base.isIcuPluralString("{ count, plural, one {Hello # cat} other {Hello # cats} }"            )).toEqual(true)
+    expect(base.isIcuPluralString("{ count, plural, one {Hello {count} cat} other {Hello {count} cats} }")).toEqual(true)
+    expect(base.isIcuPluralString("{ count, plural, one {Hello {count} cat} two {Hello {count} cats} other {Hello {count} cats} }")).toEqual(true)
 
-    // // With interpolations
-    // is_icu_plural_string.call("{ count, plural, one {Hello # cat} other {Hello # cats} }"            ).should == true
-    // is_icu_plural_string.call("{ count, plural, one {Hello {count} cat} other {Hello {count} cats} }").should == true
-    // is_icu_plural_string.call("{ count, plural, one {Hello {count} cat} two {Hello {count} cats} other {Hello {count} cats} }").should == true
+    // 'other' plural form is mandatory in many implementations
+    expect(base.isIcuPluralString("{ count, plural, one {cat} }")).toEqual(false)
 
-    // // 'other' plural form is mandatory in many implementations
-    // is_icu_plural_string.call("{ count, plural, one {cat} }").should == false
+    // Extra spaces between cases shouldn't matter
+    expect(base.isIcuPluralString("{count,      plural,      one    {cat} other {cats}       } ")).toEqual(true)
 
-    // // Extra spaces between cases shouldn't matter
-    // is_icu_plural_string.call("{count,      plural,      one    {cat} other {cats}       } ").should == true
+    // 'several' is a case that doesn't exist (but accepted anyway in the parsing library? Weird!)
+    expect(base.isIcuPluralString("{ count, plural, several {cat} other {cats} }")).toEqual(true)
 
-    // // 'several' is a case that doesn't exist (but accepted anyway in both parsing libraries? Weird!)
-    // is_icu_plural_string.call("{ count, plural, several {cat} other {cats} }").should == true
+    // With multilines
+    expect(base.isIcuPluralString(`{ count, plural,
+      one {cat}
+      other {cats} }`)).toEqual(true)
   })
 })

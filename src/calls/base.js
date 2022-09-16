@@ -309,12 +309,12 @@ class Base {
 
   isIcuPluralString(text) {
     // Quick & Dirty ICU plural detection to avoid parsing each time ('s' flag = consider it like single line)
-    if (/^\s*{.*,\s*plural\s*,.*}\s*$/s.test(text)) {
+    if (/^\s*{[\s\S]*,\s*plural\s*,[\s\S]*}\s*$/.test(text)) {
       try { // Will catch exception if not correctly parsed (or if missing keys on parsed result)
         const icuNode = icuParse(text, {
           ignoreTag:            true,  // HTML tags are not parsed as tokens
           requiresOtherClause:  false, // an ICU without other is kinda stupid, but we tolerate it for the source
-          shouldParseSkeletons: false // Whether to parse number/datetime skeleton as tokens
+          shouldParseSkeletons: false  // Whether to parse number/datetime skeleton as tokens
         })[0]
 
         const cases = Object.keys(icuNode.options || {})

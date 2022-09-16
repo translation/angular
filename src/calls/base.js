@@ -161,13 +161,13 @@ class Base {
 
     if (isCustomId(id)) {
       if (contextNote) {
-        return `${id} | ${contextNote['#text']}`
+        return this.unescapeEntities(`${id} | ${contextNote['#text'].trim()}`)
       } else {
-        return id.toString()
+        return id
       }
     } else {
       if (contextNote) {
-        return contextNote['#text']
+        return this.unescapeEntities(contextNote['#text'].trim())
       }
     }
   }
@@ -177,7 +177,9 @@ class Base {
     const contextNote = notes.find(note => note['@_from'] === 'description')
 
     if (contextNote) {
-      return contextNote['#text']
+      return this.unescapeEntities(
+        contextNote['#text'].trim()
+      )
     }
   }
 

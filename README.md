@@ -1,6 +1,7 @@
 # [Translation.io](https://translation.io/angular) client for Angular
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Build Status](https://github.com/translation/angular/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/translation/angular/actions/workflows/test.yml)
 
 Add this package to localize your Angular application (see [Installation](#installation)).
 

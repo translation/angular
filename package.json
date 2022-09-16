@@ -1,37 +1,61 @@
 {
-  "name": "@corellia/ngx-translation-io",
-  "version": "3.1.0",
-  "description": "",
-  "main": "bin/index.js",
-  "dependencies": {
-    "@types/minimist": "^1.2.0",
-    "@types/xmldom": "^0.1.30",
-    "axios": "^0.19.2",
-    "https-proxy-agent": "^2.2.4",
-    "minimist": "^1.2.5",
-    "ngx-i18nsupport": "^0.17.1",
-    "tslint": "^5.20.1",
-    "typescript": "3.2.4",
-    "xmldom": "^0.1.31"
+  "name": "@translation/angular",
+  "version": "1.0.0",
+  "description": "Translation.io client for Angular applications",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/translation/angular.git"
   },
-  "devDependencies": {
-    "@types/node": "^12.12.68"
-  },
+  "main": "src/index.js",
   "keywords": [
-    "cli",
-    "ngx-translation-io"
+    "angular",
+    "tio",
+    "javascript",
+    "translationio",
+    "translation-io",
+    "angular translation",
+    "angular translationio",
+    "angular translation-io",
+    "ngx-translation-io",
+    "localization",
+    "ICU",
+    "messageformat"
   ],
   "bin": {
-    "@corellia/ngx-translation-io": "./bin/ngx-translation-io",
-    "ngx-translation-io": "./bin/ngx-translation-io",
-    "tio": "./bin/ngx-translation-io"
+    "translation": "./src/translation",
+    "tio": "./src/translation"
   },
   "publishConfig": {
     "access": "public"
   },
-  "scripts": {
-    "test": "node ./bin/ngx-translation-io"
+  "author": {
+    "name" : "Michaël Hoste",
+    "email" : "michael@translation.io",
+    "url" : "https://translation.io"
   },
-  "author": "corellia",
-  "license": "MIT"
+  "contributors": [
+    {
+      "name" : "Didier Toussaint",
+      "email" : "didier@translation.io",
+      "url" : "https://translation.io"
+    },
+    {
+      "name" : "Simon Cannuyer",
+      "email" : "simon@corellia.be",
+      "url" : "https://corellia.be"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "axios": "^0.27.2",
+    "fast-xml-parser": "^4.0.9",
+    "https-proxy-agent": "^5.0.1",
+    "jest": "^29.0.3",
+    "minimist": "^1.2.6",
+    "@formatjs/icu-messageformat-parser": "^2.1.7"
+  },
+  "scripts": {
+    "test": "jest"
+  }
 }

@@ -1,16 +1,25 @@
 {
   "name": "@translation/angular",
   "version": "1.0.0",
-  "description": "",
+  "description": "Translation.io client for Angular applications",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/translation/angular.git"
+  },
   "main": "src/index.js",
   "keywords": [
+    "angular",
     "tio",
+    "javascript",
     "translationio",
     "translation-io",
     "angular translation",
     "angular translationio",
     "angular translation-io",
-    "ngx-translation-io"
+    "ngx-translation-io",
+    "localization",
+    "ICU",
+    "messageformat"
   ],
   "bin": {
     "translation": "./src/translation",
@@ -19,7 +28,23 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "corellia",
+  "author": {
+    "name" : "Michaël Hoste",
+    "email" : "michael@translation.io",
+    "url" : "https://translation.io"
+  },
+  "contributors": [
+    {
+      "name" : "Didier Toussaint",
+      "email" : "didier@translation.io",
+      "url" : "https://translation.io"
+    },
+    {
+      "name" : "Simon Cannuyer",
+      "email" : "simon@corellia.be",
+      "url" : "https://corellia.be"
+    }
+  ],
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {

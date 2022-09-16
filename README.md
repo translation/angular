@@ -110,14 +110,8 @@ To make your life easier, add these lines to the `package.json` at the root of y
 ```json
 {
   "scripts": {
-    "build": "npm run i18n && npm run translation-sync && npm run build-prod",
-    "build-i18n-and-translation-init": "npm run i18n && npm run translation-init",
-    "build-i18n-and-translation-sync": "npm run i18n && npm run translation-sync",
-    "i18n": "ng extract-i18n",
-    "translation-init": "tio init",
-    "translation-sync": "tio sync",
-    "translation-sync-readonly": "tio sync --readonly",
-    "translation-sync-purge": "tio sync --purge"
+    "translation:init": "npm run extract && tio init",
+    "translation:sync": "npm run extract && tio sync"
   }
 }
 ```
@@ -128,10 +122,10 @@ To push your source keys and existing translations (if any) to Translation.io, r
 
 ```bash
 # NPM
-npm run build-i18n-and-translation-init
+npm run translation:init
 
 # YARN
-yarn build-i18n-and-translation-init
+yarn translation:init
 ```
 
 
@@ -143,10 +137,10 @@ To push new translatable source keys/strings and get translations from Translati
 
 ```bash
 # NPM
-npm run build-i18n-and-translation-sync
+npm run translation:sync
 
 # YARN
-yarn build-i18n-and-translation-sync
+yarn translation:sync
 ```
 
 ### Read-only Sync
@@ -155,10 +149,10 @@ To retrieve translations without pushing new source keys, you can run:
 
 ```bash
 # NPM
-npm run translation-sync-readonly
+npm run translation:sync --readonly
 
 # YARN
-yarn translation-sync-readonly
+yarn translation:sync --readonly
 ```
 
 ### Sync & Purge
@@ -167,10 +161,10 @@ If you need to remove unused source keys/strings from Translation.io, using your
 
 ```bash
 # NPM
-npm run translation-sync-purge
+npm run translation:sync --purge
 
 # YARN
-yarn translation-sync-purge
+yarn translation:sync --purge
 ```
 
 **Warning:** all source keys/strings that are not present in your current local branch will be **permanently deleted from Translation.io**.

@@ -4,7 +4,7 @@ const fs    = require('fs')
 const axios = require('axios').default
 
 class Init extends Base {
-  constructor(configFile) {
+  constructor(configFile, flags) {
     super(configFile)
   }
 

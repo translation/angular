@@ -4,8 +4,11 @@ const fs    = require('fs')
 const axios = require('axios').default
 
 class Sync extends Base {
-  constructor(configFile) {
+  constructor(configFile, flags) {
     super(configFile)
+
+    this.readonly = flags['readonly'] || false
+    this.purge    = flags['purge']    || false
   }
 
   run() {
@@ -24,8 +27,8 @@ class Sync extends Base {
       source_language:  this.sourceLanguage(),
       target_languages: this.targetLanguages(),
       segments:         sourceSegments,
-      readonly:         false, // TODO: use tio option
-      purge:            false  // TODO: use tio option
+      readonly:         this.readonly,
+      purge:            this.purge
     }
 
     // 2. Send source segments and save translated target segments

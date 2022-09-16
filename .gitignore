@@ -9,3 +9,4 @@ src/assets
 TODO_LOCAL
 coverage
 samples/*/.angular/cache
+samples/*/.python-version

@@ -8,3 +8,4 @@ server.key
 src/assets
 TODO_LOCAL
 coverage
+samples/*/.angular/cache

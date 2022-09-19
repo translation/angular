@@ -150,10 +150,10 @@ To retrieve translations without pushing new source keys, you can run:
 
 ```bash
 # NPM
-npm run translation:sync --readonly
+npm run translation:sync -- --readonly
 
 # YARN
-yarn translation:sync --readonly
+yarn translation:sync -- --readonly
 ```
 
 ### Sync & Purge
@@ -162,10 +162,10 @@ If you need to remove unused source keys/strings from Translation.io, using your
 
 ```bash
 # NPM
-npm run translation:sync --purge
+npm run translation:sync -- --purge
 
 # YARN
-yarn translation:sync --purge
+yarn translation:sync -- --purge
 ```
 
 **Warning:** all source keys/strings that are not present in your current local branch will be **permanently deleted from Translation.io**.

@@ -1,4 +1,4 @@
-var { segmentsIndex, segmentDelete, purgeProject } = require('../tio-utils')
+const { segmentsIndex, segmentDelete, purgeProject } = require('../tio-utils')
 
 // Custom test methods
 

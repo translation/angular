@@ -1,3 +1,5 @@
+var { segmentsIndex, segmentDelete, purgeProject } = require('../tio-utils')
+
 // Custom test methods
 
 function it(desc, fn) {
@@ -30,56 +32,10 @@ function assertEqual(result, expected) {
   }
 }
 
-// Utils methods
-
-function segmentsIndex(apiKey, targetLanguage, callback) {
-  const exec = require('child_process').exec;
-
-  const curlCmd = `curl -X GET https://translation.io/api/v1/segments.json \
-                        -H 'Content-Type: application/json' \
-                        -d '{ "api_key": "${apiKey}", "target_language": "${targetLanguage}" }'`
-
-  exec(curlCmd, (error, jsonResponse, stderr) => {
-    if (callback)
-      callback(jsonResponse)
-  })
-}
-
-function segmentDelete(apiKey, segmentId, callback) {
-  const exec = require('child_process').exec;
-
-  const curlCmd = `curl -X DELETE https://translation.io/api/v1/segments/${segmentId}.json \
-                        -H 'Content-Type: application/json' \
-                        -d '{ "api_key": "${apiKey}" }'`
-
-  exec(curlCmd, (error, jsonResponse, stderr) => {
-    if (callback)
-      callback(jsonResponse)
-  })
-}
-
-module.exports.purgeProject = function(apiKey, callback) {
-  apiKey = apiKey.replace('.x', 'X') // to convert node version in GitHub Actions to correct API key
-  const languages = ['fr', 'it']
-
-  languages.forEach(language => {
-    segmentsIndex(apiKey, language, (jsonResponse) => {
-      const response = JSON.parse(jsonResponse)
-      const segments = response["segments"] || []
-
-      segments.map(segment => segment['id']).forEach(segmentId => {
-        segmentDelete(apiKey, segmentId)
-      })
-    })
-  })
-}
-
 // Tests
 
 it('After init, segments on Translation.io should exist and be translated', () => {
   const apiKey = "TRANSLATIONANGULARTESTINGNODE18X"
-
-  this.purgeProject(apiKey)
 
   segmentsIndex(apiKey, "fr", (jsonResponse) => {
     // Remove ids from response

@@ -58,7 +58,7 @@ function segmentDelete(apiKey, segmentId, callback) {
   })
 }
 
-function purgeProject(apiKey, callback) {
+module.exports.purgeProject = function(apiKey, callback) {
   ['fr', 'it'].forEach(language => {
     segmentsIndex(apiKey, 'fr', (jsonResponse) => {
       const response = JSON.parse(jsonResponse)

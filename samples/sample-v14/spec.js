@@ -35,6 +35,7 @@ function assertEqual(result, expected) {
 // Tests
 
 it('After init, segments on Translation.io should exist and be translated', () => {
+  console.log(process.env)
   const apiKey = "TRANSLATIONANGULARTESTINGNODE18X"
 
   segmentsIndex(apiKey, "fr", (jsonResponse) => {

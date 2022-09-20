@@ -28,7 +28,7 @@ jobs:
         cd samples/sample-v14
         npm install
         npm run build --if-present
-    - name: Purge corresponding Translation.io Project
+    - name: Remove all segments from corresponding Translation.io Project
       run: |
         cd samples
         node -e 'require("./tio-utils").purgeProject("TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}")'

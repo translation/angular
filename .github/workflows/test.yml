@@ -32,5 +32,6 @@ jobs:
     - name: 'Test full init on Angular v14 - Execute spec'
       run: |
         cd samples/sample-v14
+        node -e 'require("./spec").purgeProject("TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}X")'
         npm run translation:init
         node spec.js

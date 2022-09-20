@@ -40,7 +40,8 @@ function segmentsIndex(apiKey, targetLanguage, callback) {
                         -d '{ "api_key": "${apiKey}", "target_language": "${targetLanguage}" }'`
 
   exec(curlCmd, (error, jsonResponse, stderr) => {
-    callback(jsonResponse)
+    if (callback)
+      callback(jsonResponse)
   })
 }
 
@@ -52,7 +53,8 @@ function segmentDelete(apiKey, segmentId, callback) {
                         -d '{ "api_key": "${apiKey}" }'`
 
   exec(curlCmd, (error, jsonResponse, stderr) => {
-    callback(jsonResponse)
+    if (callback)
+      callback(jsonResponse)
   })
 }
 
@@ -65,13 +67,14 @@ function purgeProject(apiKey, callback) {
       })
     })
   })
-
 }
 
 // Tests
 
 it('After init, segments on Translation.io should exist and be translated', () => {
-  segmentsIndex("TRANSLATIONANGULARTESTINGNODE18X", "fr", (jsonResponse) => {
+  const apiKey = "TRANSLATIONANGULARTESTINGNODE18X"
+
+  segmentsIndex(apiKey, "fr", (jsonResponse) => {
     // Remove ids from response
     let response = JSON.parse(jsonResponse)
     response['segments'].forEach(segment => delete segment['id'])

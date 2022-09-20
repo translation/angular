@@ -32,4 +32,5 @@ jobs:
     - name: 'Test full init on Angular v14 - Execute spec'
       run: |
         cd samples/sample-v14
+        npm run translation:init
         node spec.js

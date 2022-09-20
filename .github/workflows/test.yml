@@ -26,8 +26,7 @@ jobs:
     - name: Install Angular dependencies
       run: |
         cd samples/sample-v14
-        npm ci
-        npm update
+        npm install
         npm run build --if-present
     - name: Purge corresponding Translation.io Project
       run: |

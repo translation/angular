@@ -37,7 +37,7 @@ function assertEqual(result, expected) {
 
 it('After init, segments on Translation.io should exist and be translated', () => {
   const apiKey = JSON.parse(fs.readFileSync('./tio.config.json'))['api_key']
-  console.log(apiKey)
+  console.log(`Current project API key (for Node Matrix): ${apiKey}`)
 
   segmentsIndex(apiKey, "fr", (jsonResponse) => {
     // Remove ids from response

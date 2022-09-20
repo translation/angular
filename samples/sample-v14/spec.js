@@ -8,31 +8,72 @@ function it(desc, fn) {
     console.log('\n');
     console.log(desc);
     console.error(error);
+
+    process.exitCode = 1
   }
 }
 
-function assert(isTrue) {
-  if (isTrue) {
+function assertEqual(result, expected) {
+  if (result === expected) {
     console.log(".")
   } else {
     console.log("F")
+
+    console.log("Expected: \n\n")
+    console.log(expected)
+    console.log("\n\n")
+    console.log("Got: \n\n")
+    console.log(result)
+    console.log("------")
+
     process.exitCode = 1
   }
+}
+
+// Utils methods
+
+function segmentsIndex(apiKey, targetLanguage, callback) {
+  const exec = require('child_process').exec;
+
+  const curlCmd = `curl -X GET https://translation.io/api/v1/segments.json \
+                        -H 'Content-Type: application/json' \
+                        -d '{ "api_key": "${apiKey}", "target_language": "${targetLanguage}" }'`
+
+  exec(curlCmd, (error, jsonResponse, stderr) => {
+    callback(jsonResponse)
+  })
+}
+
+function segmentDelete(apiKey, segmentId, callback) {
+  const exec = require('child_process').exec;
+
+  const curlCmd = `curl -X DELETE https://translation.io/api/v1/segments/${segmentId}.json \
+                        -H 'Content-Type: application/json' \
+                        -d '{ "api_key": "${apiKey}" }'`
+
+  exec(curlCmd, (error, jsonResponse, stderr) => {
+    callback(jsonResponse)
+  })
+}
+
+function purgeProject(apiKey, callback) {
+  ['fr', 'it'].forEach(language => {
+    segmentsIndex(apiKey, 'fr', (jsonResponse) => {
+      const response = JSON.parse(jsonResponse)
+      response['segments'].map(segment => segment['id']).forEach(segmentId => {
+        segmentDelete(apiKey, segmentId)
+      })
+    })
+  })
+
 }
 
 // Tests
 
 it('After init, segments on Translation.io should exist and be translated', () => {
-  const exec = require('child_process').exec;
-
-  var curlCmd = `curl -X GET https://translation.io/api/v1/segments.json \
-                      -H 'Content-Type: application/json' \
-                      -d '{ "api_key": "TRANSLATIONANGULARTESTINGNODE18X", "target_language": "fr" }'`
-
-  exec(curlCmd, (error, jsonResponse, stderr) => {
-
+  segmentsIndex("TRANSLATIONANGULARTESTINGNODE18X", "fr", (jsonResponse) => {
     // Remove ids from response
-    response = JSON.parse(jsonResponse)
+    let response = JSON.parse(jsonResponse)
     response['segments'].forEach(segment => delete segment['id'])
 
     const expected = {
@@ -124,8 +165,6 @@ it('After init, segments on Translation.io should exist and be translated', () =
       ]
     }
 
-    assert(JSON.stringify(response) === JSON.stringify(expected))
+    assertEqual(JSON.stringify(response), JSON.stringify(expected))
   })
 })
-
-

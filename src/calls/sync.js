@@ -40,8 +40,11 @@ class Sync extends Base {
            error    => {
              console.error('HTTP REQUEST ERROR')
              console.error(error.message)
-             if (error.response)
+             if (error.response) {
                console.error(error.response.data)
+             }
+
+             process.exitCode = 1
            }
          )
   }

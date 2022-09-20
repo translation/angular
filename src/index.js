@@ -20,4 +20,5 @@ else if (action == 'sync') {
 }
 else {
   console.log('No action selected')
+  process.exitCode = 1
 }

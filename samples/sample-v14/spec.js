@@ -1,3 +1,4 @@
+const fs = require('fs')
 const { segmentsIndex, segmentDelete, purgeProject } = require('../tio-utils')
 
 // Custom test methods
@@ -35,7 +36,8 @@ function assertEqual(result, expected) {
 // Tests
 
 it('After init, segments on Translation.io should exist and be translated', () => {
-  const apiKey = "TRANSLATIONANGULARTESTINGNODE18X" // TODO load file tio.config.json here
+  const apiKey = JSON.parse(fs.readFileSync('./tio.config.json'))['api_key']
+  console.log(apiKey)
 
   segmentsIndex(apiKey, "fr", (jsonResponse) => {
     // Remove ids from response

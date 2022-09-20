@@ -23,23 +23,26 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    - name: 'Test full init on Angular v14 - Install dependencies'
+    - name: Install Angular dependencies
       run: |
         cd samples/sample-v14
-        npm update
         npm ci
+        npm update
         npm run build --if-present
-    - name: 'Test full init on Angular v14 - Execute spec'
+    - name: Purge corresponding Translation.io Project
       run: |
         cd samples
         node -e 'require("./tio-utils").purgeProject("TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}")'
-    - run: |
+    - name: Place correct API key in tio.config.json file
+      run: |
         cd samples/sample-v14
         sed -i 's/TRANSLATIONANGULARTESTING/TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}/g' tio.config.json
         sed -i 's/\.x/X/g' tio.config.json
-    - run: |
+    - name: Initialize Translation.io project
+      run: |
         cd samples/sample-v14
         npm run translation:init
-    - run: |
+    - name: Execute specs of initialized project
+      run: |
         cd samples/sample-v14
         node spec.js

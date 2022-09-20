@@ -1,9 +1,13 @@
+const TagInterpolation = require('./tag-interpolation')
+
 class Interpolation {
   static extract(text) {
     const regexp         = /<x[\s\S]*?\/>/g // Use [\s\S] instead of . for multiline matching => https://stackoverflow.com/a/16119722/1243212
     const extractions    = text.match(regexp) || []
     let   escapedText    = `${text}`
     let   interpolations = {}
+
+    TagInterpolation.resetStack()
 
     extractions.forEach((extraction) => {
       const substitution = this.substitution(extraction, Object.keys(interpolations))
@@ -29,9 +33,13 @@ class Interpolation {
     }
   }
 
+  static unescapeInterpolationTags(text) {
+    return text.replace(/&lt;([\/]?\d{1,}[\/]?)&gt;/g, "<$1>")
+  }
+
   static recompose(escapedText, interpolations) {
     const substitutions = Object.keys(interpolations)
-    let   text          = `${escapedText}`;
+    let   text          = this.unescapeInterpolationTags(`${escapedText}`)
 
     substitutions.forEach((substitution) => {
       const extraction = interpolations[substitution]
@@ -45,7 +53,7 @@ class Interpolation {
   // Substitutes the interpolation with an appropriate variable (specific or index-generated)
   // depending on already existing substitutions
   static substitution(extraction, existingSubstitutions) {
-    let substitution
+    let substitution, nextIndex
 
     const joinedSubstitutions = existingSubstitutions.join(" ")
 
@@ -53,16 +61,16 @@ class Interpolation {
       const variableName = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0]
       substitution = `{${variableName.trim()}}`
     } else if (extraction.includes('id="ICU')) {
-      const nextIndex = (joinedSubstitutions.match(/{icu\d+?}/g) || []).length + 1
+      nextIndex = (joinedSubstitutions.match(/{icu\d+?}/g) || []).length + 1
       substitution = `{icu${nextIndex}}`
-    } else if (this.isSelfClosingTag(extraction)) {
-      const nextIndex = this.countSelfClosingTags(joinedSubstitutions) + this.countClosingTags(joinedSubstitutions) + 1
+    } else if (TagInterpolation.isSelfClosingTag(extraction)) {
+      nextIndex = TagInterpolation.addToStackAndGetNextIndex(extraction)
       substitution = `<${nextIndex}/>`
-    } else if (this.isClosingTag(extraction)) {
-      const nextIndex = this.countSelfClosingTags(joinedSubstitutions) + this.countClosingTags(joinedSubstitutions) + 1
+    } else if (TagInterpolation.isClosingTag(extraction)) {
+      nextIndex = TagInterpolation.removeFromStackAndGetNextIndex(extraction)
       substitution = `</${nextIndex}>`
-    } else if (this.isOpeningTag(extraction)) {
-      const nextIndex = this.countSelfClosingTags(joinedSubstitutions) + this.countOpeningTags(joinedSubstitutions) + 1
+    } else if (TagInterpolation.isOpeningTag(extraction)) {
+      nextIndex = TagInterpolation.addToStackAndGetNextIndex(extraction)
       substitution = `<${nextIndex}>`
     } else {
       const nextIndex = (joinedSubstitutions.match(/{x\d+?}/g) || []).length + 1
@@ -70,30 +78,6 @@ class Interpolation {
     }
 
     return substitution
-  }
-
-  static isSelfClosingTag(extraction) {
-    return extraction.includes('equiv-text="&lt;') && extraction.includes('/&gt;"')
-  }
-
-  static isClosingTag(extraction) {
-    return extraction.includes('equiv-text="&lt;/') && extraction.includes('&gt;"')
-  }
-
-  static isOpeningTag(extraction) {
-    return extraction.includes('equiv-text="&lt;') && extraction.includes('&gt;"')
-  }
-
-  static countSelfClosingTags(joinedSubstitutions) {
-    return (joinedSubstitutions.match(/<\d+?\/>/g) || []).length
-  }
-
-  static countClosingTags(joinedSubstitutions) {
-    return (joinedSubstitutions.match(/<\/\d+?>/g) || []).length
-  }
-
-  static countOpeningTags(joinedSubstitutions) {
-    return (joinedSubstitutions.match(/<\d+?>/g) || []).length
   }
 
   static renameKey(object, oldKey, newKey) {

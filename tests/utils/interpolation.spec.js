@@ -153,24 +153,23 @@ describe('Interpolation.extract', () => {
     })
   })
 
-  // Interpolation needs fixing, for the following test to pass
-  // test('A more complex interpolation with nested "strong" and "em" HTML tags', () => {
-  //   expect(
-  //     Interpolation.extract(`
-  //       A sentence with <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>nested <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>interpolated<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> in the middle.
-  //     `)
-  //   ).toStrictEqual({
-  //     text:`
-  //       A sentence with <1>nested <2>interpolated</2> tags</1> in the middle.
-  //     `,
-  //     interpolations: {
-  //       '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>',
-  //       '<2>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
-  //       '</2>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
-  //       '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>'
-  //     }
-  //   })
-  // })
+  test('A more complex interpolation with nested "strong" and "em" HTML tags', () => {
+    expect(
+      Interpolation.extract(`
+        A sentence with <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>nested <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>interpolated<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> in the middle.
+      `)
+    ).toStrictEqual({
+      text:`
+        A sentence with <1>nested <2>interpolated</2> tags</1> in the middle.
+      `,
+      interpolations: {
+        '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>',
+        '<2>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+        '</2>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>'
+      }
+    })
+  })
 })
 
 describe('Interpolation.recompose', () => {
@@ -262,7 +261,7 @@ describe('Interpolation.recompose', () => {
   test('A simple interpolation of "em" and "br" HTML tags', () => {
     expect(
       Interpolation.recompose(`
-        A sentence with an<1>emphasized part</1> in the middle.<2/> And a line break.
+        A sentence with an&lt;1&gt;emphasized part&lt;/1&gt; in the middle.&lt;2/&gt; And a line break.
       `,
       {
         '<1>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
@@ -277,7 +276,7 @@ describe('Interpolation.recompose', () => {
   test('A simple interpolation of link ("a") HTML tags', () => {
     expect(
       Interpolation.recompose(`
-        A sentence with a <1>first link</1> and a <2>second link</2> in the middle.
+        A sentence with a &lt;1&gt;first link&lt;/1&gt; and a &lt;2&gt;second link&lt;/2&gt; in the middle.
       `,
       {
         '<1>':  '<x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://www.google.com&gt;&quot; target=&quot;_blank&quot;&gt;"/>',
@@ -293,7 +292,7 @@ describe('Interpolation.recompose', () => {
   test('A more complex interpolation with repetitive and similar tags', () => {
     expect(
       Interpolation.recompose(`
-        A sentence with <1>repetitive</1> tags, with a <2>twist</2>, and<3/> a line break,<4/> and another line break,<5/> and yet another one.
+        A sentence with &lt;1&gt;repetitive&lt;/1&gt; tags, with a &lt;2&gt;twist&lt;/2&gt;, and&lt;3/&gt; a line break,&lt;4/&gt; and another line break,&lt;5/&gt; and yet another one.
       `,
       {
         '<1>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
@@ -312,7 +311,7 @@ describe('Interpolation.recompose', () => {
   test('A more complex interpolation with nested "strong" and "em" HTML tags', () => {
     expect(
       Interpolation.recompose(`
-        A sentence with <1>nested <2>interpolated</2> tags</1> in the middle.
+        A sentence with &lt;1&gt;nested &lt;2&gt;interpolated&lt;/2&gt; tags&lt;/1&gt; in the middle.
       `,
       {
         '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>',

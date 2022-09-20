@@ -60,9 +60,11 @@ function segmentDelete(apiKey, segmentId, callback) {
 
 module.exports.purgeProject = function(apiKey, callback) {
   ['fr', 'it'].forEach(language => {
-    segmentsIndex(apiKey, 'fr', (jsonResponse) => {
+    segmentsIndex(apiKey, language, (jsonResponse) => {
       const response = JSON.parse(jsonResponse)
-      response['segments'].map(segment => segment['id']).forEach(segmentId => {
+      const segments = response["segments"] || []
+
+      segments.map(segment => segment['id']).forEach(segmentId => {
         segmentDelete(apiKey, segmentId)
       })
     })
@@ -73,6 +75,8 @@ module.exports.purgeProject = function(apiKey, callback) {
 
 it('After init, segments on Translation.io should exist and be translated', () => {
   const apiKey = "TRANSLATIONANGULARTESTINGNODE18X"
+
+  this.purgeProject(apiKey)
 
   segmentsIndex(apiKey, "fr", (jsonResponse) => {
     // Remove ids from response

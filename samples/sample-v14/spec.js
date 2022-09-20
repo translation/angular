@@ -35,8 +35,7 @@ function assertEqual(result, expected) {
 // Tests
 
 it('After init, segments on Translation.io should exist and be translated', () => {
-  console.log(process.env)
-  const apiKey = "TRANSLATIONANGULARTESTINGNODE18X"
+  const apiKey = "TRANSLATIONANGULARTESTINGNODE18X" // TODO load file tio.config.json here
 
   segmentsIndex(apiKey, "fr", (jsonResponse) => {
     // Remove ids from response

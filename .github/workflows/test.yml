@@ -35,6 +35,10 @@ jobs:
         node -e 'require("./tio-utils").purgeProject("TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}")'
     - run: |
         cd samples/sample-v14
+        sed -i 's/TRANSLATIONANGULARTESTING/TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}/g' tio.config.json
+        sed -i 's/\.x/X/g' tio.config.json
+    - run: |
+        cd samples/sample-v14
         npm run translation:init
     - run: |
         cd samples/sample-v14

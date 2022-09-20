@@ -93,7 +93,7 @@ it('After init, segments on Translation.io should exist and be translated', () =
           "target_language": "fr",
           "type": "source",
           "source": "{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{x} minutes ago}}",
-          "target": "{ VAR_PLURAL, plural, =0 {À l''instant} =1 {Il y a une minute} one {Il y a une minute} other {Il y a {x} minutes} }",
+          "target": "{VAR_PLURAL, plural, =0 {À l'instant} =1 {Il y a une minute} one {Il y a une minute} other {Il y a {x} minutes} }",
           "references": [
             "src/app/app.component.html:12",
             "src/app/app.component.html:18,21"

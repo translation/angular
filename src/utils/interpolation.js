@@ -47,18 +47,53 @@ class Interpolation {
   static substitution(extraction, existingSubstitutions) {
     let substitution
 
+    const joinedSubstitutions = existingSubstitutions.join(" ")
+
     if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text=')) {
       const variableName = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0]
       substitution = `{${variableName.trim()}}`
     } else if (extraction.includes('id="ICU')) {
-      const nextIndex = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
+      const nextIndex = (joinedSubstitutions.match(/{icu\d+?}/g) || []).length + 1
       substitution = `{icu${nextIndex}}`
+    } else if (this.isSelfClosingTag(extraction)) {
+      const nextIndex = this.countSelfClosingTags(joinedSubstitutions) + this.countClosingTags(joinedSubstitutions) + 1
+      substitution = `<${nextIndex}/>`
+    } else if (this.isClosingTag(extraction)) {
+      const nextIndex = this.countSelfClosingTags(joinedSubstitutions) + this.countClosingTags(joinedSubstitutions) + 1
+      substitution = `</${nextIndex}>`
+    } else if (this.isOpeningTag(extraction)) {
+      const nextIndex = this.countSelfClosingTags(joinedSubstitutions) + this.countOpeningTags(joinedSubstitutions) + 1
+      substitution = `<${nextIndex}>`
     } else {
-      const nextIndex = (existingSubstitutions.join(" ").match(/{x\d+?}/g) || []).length + 1
+      const nextIndex = (joinedSubstitutions.match(/{x\d+?}/g) || []).length + 1
       substitution = `{x${nextIndex}}`
     }
 
     return substitution
+  }
+
+  static isSelfClosingTag(extraction) {
+    return extraction.includes('equiv-text="&lt;') && extraction.includes('/&gt;"')
+  }
+
+  static isClosingTag(extraction) {
+    return extraction.includes('equiv-text="&lt;/') && extraction.includes('&gt;"')
+  }
+
+  static isOpeningTag(extraction) {
+    return extraction.includes('equiv-text="&lt;') && extraction.includes('&gt;"')
+  }
+
+  static countSelfClosingTags(joinedSubstitutions) {
+    return (joinedSubstitutions.match(/<\d+?\/>/g) || []).length
+  }
+
+  static countClosingTags(joinedSubstitutions) {
+    return (joinedSubstitutions.match(/<\/\d+?>/g) || []).length
+  }
+
+  static countOpeningTags(joinedSubstitutions) {
+    return (joinedSubstitutions.match(/<\d+?>/g) || []).length
   }
 
   static renameKey(object, oldKey, newKey) {

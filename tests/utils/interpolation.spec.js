@@ -96,6 +96,81 @@ describe('Interpolation.extract', () => {
       }
     })
   })
+
+  test('A simple interpolation of "em" and "br" HTML tags', () => {
+    expect(
+      Interpolation.extract(`
+        A sentence with an<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>emphasized part<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> in the middle.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/> And a line break.
+      `)
+    ).toStrictEqual({
+      text: `
+        A sentence with an<1>emphasized part</1> in the middle.<2/> And a line break.
+      `,
+      interpolations: {
+        '<1>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+        '</1>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '<2/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>'
+      }
+    })
+  })
+
+  test('A simple interpolation of link ("a") HTML tags', () => {
+    expect(
+      Interpolation.extract(`
+        A sentence with a <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://www.google.com&gt;&quot; target=&quot;_blank&quot;&gt;"/>first link<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> and a <x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://translation.io/angular&quot; i18n-title title=&quot;Check out Translation.io&quot;&gt;"/>second link<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> in the middle.
+      `)
+    ).toStrictEqual({
+      text: `
+        A sentence with a <1>first link</1> and a <2>second link</2> in the middle.
+      `,
+      interpolations: {
+        '<1>':  '<x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://www.google.com&gt;&quot; target=&quot;_blank&quot;&gt;"/>',
+        '</1>': '<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>',
+        '<2>':  '<x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://translation.io/angular&quot; i18n-title title=&quot;Check out Translation.io&quot;&gt;"/>',
+        '</2>': '<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>'
+      }
+    })
+  })
+
+  test('A more complex interpolation with repetitive and similar tags', () => {
+    expect(
+      Interpolation.extract(`
+        A sentence with <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>repetitive<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags, with a <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>twist<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>, and<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> a line break,<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> and another line break,<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> and yet another one.
+      `)
+    ).toStrictEqual({
+      text:`
+        A sentence with <1>repetitive</1> tags, with a <2>twist</2>, and<3/> a line break,<4/> and another line break,<5/> and yet another one.
+      `,
+      interpolations: {
+        '<1>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+        '</1>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '<2>':  '<x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>',
+        '</2>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '<3/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>',
+        '<4/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>',
+        '<5/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>'
+      }
+    })
+  })
+
+  // Interpolation needs fixing, for the following test to pass
+  // test('A more complex interpolation with nested "strong" and "em" HTML tags', () => {
+  //   expect(
+  //     Interpolation.extract(`
+  //       A sentence with <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>nested <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>interpolated<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> in the middle.
+  //     `)
+  //   ).toStrictEqual({
+  //     text:`
+  //       A sentence with <1>nested <2>interpolated</2> tags</1> in the middle.
+  //     `,
+  //     interpolations: {
+  //       '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>',
+  //       '<2>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+  //       '</2>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+  //       '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>'
+  //     }
+  //   })
+  // })
 })
 
 describe('Interpolation.recompose', () => {
@@ -182,6 +257,72 @@ describe('Interpolation.recompose', () => {
         // nothing to substitute
       })
     ).toEqual('{VAR_SELECT, select, male {un homme} female {une femme} other {autre} }')
+  })
+
+  test('A simple interpolation of "em" and "br" HTML tags', () => {
+    expect(
+      Interpolation.recompose(`
+        A sentence with an<1>emphasized part</1> in the middle.<2/> And a line break.
+      `,
+      {
+        '<1>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+        '</1>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '<2/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>'
+      })
+    ).toEqual(`
+        A sentence with an<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>emphasized part<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> in the middle.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/> And a line break.
+      `)
+  })
+
+  test('A simple interpolation of link ("a") HTML tags', () => {
+    expect(
+      Interpolation.recompose(`
+        A sentence with a <1>first link</1> and a <2>second link</2> in the middle.
+      `,
+      {
+        '<1>':  '<x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://www.google.com&gt;&quot; target=&quot;_blank&quot;&gt;"/>',
+        '</1>': '<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>',
+        '<2>':  '<x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://translation.io/angular&quot; i18n-title title=&quot;Check out Translation.io&quot;&gt;"/>',
+        '</2>': '<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>'
+      })
+    ).toEqual(`
+        A sentence with a <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://www.google.com&gt;&quot; target=&quot;_blank&quot;&gt;"/>first link<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> and a <x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://translation.io/angular&quot; i18n-title title=&quot;Check out Translation.io&quot;&gt;"/>second link<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> in the middle.
+      `)
+  })
+
+  test('A more complex interpolation with repetitive and similar tags', () => {
+    expect(
+      Interpolation.recompose(`
+        A sentence with <1>repetitive</1> tags, with a <2>twist</2>, and<3/> a line break,<4/> and another line break,<5/> and yet another one.
+      `,
+      {
+        '<1>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+        '</1>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '<2>':  '<x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>',
+        '</2>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '<3/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>',
+        '<4/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>',
+        '<5/>': '<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>'
+      })
+    ).toEqual(`
+        A sentence with <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>repetitive<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags, with a <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>twist<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>, and<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> a line break,<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> and another line break,<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/> and yet another one.
+      `)
+  })
+
+  test('A more complex interpolation with nested "strong" and "em" HTML tags', () => {
+    expect(
+      Interpolation.recompose(`
+        A sentence with <1>nested <2>interpolated</2> tags</1> in the middle.
+      `,
+      {
+        '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>',
+        '<2>':  '<x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>',
+        '</2>': '<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>',
+        '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>'
+      })
+    ).toEqual(`
+        A sentence with <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>nested <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>interpolated<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> in the middle.
+      `)
   })
 })
 

@@ -59,7 +59,7 @@ function segmentDelete(apiKey, segmentId, callback) {
 }
 
 module.exports.purgeProject = function(apiKey, callback) {
-  apiKey = apiKey.replace('.x', 'X'); // to convert node version in GitHub Actions to correct API key
+  apiKey = apiKey.replace('.x', 'X') // to convert node version in GitHub Actions to correct API key
   const languages = ['fr', 'it']
 
   languages.forEach(language => {

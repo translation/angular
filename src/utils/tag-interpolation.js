@@ -1,7 +1,7 @@
 class TagInterpolation {
   static resetStack() {
-    this.tagStack =  []
-    this.tagTotal =  0
+    this.tagStack = {}
+    this.tagTotal = 0
   }
 
   static isSelfClosingTag(extraction) {

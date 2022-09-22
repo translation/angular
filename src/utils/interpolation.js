@@ -18,12 +18,12 @@ class Interpolation {
 
     // Don't number substitutions if only one the kind!
     if (escapedText.includes('{x1}') && !escapedText.includes('{x2}')) {
-      escapedText = escapedText.replace('{x1}', '{x}')
+      escapedText = escapedText.replace(/\{x1\}/g, '{x}')
       this.renameKey(interpolations, '{x1}', '{x}')
     }
 
     if (escapedText.includes('{icu1}') && !escapedText.includes('{icu2}')) {
-      escapedText = escapedText.replace('{icu1}', '{icu}')
+      escapedText = escapedText.replace(/\{icu1\}/g, '{icu}')
       this.renameKey(interpolations, '{icu1}', '{icu}')
     }
 
@@ -33,13 +33,9 @@ class Interpolation {
     }
   }
 
-  static unescapeInterpolationTags(text) {
-    return text.replace(/&lt;([\/]?\d{1,}[\/]?)&gt;/g, "<$1>")
-  }
-
   static recompose(escapedText, interpolations) {
     const substitutions = Object.keys(interpolations)
-    let   text          = this.unescapeInterpolationTags(`${escapedText}`)
+    let   text          = `${escapedText}`
 
     substitutions.forEach((substitution) => {
       const extraction = interpolations[substitution]
@@ -55,26 +51,28 @@ class Interpolation {
   static substitution(extraction, existingSubstitutions) {
     let substitution, nextIndex
 
-    const joinedSubstitutions = existingSubstitutions.join(" ")
-
-    if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text=')) {
+    if (extraction.includes('id="INTERPOLATION_') && !extraction.includes('equiv-text=')) {
+      nextIndex = parseInt(extraction.split('id="INTERPOLATION_', 2)[1].split('"', 2)[0]) + 1
+      substitution = `{x${nextIndex}}`
+    } else if(extraction.includes('id="INTERPOLATION"') && !extraction.includes('equiv-text=')) {
+      substitution = `{x1}`
+    } else if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text=')) {
       const variableName = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0]
       substitution = `{${variableName.trim()}}`
     } else if (extraction.includes('id="ICU')) {
-      nextIndex = (joinedSubstitutions.match(/{icu\d+?}/g) || []).length + 1
+      nextIndex = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
       substitution = `{icu${nextIndex}}`
     } else if (TagInterpolation.isSelfClosingTag(extraction)) {
       nextIndex = TagInterpolation.addToStackAndGetNextIndex(extraction)
-      substitution = `<${nextIndex}/>`
+      substitution = `&lt;${nextIndex}/&gt;`
     } else if (TagInterpolation.isClosingTag(extraction)) {
       nextIndex = TagInterpolation.removeFromStackAndGetNextIndex(extraction)
-      substitution = `</${nextIndex}>`
+      substitution = `&lt;/${nextIndex}&gt;`
     } else if (TagInterpolation.isOpeningTag(extraction)) {
       nextIndex = TagInterpolation.addToStackAndGetNextIndex(extraction)
-      substitution = `<${nextIndex}>`
+      substitution = `&lt;${nextIndex}&gt;`
     } else {
-      const nextIndex = (joinedSubstitutions.match(/{x\d+?}/g) || []).length + 1
-      substitution = `{x${nextIndex}}`
+      console.error(`No substitution found for this extraction: ${extraction}`)
     }
 
     return substitution

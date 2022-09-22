@@ -232,14 +232,16 @@ describe('convertXmlUnitToSegment', () => {
     })
   })
 
-  test('Convert interpolations (low-level tests in interpolation.spec.js)', () => {
+  test('Convert named ({variable}), unnamed ({x}), icu ({icu}) and HTML interpolations (low-level tests in interpolation.spec.js)', () => {
     const xmlUnit = base.xmlParser().parse(`
       <trans-unit id="2002272803511843863" datatype="html">
-        <source>        Updated <x id="INTERPOLATION" equiv-text="{{name}}"/> and <x id="INTERPOLATION"/> <x id="ICU" equiv-text="{minutes, plural,
+        <source>
+          <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>Updated:<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>
+          <x id="INTERPOLATION" equiv-text="{{name}}"/> and <x id="INTERPOLATION"/> <x id="ICU" equiv-text="{minutes, plural,
             =0 {just now}
             =1 {one minute ago}
             other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}" xid="6988904457887003660"/>
-          with <x id="INTERPOLATION"/> and <x id="INTERPOLATION" equiv-text="{{   stuff }}"/>
+          with <x id="INTERPOLATION"/>, <x id="INTERPOLATION" equiv-text="{{   stuff }}"/> and <x id="INTERPOLATION_1"/>
         </source>
         <target><x id="INTERPOLATION" equiv-text="{{name}}"/></target>
       </trans-unit>
@@ -249,8 +251,9 @@ describe('convertXmlUnitToSegment', () => {
       base.convertXmlUnitToSegment(xmlUnit)
     ).toStrictEqual({
        type:   "source",
-       source: `Updated {name} and {x1} {icu}
-          with {x2} and {stuff}`,
+       source: `<1>Updated:</1>
+          {name} and {x1} {icu}
+          with {x1}, {stuff} and {x2}`,
        target: '{name}'
     })
   })

@@ -228,7 +228,7 @@ class Base {
       const substitution = interpolation[0]
       const extraction   = interpolation[1]
 
-      targetText = targetText.replace(new Regexp(extraction, 'g'), substitution)
+      targetText = targetText.replace(new RegExp(extraction, 'g'), substitution)
     })
 
     return targetText

@@ -258,6 +258,27 @@ describe('convertXmlUnitToSegment', () => {
     })
   })
 
+  test('Convert source and target, and check that tag and interpolation order from target matches the source', () => {
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="2002272803511843863" datatype="html">
+        <source>
+          A series of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>non-nested<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tag <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>interpolations<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>.
+        </source>
+        <target>
+          Une série <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>d&apos;interpolations<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> de balises <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>non-imbriquées<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.
+        </target>
+      </trans-unit>
+    `)['trans-unit']
+
+    expect(
+      base.convertXmlUnitToSegment(xmlUnit)
+    ).toStrictEqual({
+       type:   "source",
+       source: "A series of <1>non-nested</1> tag <2>interpolations</2>.",
+       target: "Une série <2>d'interpolations</2> de balises <1>non-imbriquées</1>."
+    })
+  })
+
   test('Ignore extra spaces at start and end of source/target', () => {
     const xmlUnit = base.xmlParser().parse(`
       <trans-unit id="7670372064920373295" datatype="html">

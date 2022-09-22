@@ -89,15 +89,20 @@ class Base {
     return segment
   }
 
-  xmlUnitSource(xmlUnit) {
-    let source = ''
-
-    if (typeof xmlUnit.source === 'string' || xmlUnit.source instanceof String) {
-      source = xmlUnit.source
+  xmlNodeText(xmlNode) {
+    if (typeof xmlNode === 'string' || xmlNode instanceof String) {
+      return xmlNode
+    } else if (xmlNode) {
+      return xmlNode['#text']
     } else {
-      source = xmlUnit.source['#text']
+      return ''
     }
+  }
 
+  xmlUnitSource(xmlUnit) {
+    let source
+
+    source = this.xmlNodeText(xmlUnit.source)
     source = Interpolation.extract(source)['text']
     source = source.trim()
     source = this.unescapeEntities(source)
@@ -106,17 +111,10 @@ class Base {
   }
 
   xmlUnitTarget(xmlUnit) {
-    let target = ''
+    let source = this.xmlNodeText(xmlUnit.source)
+    let target = this.xmlNodeText(xmlUnit.target)
 
-    if (xmlUnit.target) {
-      if (typeof xmlUnit.target === 'string' || xmlUnit.target instanceof String) {
-        target = xmlUnit.target
-      } else {
-        target = xmlUnit.target['#text']
-      }
-    }
-
-    target = Interpolation.extract(target)['text']
+    target = this.extractTarget(source, target) // Use interpolations from source to keep correct order in target
     target = target.trim()
     target = this.unescapeEntities(target)
 
@@ -216,6 +214,19 @@ class Base {
                .replace(/"/g, '&quot;')
   }
 
+  extractTarget(sourceText, targetText) {
+    const sourceInterpolations = Interpolation.extract(sourceText)['interpolations']
+
+    Object.entries(sourceInterpolations).forEach(interpolation => {
+      const substitution = interpolation[0]
+      const extraction   = interpolation[1]
+
+      targetText = targetText.replace(new RegExp(extraction, 'g'), substitution)
+    })
+
+    return targetText
+  }
+
   /*----------------------------------------*/
   /* Save target .xlf files after init/sync */
   /*----------------------------------------*/
@@ -261,7 +272,7 @@ class Base {
     const interpolations = Interpolation.extract(xmlUnit.source)['interpolations']
     let   escapedTarget  = segment.target
 
-    // Detect ICU plural parts and do extra excape
+    // Detect ICU plural parts and do extra escape
     if (this.isIcuPluralString(segment.source) && this.isIcuPluralString(escapedTarget)) {
       // Replace double single-quotes and escape them
       // Angular doesn't manage the whole ICU syntax so we fix the result from Translation.io

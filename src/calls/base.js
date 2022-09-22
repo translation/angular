@@ -217,6 +217,7 @@ class Base {
   extractTarget(sourceText, targetText) {
     const sourceInterpolations = Interpolation.extract(sourceText)['interpolations']
 
+    // First loop to keep same numerotation as source
     Object.entries(sourceInterpolations).forEach(interpolation => {
       const substitution = interpolation[0]
       const extraction   = interpolation[1]
@@ -224,6 +225,7 @@ class Base {
       targetText = targetText.replace(extraction, substitution)
     })
 
+    // Second loop to substitute all remaining duplicates (like multiple {x} in ICU plurals)
     Object.entries(sourceInterpolations).forEach(interpolation => {
       const substitution = interpolation[0]
       const extraction   = interpolation[1]

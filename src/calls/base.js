@@ -224,6 +224,13 @@ class Base {
       targetText = targetText.replace(extraction, substitution)
     })
 
+    Object.entries(sourceInterpolations).forEach(interpolation => {
+      const substitution = interpolation[0]
+      const extraction   = interpolation[1]
+
+      targetText = targetText.replace(new Regexp(extraction, 'g'), substitution)
+    })
+
     return targetText
   }
 

@@ -22,7 +22,7 @@ class HtmlTagExtraction {
 
     this.tagTotal += 1
 
-    this.tagStack[htmlTag] ||= []
+    this.tagStack[htmlTag] = this.tagStack[htmlTag] || []
     this.tagStack[htmlTag].push(this.tagTotal)
 
     return this.tagTotal
@@ -45,7 +45,7 @@ class HtmlTagExtraction {
       let id = this.getTagId(extraction)
 
       if (id.startsWith('TAG_')) {               // 2. if id is TAG_SOMETHING, html tag is "something"
-        htmlTag = id.replace(/^TAG_(.+)/, (_, tagName) => tagName.toLowerCase())
+        htmlTag = id.replace(/^TAG_/, '').toLowerCase()
       } else {                                   // 3. if id is in Angular list, use it!
         htmlTag = this.getTagMap()[id] || 'span' // 4. span is nothing else if found
       }

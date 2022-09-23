@@ -256,7 +256,7 @@ class Base {
       // 3. Load .xlf
       const targetRaw      = fs.readFileSync(targetFile)
       const targetXml      = this.xmlParser().parse(targetRaw)
-      const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
+      const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat()
 
       // 4 Populate the loaded .xlf it with targets from Translation.io
       const translatedTargetSegments = response.segments[language]

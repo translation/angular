@@ -21,7 +21,7 @@ class Init extends Base {
     // 2. Load source .xlf as list of segments for Translation.io API
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
-    const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
+    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat()
     const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
 
     // 3. For each exising source segment, detect if any translation already exists in target .xlf files
@@ -32,7 +32,7 @@ class Init extends Base {
       if (fs.existsSync(targetFile)) {
         const targetRaw      = fs.readFileSync(targetFile)
         const targetXml      = this.xmlParser().parse(targetRaw)
-        const targetXmlUnits = targetXml.xliff.file.body['trans-unit']
+        const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat()
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
 

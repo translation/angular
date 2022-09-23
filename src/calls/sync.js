@@ -17,7 +17,7 @@ class Sync extends Base {
     // 1. Extract source segments
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
-    const sourceXmlUnits = sourceXml.xliff.file.body['trans-unit']
+    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat()
     const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
 
     // No need for target in sync request

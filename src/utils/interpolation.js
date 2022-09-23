@@ -49,28 +49,28 @@ class Interpolation {
   // Substitutes the interpolation with an appropriate variable (specific or index-generated)
   // depending on already existing substitutions
   static substitution(extraction, existingSubstitutions) {
-    let substitution, nextIndex
+    let substitution, name, number
 
     if (extraction.includes('id="INTERPOLATION_') && !extraction.includes('equiv-text=')) {       // {x2}, {x3}, ...
-      nextIndex = parseInt(extraction.split('id="INTERPOLATION_', 2)[1].split('"', 2)[0]) + 1
-      substitution = `{x${nextIndex}}`
+      number       = parseInt(extraction.split('id="INTERPOLATION_', 2)[1].split('"', 2)[0]) + 1
+      substitution = `{x${number}}`
     } else if(extraction.includes('id="INTERPOLATION"') && !extraction.includes('equiv-text=')) { // {x1} - May be converted later to {x} if only 1
       substitution = `{x1}`
     } else if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text=')) {  // {name}, {variable}, {count}
-      const variableName = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0]
-      substitution = `{${variableName.trim()}}`
+      name         = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0].trim()
+      substitution = `{${name}}`
     } else if (extraction.includes('id="ICU')) {                                                  // {icu1}, {icu2}, ... - May be converted later to {icu} if only 1
-      nextIndex = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
-      substitution = `{icu${nextIndex}}`
+      number       = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
+      substitution = `{icu${number}}`
     } else if (HtmlTagExtraction.isOpeningTag(extraction)) {                                       // <tag>
-      nextIndex = HtmlTagExtraction.addToStackAndGetNextIndex(extraction)
-      substitution = `&lt;${nextIndex}&gt;`
+      number       = HtmlTagExtraction.addToStackAndGetNumber(extraction)
+      substitution = `&lt;${number}&gt;`
     } else if (HtmlTagExtraction.isClosingTag(extraction)) {                                       // </tag>
-      nextIndex = HtmlTagExtraction.removeFromStackAndGetNextIndex(extraction)
-      substitution = `&lt;/${nextIndex}&gt;`
+      number       = HtmlTagExtraction.removeFromStackAndGetNumber(extraction)
+      substitution = `&lt;/${number}&gt;`
     } else if (HtmlTagExtraction.isSelfClosingTag(extraction)) {                                   // <tag/>
-      nextIndex = HtmlTagExtraction.addToStackAndGetNextIndex(extraction)
-      substitution = `&lt;${nextIndex}/&gt;`
+      number       = HtmlTagExtraction.addToStackAndGetNumber(extraction)
+      substitution = `&lt;${number}/&gt;`
     } else {
       console.error(`No substitution found for this extraction: ${extraction}`)
     }

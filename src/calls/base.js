@@ -126,11 +126,7 @@ class Base {
     let notes = []
 
     if (xmlUnit.note) {
-      if (Array.isArray(xmlUnit.note)) {
-        notes = xmlUnit.note
-      } else { // object
-        notes = [xmlUnit.note]
-      }
+      notes = [xmlUnit.note].flat()
     }
 
     return notes
@@ -141,11 +137,7 @@ class Base {
     let contextGroups = []
 
     if (xmlUnit['context-group']) {
-      if (Array.isArray(xmlUnit['context-group'])) {
-        contextGroups = xmlUnit['context-group']
-      } else { // object
-        contextGroups = [xmlUnit['context-group']]
-      }
+      contextGroups = [xmlUnit['context-group']].flat()
     }
 
     return contextGroups

@@ -125,7 +125,7 @@ it('After init, segments on Translation.io should exist and be translated', () =
           "target_language": "fr",
           "type": "source",
           "source": "Updated: {icu1} by {icu2}",
-          "target": "Mis à jour : {icu1} par {icu2}",
+          "target": "Mis à jour : {icu1} par {icu2}", // Careful insecable space
           "references": [
             "src/app/app.component.html:19,23"
           ]

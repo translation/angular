@@ -279,6 +279,40 @@ describe('convertXmlUnitToSegment', () => {
     })
   })
 
+  test('Convert source and target, and check that tag and interpolation order from target matches the source, even with multiple similar closing tags', () => {
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="5333372789835402443" datatype="html">
+        <source>A series of <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:green&quot;&gt;"/>nested <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong data-id=&quot;42&quot;&gt;"/>tag<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> interpolations <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>with<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> attributes<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.</source>
+        <target>Une série <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:green&quot;&gt;"/>d&apos;interpolations de <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong data-id=&quot;42&quot;&gt;"/>balises<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> imbriquées <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>avec<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> des attributs<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.</target>
+      </trans-unit>
+    `)['trans-unit']
+
+    expect(
+      base.convertXmlUnitToSegment(xmlUnit)
+    ).toStrictEqual({
+       type:   "source",
+       source: "A series of <1>nested <2>tag</2> interpolations <3>with</3> attributes</1>.",
+       target: "Une série <1>d'interpolations de <2>balises</2> imbriquées <3>avec</3> des attributs</1>."
+    })
+  })
+
+  test('Convert source and target from ICU plural, and check that variable of both plural forms is replaced correctly', () => {
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="2002272803511843863" datatype="html">
+        <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago}}</source>
+        <target>{VAR_PLURAL, plural, =0 {à l&apos;instant} =1 {il y a une minute} one {il y a <x id="INTERPOLATION"/> minute} other {Il y a <x id="INTERPOLATION"/> minutes} }</target>
+      </trans-unit>
+    `)['trans-unit']
+
+    expect(
+      base.convertXmlUnitToSegment(xmlUnit)
+    ).toStrictEqual({
+       type:   "source",
+       source: "{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{x} minutes ago}}",
+       target: "{VAR_PLURAL, plural, =0 {à l'instant} =1 {il y a une minute} one {il y a {x} minute} other {Il y a {x} minutes} }"
+    })
+  })
+
   test('Ignore extra spaces at start and end of source/target', () => {
     const xmlUnit = base.xmlParser().parse(`
       <trans-unit id="7670372064920373295" datatype="html">

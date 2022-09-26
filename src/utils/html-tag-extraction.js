@@ -2,7 +2,7 @@ class HtmlTagExtraction {
   static resetStack() {
     this.tagStack = {} // Examples:
                        // * { em: [ 1, 2 ], strong: [ 3, 4 ] } means that, at that point of the extraction, 1 & 2 are still opened <em>, and 3 & 4 are still opened <strong>
-                       // * { em: [ 1 ], strong: [ 5 ] }       means that, at that point of the extraction, the 1st <em> and the 5th <strong> are still open. 1, 2, 3 have been closed already
+                       // * { em: [ 1 ], strong: [ 5 ] }       means that, at that point of the extraction, the 1st <em> and the 5th <strong> are still open. 2, 3, 4 have been closed already
 
     this.number = 1 // Number of next extracted opening or self-closing html tag
   }
@@ -61,6 +61,8 @@ class HtmlTagExtraction {
     let htmlTag = extraction.split(' ctype="', 2)[1].split('"', 2)[0]
     if (htmlTag.startsWith('x-')) {
       htmlTag = htmlTag.replace(/^x-/, '')
+      htmlTag = htmlTag.replace(/_[0-9]+$/, '')
+
     }
     return htmlTag
   }

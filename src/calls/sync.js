@@ -12,13 +12,15 @@ class Sync extends Base {
   }
 
   run() {
-    console.log('Sync.run()')
+    console.log("\n🏁 Starting Translation.io Sync process, please wait 🏁")
 
     // 1. Extract source segments
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
-    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat()
+    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat().filter(unit => unit) // Ensure consistent array
     const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
+
+    this.checkEmptySource(sourceSegments)
 
     // No need for target in sync request
     sourceSegments.forEach(sourceSegment => delete sourceSegment['target'])
@@ -36,7 +38,12 @@ class Sync extends Base {
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(
-           response => this.writeTargetFiles(response.data),
+           response => {
+             this.writeTargetFiles(response.data)
+             console.log()
+             console.log("🎉 Synchronization successfully completed 🎉\n")
+             console.log(`Use this URL to translate: ${response.data.project.url}`)
+           },
            error    => {
              console.error('HTTP REQUEST ERROR')
              console.error(error.message)

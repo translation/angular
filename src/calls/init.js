@@ -9,7 +9,7 @@ class Init extends Base {
   }
 
   run() {
-    console.log('Init.run()')
+    console.log("\n🏁 Starting Translation.io Init process, please wait 🏁")
 
     // 1. Prepare Translation.io request
     let request = {
@@ -21,8 +21,10 @@ class Init extends Base {
     // 2. Load source .xlf as list of segments for Translation.io API
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
-    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat()
+    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat().filter(unit => unit) // Ensure consistent array
     const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
+
+    this.checkEmptySource(sourceSegments)
 
     // 3. For each exising source segment, detect if any translation already exists in target .xlf files
     this.targetLanguages().forEach(language => {
@@ -32,7 +34,7 @@ class Init extends Base {
       if (fs.existsSync(targetFile)) {
         const targetRaw      = fs.readFileSync(targetFile)
         const targetXml      = this.xmlParser().parse(targetRaw)
-        const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat()
+        const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat().filter(unit => unit) // Ensure consistent array
         targetSegments       = this.convertXmlUnitsToSegments(targetXmlUnits)
       }
 
@@ -54,7 +56,13 @@ class Init extends Base {
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(
-           response => this.writeTargetFiles(response.data),
+           response => {
+             this.writeTargetFiles(response.data)
+             console.log()
+             console.log("🎉 Initialization successfully completed 🎉\n")
+             console.log(`Use this URL to translate: ${response.data.project.url}`)
+             console.log("Then use 'npm run translation:sync' or 'yarn translation:sync' to send new keys to Translation.io and get new translations into your project.")
+           },
            error    => {
              console.error('HTTP REQUEST ERROR')
              console.error(error.message)

@@ -123,24 +123,12 @@ class Base {
 
   // To put existing unit notes into array (even if just one)
   xmlUnitNotes(xmlUnit) {
-    let notes = []
-
-    if (xmlUnit.note) {
-      notes = [xmlUnit.note].flat()
-    }
-
-    return notes
+    return [xmlUnit.note].flat().filter(unit => unit) // Ensure consistent array
   }
 
   // To put existing context groups into array (even if just one)
   xmlUnitContextGroups(xmlUnit) {
-    let contextGroups = []
-
-    if (xmlUnit['context-group']) {
-      contextGroups = [xmlUnit['context-group']].flat()
-    }
-
-    return contextGroups
+    return [xmlUnit['context-group']].flat().filter(unit => unit) // Ensure consistent array
   }
 
   xmlUnitContext(xmlUnit) {
@@ -232,6 +220,14 @@ class Base {
   /* Save target .xlf files after init/sync */
   /*----------------------------------------*/
 
+  checkEmptySource(segments) {
+    if (segments.length == 0) {
+      console.error()
+      console.error("No segments were extracted from your project, please check the i18n syntax in your source files.")
+      console.error("If the error persists, please contact us at contact@translation.io")
+    }
+  }
+
   writeTargetFiles(response) {
     // For each target language
     this.targetLanguages().forEach(language => {
@@ -248,7 +244,7 @@ class Base {
       // 3. Load .xlf
       const targetRaw      = fs.readFileSync(targetFile)
       const targetXml      = this.xmlParser().parse(targetRaw)
-      const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat()
+      const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat().filter(unit => unit) // Ensure consistent array
 
       // 4 Populate the loaded .xlf it with targets from Translation.io
       const translatedTargetSegments = response.segments[language]

@@ -155,6 +155,18 @@ describe('Interpolation.extract', () => {
     })
   })
 
+  test('A simple interpolation of self-closing or self-contained tags (<input/> and <img>)', () => {
+    expect(
+      Interpolation.extract(`This is an input <x id="TAG_INPUT" ctype="x-input" equiv-text="&lt;input name=&quot;name&quot;/&gt;"/> and an image <x id="TAG_IMG" ctype="image" equiv-text="&lt;img src=&quot;image-source&quot; alt=&quot;text&quot;&gt;"/>`)
+    ).toStrictEqual({
+      text: escape('This is an input <1/> and an image <2>'),
+      interpolations: escapeKeys({
+        "<1/>": "<x id=\"TAG_INPUT\" ctype=\"x-input\" equiv-text=\"&lt;input name=&quot;name&quot;/&gt;\"/>",
+        "<2>":  "<x id=\"TAG_IMG\" ctype=\"image\" equiv-text=\"&lt;img src=&quot;image-source&quot; alt=&quot;text&quot;&gt;\"/>",
+      })
+    })
+  })
+
   test('A more complex interpolation with repetitive and similar tags', () => {
     expect(
       Interpolation.extract(`A sentence with <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>repetitive<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tags, with a <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>twist<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>, and<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>a line break,<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>and another line break,<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br /&gt;"/>and yet another one.`)

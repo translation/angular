@@ -12,6 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x, 16.x, 18.x]
+    env:
+      CC_TEST_REPORTER_ID: c3f1809198d464f50a6824df3f568499cc5ec35ec08ea6e6c005ce3a932cd035
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -45,3 +47,9 @@ jobs:
       run: |
         cd samples/sample-v14
         node spec.js
+    - name: Publish code coverage
+      if: ${{ matrix.node-version == '18.x' }} # only one is needed!
+      uses: paambaati/codeclimate-action@v3.0.0
+      with:
+        debug: true
+        verifyDownload: true

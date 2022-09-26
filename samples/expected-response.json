@@ -79,7 +79,7 @@
       "target_language": "fr",
       "type": "source",
       "source": "Updated: {icu1} by {icu2}",
-      "target": "Mis à jour : {icu1} par {icu2}", // Careful insecable space
+      "target": "Mis à jour : {icu1} par {icu2}",
       "references": [
         "src/app/app.component.html:19,23"
       ]

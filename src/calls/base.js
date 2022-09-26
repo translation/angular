@@ -89,6 +89,24 @@ class Base {
     return segment
   }
 
+  forceArray(units) {
+    let array = this.flattenArray([units])
+    return array.filter(unit => unit) // Remove null and undefined values
+
+  }
+
+  // Recursive function to flatten an array
+  flattenArray(array, depth = 1, stack = []) {
+    for (const unit of array) {
+      if (Array.isArray(unit) && depth > 0) {
+        this.flattenArray(unit, depth - 1, stack);
+      } else {
+        stack.push(unit);
+      }
+    }
+    return stack;
+  }
+
   xmlNodeText(xmlNode) {
     if (typeof xmlNode === 'string' || xmlNode instanceof String) {
       return xmlNode
@@ -123,12 +141,12 @@ class Base {
 
   // To put existing unit notes into array (even if just one)
   xmlUnitNotes(xmlUnit) {
-    return [xmlUnit.note].flat().filter(unit => unit) // Ensure consistent array
+    return this.forceArray(xmlUnit.note) // Ensure consistent array
   }
 
   // To put existing context groups into array (even if just one)
   xmlUnitContextGroups(xmlUnit) {
-    return [xmlUnit['context-group']].flat().filter(unit => unit) // Ensure consistent array
+    return this.forceArray(xmlUnit['context-group']) // Ensure consistent array
   }
 
   xmlUnitContext(xmlUnit) {
@@ -244,7 +262,7 @@ class Base {
       // 3. Load .xlf
       const targetRaw      = fs.readFileSync(targetFile)
       const targetXml      = this.xmlParser().parse(targetRaw)
-      const targetXmlUnits = [targetXml.xliff.file.body['trans-unit']].flat().filter(unit => unit) // Ensure consistent array
+      const targetXmlUnits = this.forceArray(targetXml.xliff.file.body['trans-unit']) // Ensure consistent array
 
       // 4 Populate the loaded .xlf it with targets from Translation.io
       const translatedTargetSegments = response.segments[language]

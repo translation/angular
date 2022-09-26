@@ -17,7 +17,7 @@ class Sync extends Base {
     // 1. Extract source segments
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)
-    const sourceXmlUnits = [sourceXml.xliff.file.body['trans-unit']].flat().filter(unit => unit) // Ensure consistent array
+    const sourceXmlUnits = this.forceArray(sourceXml.xliff.file.body['trans-unit']) // Ensure consistent array
     const sourceSegments = this.convertXmlUnitsToSegments(sourceXmlUnits)
 
     this.checkEmptySource(sourceSegments)

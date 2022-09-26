@@ -2,7 +2,7 @@
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://github.com/translation/angular/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/translation/angular/actions/workflows/test.yml)
-[![npm version)](https://img.shields.io/npm/v/@translation/angular)(https://www.npmjs.com/package/@translation/angular)
+[![npm version)](https://img.shields.io/npm/v/@translation/angular)](https://www.npmjs.com/package/@translation/angular)
 
 Add this package to localize your Angular application (see [Installation](#installation)).
 

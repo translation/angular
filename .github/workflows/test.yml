@@ -41,7 +41,7 @@ jobs:
     - name: Initialize Translation.io project
       run: |
         cd samples/sample-v${{ matrix.angular-version }}
-        npm run translation:init
+        NODE_OPTIONS=--openssl-legacy-provider npm run translation:init
     - name: Execute specs of initialized project
       run: |
         cd samples/sample-v${{ matrix.angular-version }}

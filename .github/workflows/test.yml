@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x, 16.x, 18.x]
-        angular-version: ['13', '14']
+        angular-version: ['12', 13', '14']
     name: Node.js ${{ matrix.node-version }} - Angular v${{ matrix.angular-version }}
     env:
       CC_TEST_REPORTER_ID: c3f1809198d464f50a6824df3f568499cc5ec35ec08ea6e6c005ce3a932cd035

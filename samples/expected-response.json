@@ -37,7 +37,7 @@
       "target_language": "fr",
       "type": "source",
       "source": "Updated {icu}",
-      "target": "Updated {icu}",
+      "target": "Mis à jour {icu}",
       "references": [
         "src/app/app.component.html:13"
       ]

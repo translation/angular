@@ -30,7 +30,7 @@ jobs:
       run: |
         cd samples/sample-v${{ matrix.angular-version }}
         npm install
--    - name: Remove all segments from corresponding Translation.io Project
+    - name: Remove all segments from corresponding Translation.io Project
       run: |
         node -e 'require("./samples/tio-utils").purgeProject("TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}")'
     - name: Place correct API key in tio.config.json file

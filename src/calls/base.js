@@ -153,7 +153,9 @@ class Base {
     const notes       = this.xmlUnitNotes(xmlUnit)
     const id          = xmlUnit['@_id']
     const contextNote = notes.find(note => note['@_from'] === 'meaning')
-    const isCustomId  = (id) => !/^\d+$/.test(id) // to separate generated IDs with manual IDs
+    const isCustomId  = (id) => !/^\d+$|^\w{40}$/.test(id) // to separate generated IDs with manual IDs
+                                                           // => old format: 7ad2c4ad8cd2978acd5e642c3825530e7ee7b7d7
+                                                           // => new format: 392942015236586892
 
     if (isCustomId(id)) {
       if (contextNote) {

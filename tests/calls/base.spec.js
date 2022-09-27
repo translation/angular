@@ -41,6 +41,23 @@ describe('convertXmlUnitToSegment', () => {
     })
   })
 
+  test('Convert simple translated with generic (ignored) old-format key', () => {
+    const xmlUnit = base.xmlParser().parse(`
+      <trans-unit id="7ad2c4ad8cd2978acd5e642c3825530e7ee7b7d7" datatype="html">
+        <source>Source Text</source>
+        <target>Target Text</target>
+      </trans-unit>
+    `)['trans-unit']
+
+    expect(
+      base.convertXmlUnitToSegment(xmlUnit)
+    ).toStrictEqual({
+       type:   "source",
+       source: "Source Text",
+       target: "Target Text",
+    })
+  })
+
   test('Convert simple with custom key (converted as context)', () => {
     const xmlUnit = base.xmlParser().parse(`
       <trans-unit id="customKey" datatype="html">

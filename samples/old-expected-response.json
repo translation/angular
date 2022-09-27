@@ -47,7 +47,7 @@
       "target_language": "fr",
       "type": "source",
       "source": "{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{minutes} minutes ago} }",
-      "target": "{ VAR_PLURAL, plural, =0 {à l''instant} =1 {il y a une minute} one {il y a {minutes} minute} other {il y a {minutes} minutes} }",
+      "target": "{VAR_PLURAL, plural, =0 {à l'instant} =1 {il y a une minute} one {il y a {minutes} minute} other {il y a {minutes} minutes} }",
       "references": [
         "src/app/app.component.html:13",
         "src/app/app.component.html:19"

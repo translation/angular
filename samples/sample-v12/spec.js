@@ -11,7 +11,7 @@ it('After init, segments on Translation.io should exist and be translated', () =
     let response = JSON.parse(jsonResponse)
     response['segments'].forEach(segment => delete segment['id'])
 
-    let expectedContent = fs.readFileSync('../expected-response.json')
+    let expectedContent = fs.readFileSync('../expected-response.json').toString()
 
     // Angular V12 is less precise when attributing lines of references, we need to adapt
     expectedContent = expectedContent.replace('src/app/app.component.html:2,4', 'src/app/app.component.html:3,4')

@@ -38,10 +38,18 @@ jobs:
         cd samples/sample-v${{ matrix.angular-version }}
         sed -i 's/TRANSLATIONANGULARTESTING/TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}/g' tio.config.json
         sed -i 's/\.x/X/g' tio.config.json
-    - name: Initialize Translation.io project
+    - name: Initialize Translation.io project for Node 18
+      if: ${{ matrix.node-version == '18.x' }}
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
       run: |
         cd samples/sample-v${{ matrix.angular-version }}
-        NODE_OPTIONS=--openssl-legacy-provider npm run translation:init
+        npm run translation:init
+    - name: Initialize Translation.io project for Node < 18
+      if: ${{ matrix.node-version != '18.x' }}
+      run: |
+        cd samples/sample-v${{ matrix.angular-version }}
+        npm run translation:init
     - name: Execute specs of initialized project
       run: |
         cd samples/sample-v${{ matrix.angular-version }}

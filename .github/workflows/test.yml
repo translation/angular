@@ -25,14 +25,12 @@ jobs:
         cache: 'npm'
     - run: npm update
     - run: npm ci
-    - run: npm run build --if-present
     - run: npm test
     - name: Install Angular dependencies
       run: |
         cd samples/sample-v${{ matrix.angular-version }}
         npm install
-        npm run build --if-present
-    - name: Remove all segments from corresponding Translation.io Project
+-    - name: Remove all segments from corresponding Translation.io Project
       run: |
         node -e 'require("./samples/tio-utils").purgeProject("TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}")'
     - name: Place correct API key in tio.config.json file

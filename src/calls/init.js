@@ -63,7 +63,8 @@ class Init extends Base {
              console.log()
              console.log("🎉 Initialization successfully completed 🎉\n")
              console.log(`Use this URL to translate: ${response.data.project.url}`)
-             console.log("Then use 'npm run translation:sync' or 'yarn translation:sync' to send new keys to Translation.io and get new translations into your project.")
+             console.log("Then use 'npm run translation:sync' or 'yarn translation:sync' ")
+             console.log("to send new keys to Translation.io and get new translations into your project.")
            },
            error    => {
              console.error('HTTP REQUEST ERROR')

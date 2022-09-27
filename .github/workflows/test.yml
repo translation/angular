@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14.x, 16.x, 18.x]
+        angular-version: ['13', '14']
     env:
       CC_TEST_REPORTER_ID: c3f1809198d464f50a6824df3f568499cc5ec35ec08ea6e6c005ce3a932cd035
     steps:
@@ -27,28 +28,27 @@ jobs:
     - run: npm test
     - name: Install Angular dependencies
       run: |
-        cd samples/sample-v14
+        cd samples/sample-v${{ matrix.angular-version }}
         npm install
         npm run build --if-present
     - name: Remove all segments from corresponding Translation.io Project
       run: |
-        cd samples
-        node -e 'require("./tio-utils").purgeProject("TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}")'
+        node -e 'require("./samples/tio-utils").purgeProject("TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}")'
     - name: Place correct API key in tio.config.json file
       run: |
-        cd samples/sample-v14
-        sed -i 's/TRANSLATIONANGULARTESTING/TRANSLATIONANGULARTESTINGNODE${{ matrix.node-version }}/g' tio.config.json
+        cd samples/sample-v${{ matrix.angular-version }}
+        sed -i 's/TRANSLATIONANGULARTESTING/TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}/g' tio.config.json
         sed -i 's/\.x/X/g' tio.config.json
     - name: Initialize Translation.io project
       run: |
-        cd samples/sample-v14
+        cd samples/sample-v${{ matrix.angular-version }}
         npm run translation:init
     - name: Execute specs of initialized project
       run: |
-        cd samples/sample-v14
+        cd samples/sample-v${{ matrix.angular-version }}
         node spec.js
     - name: Publish code coverage
-      if: ${{ matrix.node-version == '18.x' }} # only one is needed!
+      if: ${{ matrix.node-version == '18.x' && matrix.angular-version == '14' }} # only one is needed!
       uses: paambaati/codeclimate-action@v3.0.0
       with:
         debug: true

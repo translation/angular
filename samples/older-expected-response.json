@@ -87,7 +87,7 @@
       "target_language": "fr",
       "type": "source",
       "source": "{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {{minutes} minutes ago by {VAR_SELECT, select, male {male} female {female} other {other} }} }",
-      "target": "{ VAR_PLURAL, plural, =0 {à l''instant} =1 {il y a une minute} one {il y a {minutes} minute} other {il y a {minutes} minutes par} }",
+      "target": "{VAR_PLURAL, plural, =0 {à l'instant} =1 {il y a une minute} one {il y a {minutes} minute} other {il y a {minutes} minutes par} }",
       "references": [
         "app/app.component.html:19"
       ]

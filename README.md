@@ -22,7 +22,7 @@ Table of contents
 =================
 * [Localization syntax overview](#localization-syntax-overview)
   * [i18n attribute in templates](#i18n-attribute-in-templates)
-  * [$localize for literal string in code](#$localize-for-literal-string-in-code)
+  * [$localize in classes and functions](#$localize-in-classes-and-functions)
 * [Installation](#installation)
 * [Usage](#usage)
   * [Sync](#sync)
@@ -44,34 +44,47 @@ Table of contents
 Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
 
 ```html
-<h1 i18n>Welcome to our Angular app!</h1>
-<p i18n>This is a first paragraph.</p>
+<!-- Simple use of the i18n attribute -->
+<h1 i18n>Welcome to our Angular application!</h1>
+
+<!-- Variable interpolation -->
+<!-- Translators will see "Hi {name}, welcome to your dashboard!" -->
+<p i18n>Hi {{ name }}, welcome to your dashboard!</p>
+
+<!-- Simple HTML tags interpolation -->
+<!-- Translators will see "Text with <1>HTML</1> tags." -->
+<p i18n>Text with <em>HTML</em> tags.</p>
+
+<!-- Translatable attribute -->
+<img [src]="cat.png" i18n-alt alt="A fluffy cat" />
+
+<!-- ICU plural form -->
+<!-- Translators will see "There are no cats", "There is one cat", "There are {x} cats" -->
+<p i18n>{count, plural,
+  =0 {There are no cats}
+  =1 {There is one cat}
+  other {There are {{count}} cats}
+}</p>
+
 ```
 
-Mark the attributes of HTML elements as translatable by using `i18n-{attribute_name}` attributes.
+### $localize in classes and functions
 
-```html
-// Marking an image's title attribute as translatable
-<img [src]="example-image" i18n-title title="Example image title" />
-```
-
-### $localize for literal strings in code
-
-Mark text (literal strings) as translatable in your component code using `$localize` and surrounding the text with backticks ( \` ).
+Mark text (literal strings) as translatable in your component classes and functions using `$localize` and surrounding the text with backticks ( \` ).
 
 ```javascript
-// Marking a literal string as translatable
-$localize `Hello, we hope you will enjoy this app.`;
+// Simple use of the $localize function
+let text = $localize `Welcome to our Angular application!`;
 ```
 
-To explore the syntax more in details (using IDs, specifying plurals and interpolations), please check out the section [Localization syntax in details](#localization-syntax-in-details) below.
+To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Localization syntax in details](#localization-syntax-in-details)" section below.
 
 
 ## Installation
 
-### 1. Install the localize package and set up your i18n options
+### 1. Check your Angular i18n configuration
 
-Make sure that you have Angular's [localize package](https://angular.io/guide/i18n-common-add-package) installed, or install it.
+Make sure that you have [Angular's localize package](https://angular.io/guide/i18n-common-add-package) installed, or install it.
 
 ```bash
 ng add @angular/localize
@@ -79,7 +92,7 @@ ng add @angular/localize
 
 Configure the [i18n options](https://angular.io/guide/i18n-common-merge#define-locales-in-the-build-configuration) in the `angular.json` file at the root of your project.
 
-### 2. Install the `@translation/angular` package
+### 2. Install our `@translation/angular` package
 
 Run the following command at the root of your project to install our package:
 
@@ -95,14 +108,14 @@ yarn add @translation/angular
 
 Sign in to our platform and create your new project [from the UI](https://translation.io/angular), selecting the appropriate source and target locales.
 
-### 4. Copy the generated `tio.config.json` file to the root of your application.
+### 4. Copy the generated `tio.config.json` file to the root of your application
 
 This configuration file should look like this:
 ```json
 {
   "api_key": "abcdefghijklmnopqrstuvwxyz123456",
   "source_locale": "en",
-  "target_locales": ["fr", "es", "it"]
+  "target_locales": ["fr", "it", "es"]
 }
 ```
 
@@ -113,11 +126,14 @@ To make your life easier, add these lines to the `package.json` at the root of y
 ```json
 {
   "scripts": {
+    "extract": "ng extract-i18n --output-path=src/locale",
     "translation:init": "npm run extract && tio init",
     "translation:sync": "npm run extract && tio sync"
   }
 }
 ```
+
+N.B. If you are using Angular version 10 or lower, replace **extract-i18n** by **xi18n** in the "extract" command.
 
 ### 6. Initialize your project
 
@@ -205,22 +221,41 @@ Since you created a new project, the translation history and tags will unfortuna
 The text in a HTML element can be marked as translatable by using the `i18n` attribute in the components' templates.
 
 ```html
-<h1 i18n>Welcome to our Angular app!</h1>
-<p i18n>This is a first paragraph.</p>
+<h1 i18n>Welcome to our Angular application!</h1>
 ```
 
 The attributes of HTML elements can also be marked as translatable by using `i18n-{attribute_name}` attributes.
 
 ```html
-// Marking the title attribute of an image as translatable
-<img [src]="example-image" i18n-title title="Example image title" />
+<img [src]="cat.png" i18n-alt alt="A fluffy cat" />
 ```
 
-Literal strings in your component code can also be marked as translatable using `$localize` and surrounding the source text with backticks ( \` ).
+You can interpolate variables (component properties) into translatable strings.
+
+```html
+<!-- Translators will see "Hi {name}, welcome to your dashboard!" -->
+<p i18n>Hi {{ name }}, welcome to your dashboard!</p>
+```
+
+And you can also interpolate **valid** HTML tags.
+```html
+<!-- Translators will see "Text with <1>HTML</1> tags." -->
+<p i18n>Text with <em>HTML</em> tags.</p>
+
+<!-- Translators will see "Text with a <1><2>partly-emphasized</2> link</1>." -->
+<p i18n>Text with a <a href="#"><em>partly-emphasized</em> link</a>.</p>
+```
+
+Literal strings in your component classes and functions can also be marked as translatable using `$localize` and surrounding the source text with backticks ( \` ).
 
 ```javascript
-// Marking a literal string as translatable
-$localize `Hello, we hope you will enjoy this app.`;
+let text = $localize `Hello, we hope you will enjoy this app.`;
+```
+
+This syntax also allows for variable interpolation.
+```javascript
+// Translators will see "Hi {name}, welcome to your dashboard!"
+let text = $localize `Hi ${name}, welcome to your dashboard!`;
 ```
 
 The official Angular documentation for the syntax can be found [here](https://angular.io/guide/i18n-common-prepare).
@@ -229,16 +264,36 @@ The official Angular documentation for the syntax can be found [here](https://an
 
 You can use metadata as the value of the i18n attribute to specify a custom ID, a meaning and a description.
 
-The syntax for the metadata is the following: `{meaning}|{description}@@{custom_id}`
+The syntax for the metadata, is the following: `{meaning}|{description}@@{custom_id}`
 
 ```html
-<h1 i18n="Welcome message|Message used on the homepage@@home-welcome-message">Welcome to our Angular app!</h1>
+<!-- Specifying only the meaning (the pipe | is required) -->
+<h1 i18n="Welcome message|">Welcome to our app!</h1>
+
+<!-- Specifying only the description -->
+<h1 i18n="Message used on the homepage">Welcome to our app!</h1>
+
+<!-- Specifying only the indetifier -->
+<h1 i18n="@@home-welcome-message">Welcome to our app!</h1>
+
+<!-- Specifying a meaning, a description and an identifier -->
+<h1 i18n="Welcome message|Message used on the homepage@@home-welcome-message">Welcome to our app!</h1>
 ```
 
-Metadata can also be used with `$localize`, but it must then be formatted as follows: `{meaning}:{description}@@{custom_id}:{source_text}`.
+Metadata can also be used with `$localize`, but it must then be formatted as follows: `:{meaning}|{description}@@{custom_id}:{source_text}`.
 
 ```javascript
-let welcomeText = $localize `Welcome message:Message used on the homepage@@home-welcome-message:Welcome to our Angular app!`;
+// Specifying only the meaning (the pipe | is required)
+let text = $localize `:Welcome message|:Welcome to our Angular app!`;
+
+// Specifying only the description
+let text = $localize `:Message used on the homepage:Welcome to our Angular app!`;
+
+// Specifying only the identifier
+let text = $localize `:@@home-welcome-message:Welcome to our Angular app!`;
+
+// Specifying a meaning, a description and an identifier
+let text = $localize `:Welcome message|Message used on the homepage@@home-welcome-message:Welcome to our Angular app!`;
 ```
 
 The official Angular documentation for optional metadata can be found [here](https://angular.io/guide/i18n-optional-manage-marked-text).
@@ -253,36 +308,36 @@ To avoid any problems, we strongly recommend that you opt for the use of "meanin
 **Note:** If you use a meaning without a description, make sure to add a pipe (`|`) after the meaning, otherwise it will be considered as a description.
 
 ```html
-// Good use cases:
+<!-- Good use cases: -->
 
-  /*
-    1. The meaning helps distinguish between two keys with the same source text
-    -> This will result in two distinct source keys
-  */
-  <span i18n="Numbered day in a calendar|">Date</span> // Meaning only
-  <span i18n="Social meeting with someone|">Date</span> // Meaning only
+  <!-- Example 1
+    The meaning helps distinguish between two keys with the same source text
+    => This will result in two distinct source keys
+  -->
+  <span i18n="Numbered day in a calendar|">Date</span>
+  <span i18n="Social meeting with someone|">Date</span>
 
-  /*
-    2. Adding a description after the meaning will be useful to translators
-    -> This will result in two distinct source keys
-  */
+  <!-- Example 2
+    Adding a description after the meaning will be useful to translators
+    => This will result in two distinct source keys
+  -->
   <span i18n="Verb|Text on a button used to report a problem">Report</span>
   <span i18n="Noun|Title of the Report section in the app">Report</span>
 
-// Bad use cases:
+<!-- Bad use cases: -->
 
-  /*
-    1. Using only descriptions, without meanings (note the missing pipe | )
+  <!-- Example 1
+    Using only descriptions, without meanings (note the missing pipe | )
     -> This will result in only one source key
-  */
+  -->
   <label i18n="Label for the datepicker">Date</label>
   ...
   <option i18n="Type of event in a dropdown">Date</option>
 
-  /*
-    2. Using the same ID with two different source texts
+  <!-- Example 2
+    Using the same ID with two different source texts
     -> This will result in only one source key (the first one)
-  */
+  -->
   <h2 i18n="@@section-title">First section</h2>
   <h2 i18n="@@section-title">Second section</h2>
 ```
@@ -294,7 +349,12 @@ To avoid any problems, we strongly recommend that you opt for the use of "meanin
 Pluralization rules may vary from one locale to another, and it is recommended to use the plural syntax in your code to facilitate translation. This syntax is expressed as follows: `{ component_property, plural, pluralization_categories }`.
 
 ```html
-<span i18n>{catsCount, plural, =0 {There are no cats in the room} =1 {There is one cat in the room} other {There are {{catsCount}} cats in the room}}</span>
+<!-- Translators will see "There are no cats", "There is one cat", "There are {x} cats" -->
+<p i18n>{count, plural,
+  =0 {There are no cats}
+  =1 {There is one cat}
+  other {There are {{count}} cats}
+}</p>
 ```
 
 The official Angular documentation for plurals can be found [here](https://angular.io/guide/i18n-common-prepare#mark-plurals).

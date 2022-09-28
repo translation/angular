@@ -28,14 +28,14 @@ jobs:
     - run: npm test
     - name: Install Angular dependencies
       run: |
-        cd samples/sample-v${{ matrix.angular-version }}
+        cd samples/v${{ matrix.angular-version }}
         npm install
     - name: Remove all segments from corresponding Translation.io Project
       run: |
         node -e 'require("./samples/tio-utils").purgeProject("TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}")'
     - name: Place correct API key in tio.config.json file
       run: |
-        cd samples/sample-v${{ matrix.angular-version }}
+        cd samples/v${{ matrix.angular-version }}
         sed -i 's/TRANSLATIONANGULARTESTING/TRANSLATIONANGULARV${{ matrix.angular-version }}WITHNODE${{ matrix.node-version }}/g' tio.config.json
         sed -i 's/\.x/X/g' tio.config.json
     - name: Initialize Translation.io project for Node 18
@@ -43,16 +43,16 @@ jobs:
       env:
         NODE_OPTIONS: --openssl-legacy-provider
       run: |
-        cd samples/sample-v${{ matrix.angular-version }}
+        cd samples/v${{ matrix.angular-version }}
         npm run translation:init
     - name: Initialize Translation.io project for Node < 18
       if: ${{ matrix.node-version != '18.x' }}
       run: |
-        cd samples/sample-v${{ matrix.angular-version }}
+        cd samples/v${{ matrix.angular-version }}
         npm run translation:init
     - name: Execute specs of initialized project
       run: |
-        cd samples/sample-v${{ matrix.angular-version }}
+        cd samples/v${{ matrix.angular-version }}
         node spec.js
     - name: Publish code coverage
       if: ${{ matrix.node-version == '18.x' && matrix.angular-version == '14' }} # only one is needed!

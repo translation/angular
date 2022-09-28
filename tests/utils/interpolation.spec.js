@@ -102,6 +102,27 @@ describe('Interpolation.extract', () => {
     })
   })
 
+  test('One ICU with one unnamed interpolation and HTML tags interpolations', () => {
+    expect(
+      Interpolation.extract('{VAR_PLURAL, plural, =0 {<x id="START_TAG_STRONG" ctype="x-strong"/>no<x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cats} =1 {<x id="START_TAG_STRONG" ctype="x-strong"/>one<x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cat} other {<x id="START_TAG_STRONG" ctype="x-strong"/><x id="INTERPOLATION"/><x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cats}}')
+    ).toStrictEqual({
+      text: escape('{VAR_PLURAL, plural, =0 {<1>no</1> cats} =1 {<2>one</2> cat} other {<3>{x}</3> cats}}'),
+      interpolations: Object.assign(
+        escapeKeys({
+          '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+          '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+          '<2>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+          '</2>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+          '<3>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+          '</3>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>'
+        }),
+        {
+          '{x}':  '<x id="INTERPOLATION"/>'
+        }
+      )
+    })
+  })
+
   test('A very complex sentence with multiple interpolations of different kinds and some new lines', () => {
     expect(
       Interpolation.extract(`
@@ -159,10 +180,10 @@ describe('Interpolation.extract', () => {
     expect(
       Interpolation.extract(`This is an input <x id="TAG_INPUT" ctype="x-input" equiv-text="&lt;input name=&quot;name&quot;/&gt;"/> and an image <x id="TAG_IMG" ctype="image" equiv-text="&lt;img src=&quot;image-source&quot; alt=&quot;text&quot;&gt;"/>`)
     ).toStrictEqual({
-      text: escape('This is an input <1/> and an image <2>'),
+      text: escape('This is an input <1/> and an image <2/>'),
       interpolations: escapeKeys({
         "<1/>": "<x id=\"TAG_INPUT\" ctype=\"x-input\" equiv-text=\"&lt;input name=&quot;name&quot;/&gt;\"/>",
-        "<2>":  "<x id=\"TAG_IMG\" ctype=\"image\" equiv-text=\"&lt;img src=&quot;image-source&quot; alt=&quot;text&quot;&gt;\"/>",
+        "<2/>":  "<x id=\"TAG_IMG\" ctype=\"image\" equiv-text=\"&lt;img src=&quot;image-source&quot; alt=&quot;text&quot;&gt;\"/>",
       })
     })
   })
@@ -257,6 +278,20 @@ describe('Interpolation.recompose', () => {
         '{x2}': '<x id="INTERPOLATION_1"/>'
       })
     ).toEqual('{VAR_PLURAL, plural, =0 {just now by <x id="INTERPOLATION"/>} =1 {one second ago by <x id="INTERPOLATION"/>} other {<x id="INTERPOLATION_1"/> seconds ago by <x id="INTERPOLATION"/>}}')
+  })
+
+  test('One ICU with one unnamed interpolation and HTML tags interpolations', () => {
+    expect(
+      Interpolation.recompose('{VAR_PLURAL, plural, =0 {<1>no</1> cats} =1 {<2>one</2> cat} other {<3>{x}</3> cats}}', {
+        '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+        '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+        '<2>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+        '</2>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+        '<3>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+        '</3>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+        '{x}':  '<x id="INTERPOLATION"/>'
+      })
+    ).toEqual('{VAR_PLURAL, plural, =0 {<x id="START_TAG_STRONG" ctype="x-strong"/>no<x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cats} =1 {<x id="START_TAG_STRONG" ctype="x-strong"/>one<x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cat} other {<x id="START_TAG_STRONG" ctype="x-strong"/><x id="INTERPOLATION"/><x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cats}}')
   })
 
   test('A very complex sentence with multiple interpolations of different kinds and some new lines', () => {

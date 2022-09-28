@@ -8,16 +8,22 @@ class HtmlTagExtraction {
   }
 
   static isOpeningTag(extraction) {
-    return extraction.includes('equiv-text="&lt;') && extraction.includes('&gt;"') && !this.isClosingTag(extraction) && !this.isSelfClosingTag(extraction)
+    const hasEquivTextForOpening = extraction.includes('equiv-text="&lt;') && extraction.includes('&gt;"')
+    const hasIdAndCTypeForOpening = extraction.includes('<x id="START_') && extraction.includes('ctype="x-')
+    return (hasEquivTextForOpening || hasIdAndCTypeForOpening) && !this.isClosingTag(extraction) && !this.isSelfClosingTag(extraction)
   }
 
   static isClosingTag(extraction) {
-    return extraction.includes('equiv-text="&lt;/') && extraction.includes('&gt;"')
+    const hasEquivTextForClosing = extraction.includes('equiv-text="&lt;/') && extraction.includes('&gt;"')
+    const hasIdAndCTypeForClosing = extraction.includes('<x id="CLOSE_') && extraction.includes('ctype="x-')
+    return hasEquivTextForClosing || hasIdAndCTypeForClosing
   }
 
   static isSelfClosingTag(extraction) {
     const id = this.getId(extraction)
-    return ['LINE_BREAK','HORIZONTAL_RULE'].includes(id) || (extraction.includes('equiv-text="&lt;') && extraction.includes('/&gt;"'))
+    const hasSelfClosingId = ['LINE_BREAK','IMG','HORIZONTAL_RULE'].includes(id)
+    const hasEquivTextForSelfClosing = extraction.includes('equiv-text="&lt;') && extraction.includes('/&gt;"')
+    return hasSelfClosingId || hasEquivTextForSelfClosing
   }
 
   static addToStackAndGetNumber(extraction) {
@@ -69,7 +75,7 @@ class HtmlTagExtraction {
 
   static getId(extraction) {
     let id = extraction.split(' id="', 2)[1].split('"', 2)[0]
-    id = id.replace(/^(START_|CLOSE_)/, '')
+    id = id.replace(/^(START_|CLOSE_|TAG_)/, '')
     id = id.replace(/_[0-9]+$/, '')
     return id
   }

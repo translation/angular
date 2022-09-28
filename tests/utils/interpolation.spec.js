@@ -12,8 +12,10 @@ function escape(text) {
 
 function escapeKeys(hash) {
   Object.keys(hash).forEach((key) => {
-    hash[escape(key)] = hash[key]
-    delete hash[key]
+    if (escape(key) != key) {
+      hash[escape(key)] = hash[key]
+      delete hash[key]
+    }
   })
 
   return hash
@@ -107,19 +109,15 @@ describe('Interpolation.extract', () => {
       Interpolation.extract('{VAR_PLURAL, plural, =0 {<x id="START_TAG_STRONG" ctype="x-strong"/>no<x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cats} =1 {<x id="START_TAG_STRONG" ctype="x-strong"/>one<x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cat} other {<x id="START_TAG_STRONG" ctype="x-strong"/><x id="INTERPOLATION"/><x id="CLOSE_TAG_STRONG" ctype="x-strong"/> cats}}')
     ).toStrictEqual({
       text: escape('{VAR_PLURAL, plural, =0 {<1>no</1> cats} =1 {<2>one</2> cat} other {<3>{x}</3> cats}}'),
-      interpolations: Object.assign(
-        escapeKeys({
-          '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
-          '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
-          '<2>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
-          '</2>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
-          '<3>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
-          '</3>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>'
-        }),
-        {
-          '{x}':  '<x id="INTERPOLATION"/>'
-        }
-      )
+      interpolations: escapeKeys({
+        '<1>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+        '</1>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+        '<2>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+        '</2>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+        '<3>':  '<x id="START_TAG_STRONG" ctype="x-strong"/>',
+        '</3>': '<x id="CLOSE_TAG_STRONG" ctype="x-strong"/>',
+        '{x}':  '<x id="INTERPOLATION"/>'
+      })
     })
   })
 

@@ -26,8 +26,8 @@ class Sync extends Base {
     sourceSegments.forEach(sourceSegment => delete sourceSegment['target'])
 
     let request = {
-      // client:           'angular',
-      // version:          require('../../package.json').version,
+      client:           'angular',
+      version:          require('../../package.json').version,
       source_language:  this.sourceLanguage(),
       target_languages: this.targetLanguages(),
       segments:         sourceSegments,

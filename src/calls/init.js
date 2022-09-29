@@ -13,8 +13,8 @@ class Init extends Base {
 
     // 1. Prepare Translation.io request
     let request = {
-      // client:           'angular',
-      // version:          require('../../package.json').version,
+      client:           'angular',
+      version:          require('../../package.json').version,
       source_language:  this.sourceLanguage(),
       target_languages: this.targetLanguages(),
       segments:         {}

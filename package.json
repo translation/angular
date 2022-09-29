@@ -1,6 +1,6 @@
 {
   "name": "@translation/angular",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Translation.io client for Angular applications",
   "repository": {
     "type": "git",

@@ -3,7 +3,6 @@ const Interpolation = require('../utils/interpolation')
 const fs = require('fs')
 const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 const { parse: icuParse } = require('@formatjs/icu-messageformat-parser')
-
 const axios = require('axios').default
 const httpsProxyAgent = require('https-proxy-agent')
 
@@ -51,7 +50,7 @@ class Base {
   }
 
   proxy() {
-    return this.options()['proxy'] || undefined
+    return this.options()['proxy']
   }
 
   /*--------------------------*/
@@ -247,12 +246,14 @@ class Base {
   /* Wrapper for the axios client using a proxy, if applicable */
   /*-----------------------------------------------------------*/
 
-  axios_client() {
+  axiosClient() {
     let clientOptions = {}
     let proxy = this.proxy()
+
     if (proxy) {
-      const agent = httpsProxyAgent(proxy)
-      clientOptions = {httpsAgent: agent}
+      clientOptions = {
+        httpsAgent: httpsProxyAgent(proxy)
+      }
     }
 
     return axios.create(clientOptions)

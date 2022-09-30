@@ -55,7 +55,7 @@ class Init extends Base {
 
     const url = `${this.endpoint()}/v1/segments/init.json?api_key=${this.apiKey()}`
 
-    const axios = this.axios_client()
+    const axios = this.axiosClient()
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(

@@ -37,7 +37,7 @@ class Sync extends Base {
     // 2. Send source segments and save translated target segments
     const url = `${this.endpoint()}/v1/segments/sync.json?api_key=${this.apiKey()}`
 
-    const axios = this.axios_client()
+    const axios = this.axiosClient()
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(

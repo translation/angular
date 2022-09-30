@@ -30,6 +30,7 @@ Table of contents
   * [Sync & purge](#sync-&-purge)
 * [Manage locales](#manage-locales)
 * [Localization syntax in details](#localization-syntax-in-details)
+* [Advanced configuration options](#advanced-configuration-options)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
   * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
   * [Laravel (PHP)](#laravel-php)
@@ -372,6 +373,21 @@ The official Angular documentation for select clauses can be found [here](https:
 #### Our recommendations for plural and select expressions
 
 To facilitate the work of translators, try to avoid complicated or nested expressions.
+
+## Advanced configuration options
+
+The `tio.config.json` file, at the root of your application, can take other optional configuration options.
+
+### Proxy
+
+If you need to use a proxy to connect to Translation.io, add the following line to your `tio.config.json` file:
+
+```json
+{
+  ...
+  "proxy": "http://login:pass@127.0.0.1:8080"
+}
+```
 
 ## List of clients for Translation.io
 

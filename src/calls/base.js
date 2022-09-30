@@ -4,6 +4,9 @@ const fs = require('fs')
 const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 const { parse: icuParse } = require('@formatjs/icu-messageformat-parser')
 
+const axios = require('axios').default
+const httpsProxyAgent = require('https-proxy-agent')
+
 class Base {
   constructor(configFile) {
     this.configFile = configFile || 'tio.config.json' // default config file
@@ -45,6 +48,10 @@ class Base {
 
   targetFile(language) {
     return `./src/locale/messages.${language}.xlf`
+  }
+
+  proxy() {
+    return this.options()['proxy'] || undefined
   }
 
   /*--------------------------*/
@@ -234,6 +241,21 @@ class Base {
     })
 
     return targetText
+  }
+
+  /*-----------------------------------------------------------*/
+  /* Wrapper for the axios client using a proxy, if applicable */
+  /*-----------------------------------------------------------*/
+
+  axios_client() {
+    let clientOptions = {}
+    let proxy = this.proxy()
+    if (proxy) {
+      const agent = httpsProxyAgent(proxy)
+      clientOptions = {httpsAgent: agent}
+    }
+
+    return axios.create(clientOptions)
   }
 
   /*----------------------------------------*/

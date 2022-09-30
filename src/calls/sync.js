@@ -1,7 +1,6 @@
 const Base = require('./base')
 
 const fs    = require('fs')
-const axios = require('axios').default
 
 class Sync extends Base {
   constructor(configFile, flags) {
@@ -37,6 +36,8 @@ class Sync extends Base {
 
     // 2. Send source segments and save translated target segments
     const url = `${this.endpoint()}/v1/segments/sync.json?api_key=${this.apiKey()}`
+
+    const axios = this.axios_client()
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(

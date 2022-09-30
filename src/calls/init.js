@@ -1,7 +1,6 @@
 const Base = require('./base')
 
 const fs    = require('fs')
-const axios = require('axios').default
 
 class Init extends Base {
   constructor(configFile, flags) {
@@ -55,6 +54,8 @@ class Init extends Base {
     })
 
     const url = `${this.endpoint()}/v1/segments/init.json?api_key=${this.apiKey()}`
+
+    const axios = this.axios_client()
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(

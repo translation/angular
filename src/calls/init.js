@@ -1,6 +1,6 @@
 const Base = require('./base')
 
-const fs    = require('fs')
+const fs = require('fs')
 
 class Init extends Base {
   constructor(configFile, flags) {
@@ -53,9 +53,9 @@ class Init extends Base {
       request['segments'][language] = translatedSourceSegment
     })
 
-    const url = `${this.endpoint()}/v1/segments/init.json?api_key=${this.apiKey()}`
-
+    // 4. Send source/target segments and save response
     const axios = this.axiosClient()
+    const url   = `${this.endpoint()}/v1/segments/init.json?api_key=${this.apiKey()}`
 
     axios.post(url, request, { headers: { 'Content-Type': 'application/json' }})
          .then(

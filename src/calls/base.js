@@ -37,20 +37,49 @@ class Base {
     return this.options()['endpoint'] || 'https://translation.io/api'
   }
 
-  // localeTemplatePath() {
-  //   return this.options()['locale_template_path'] || `./src/locale/messages.{locale}.xlf`
-  // }
+  sourceFilePath() {
+    return this.options()['source_file_path'] || './src/locale/messages.xlf'
+  }
+
+  targetFileTemplatePath() {
+    const path = this.options()['target_template_path']
+
+    // The template path must contain {lang}
+    if (typeof path !== 'undefined' && path.includes('{lang}')) {
+      return path
+    } else {
+      return './src/locale/messages.{lang}.xlf'
+    }
+  }
 
   sourceFile() {
-    return './src/locale/messages.xlf'
+    return this.sourceFilePath()
   }
 
   targetFile(language) {
-    return `./src/locale/messages.${language}.xlf`
+    const targetFile = this.targetFileTemplatePath().replaceAll('{lang}', language)
+
+    this.createMissingDirectories(targetFile)
+
+    return targetFile
   }
 
   proxy() {
     return this.options()['proxy']
+  }
+
+  createMissingDirectories(targetFile) {
+    targetFile = targetFile.replace(new RegExp('^\./'), '') // Trim any leading './'
+    let pathParts = targetFile.split('/').slice(0, -1)
+    let directory = './' // Add './' to ensure a relative path
+
+    for (const part of pathParts) {
+      directory += `${part}/`
+
+      if (! fs.existsSync(directory)) {
+        fs.mkdirSync(directory)
+      }
+    }
   }
 
   /*--------------------------*/

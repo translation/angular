@@ -57,7 +57,8 @@ class Base {
   }
 
   targetFile(language) {
-    const targetFile = this.targetFileTemplatePath().replaceAll('{lang}', language)
+    const regex = new RegExp('\{lang\}', 'g')
+    const targetFile = this.targetFileTemplatePath().replace(regex, language)
 
     this.createMissingDirectories(targetFile)
 

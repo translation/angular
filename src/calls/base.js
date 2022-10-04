@@ -1,6 +1,7 @@
 const Interpolation = require('../utils/interpolation')
 
 const fs                        = require('fs')
+const path                      = require('path')
 const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 const { parse: icuParse }       = require('@formatjs/icu-messageformat-parser')
 const axios                     = require('axios').default
@@ -37,20 +38,51 @@ class Base {
     return this.options()['endpoint'] || 'https://translation.io/api'
   }
 
-  // localeTemplatePath() {
-  //   return this.options()['locale_template_path'] || `./src/locale/messages.{locale}.xlf`
-  // }
+  sourceFilePath() {
+    return this.options()['source_file_path'] || './src/locale/messages.xlf'
+  }
+
+  targetFilesPath() {
+    const targetPath = this.options()['target_files_path']
+
+    // The target path must contain {lang}
+    if (targetPath && targetPath.includes('{lang}')) {
+      return targetPath
+    } else {
+      return './src/locale/messages.{lang}.xlf'
+    }
+  }
 
   sourceFile() {
-    return './src/locale/messages.xlf'
+    return this.sourceFilePath()
   }
 
   targetFile(language) {
-    return `./src/locale/messages.${language}.xlf`
+    const regex = new RegExp('\{lang\}', 'g')
+    const targetFile = this.targetFilesPath().replace(regex, language)
+
+    const targetDir = path.dirname(targetFile)
+    fs.mkdirSync(targetDir, { recursive: true });
+
+    return targetFile
   }
 
   proxy() {
     return this.options()['proxy']
+  }
+
+  createMissingDirectories(targetFile) {
+    targetFile = targetFile.replace(new RegExp('^\./'), '') // Trim any leading './'
+    let pathParts = targetFile.split('/').slice(0, -1)
+    let directory = './' // Add './' to ensure a relative path
+
+    for (const part of pathParts) {
+      directory += `${part}/`
+
+      if (! fs.existsSync(directory)) {
+        fs.mkdirSync(directory)
+      }
+    }
   }
 
   /*--------------------------*/

@@ -380,7 +380,7 @@ The `tio.config.json` file, at the root of your application, can take other opti
 
 We always favor "[_convention over configuration_](https://en.wikipedia.org/wiki/Convention_over_configuration)", so we strongly recommend that you use the default paths and file names in your localization process, but you may specify custom source and target paths for your application if necessary.
 
-### Custom source locale path
+### Custom path for the source locale file
 
 If your source locale file (XLF) is not located in the default `src/locale` directory and/or is not named `messages.xlf` (default name), you may specify a custom source locale path in your `tio.config.json` file:
 
@@ -401,13 +401,13 @@ If your source locale file (XLF) is not located in the default `src/locale` dire
 ```
 
 
-### Custom target locale files
+### Custom path for target locale files
 
-You may also specify a "template" path name for the XLF target files if you need them to be named differently than the defaut `messages.{lang}.xlf` or to be located in a directory other than the default `src/locale` directory. Simply add the following line to your `tio.config.json`, but make sure it contains the `{lang}` placeholder as such:
+You may also specify a custom path for the target locale files (XLF) if you need them to have a name other than the defaut `messages.{lang}.xlf` or to be located in a directory other than the default `src/locale` directory. Simply add the following line to your `tio.config.json`, but make sure that it contains the `{lang}` placeholder as such:
 
 ```json
 {
-  "target_template_path": "src/translations/translations.{lang}.xlf"
+  "target_files_path": "src/translations/translations.{lang}.xlf"
 }
 ```
 
@@ -415,7 +415,7 @@ or
 
 ```json
 {
-  "target_template_path": "src/locale/{lang}/translations.xlf"
+  "target_files_path": "src/locale/{lang}/translations.xlf"
 }
 ```
 

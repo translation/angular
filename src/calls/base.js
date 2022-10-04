@@ -1,6 +1,7 @@
 const Interpolation = require('../utils/interpolation')
 
 const fs                        = require('fs')
+const path                      = require('path')
 const { XMLParser, XMLBuilder } = require('fast-xml-parser')
 const { parse: icuParse }       = require('@formatjs/icu-messageformat-parser')
 const axios                     = require('axios').default
@@ -41,12 +42,12 @@ class Base {
     return this.options()['source_file_path'] || './src/locale/messages.xlf'
   }
 
-  targetFileTemplatePath() {
-    const path = this.options()['target_template_path']
+  targetFilesPath() {
+    const targetPath = this.options()['target_files_path']
 
-    // The template path must contain {lang}
-    if (typeof path !== 'undefined' && path.includes('{lang}')) {
-      return path
+    // The target path must contain {lang}
+    if (targetPath && targetPath.includes('{lang}')) {
+      return targetPath
     } else {
       return './src/locale/messages.{lang}.xlf'
     }
@@ -58,9 +59,10 @@ class Base {
 
   targetFile(language) {
     const regex = new RegExp('\{lang\}', 'g')
-    const targetFile = this.targetFileTemplatePath().replace(regex, language)
+    const targetFile = this.targetFilesPath().replace(regex, language)
 
-    this.createMissingDirectories(targetFile)
+    const targetDir = path.dirname(targetFile)
+    fs.mkdirSync(targetDir, { recursive: true });
 
     return targetFile
   }

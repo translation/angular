@@ -44,7 +44,7 @@ Table of contents
 
 Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
 
-```html
+~~~html
 <!-- Simple use of the i18n attribute -->
 <h1 i18n>Welcome to our Angular application!</h1>
 
@@ -67,16 +67,16 @@ Mark the text in a HTML element as translatable by using the `i18n` attribute in
   other {There are {{count}} cats}
 }</p>
 
-```
+~~~
 
 ### $localize in classes and functions
 
 Mark text (literal strings) as translatable in your component classes and functions using `$localize` and surrounding the text with backticks ( \` ).
 
-```javascript
+~~~javascript
 // Simple use of the $localize function
 let text = $localize `Welcome to our Angular application!`;
-```
+~~~
 
 To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Localization syntax in details](#localization-syntax-in-details)" section below.
 
@@ -87,9 +87,9 @@ To explore the syntax more in details (specifying metadata, using plurals and in
 
 Make sure that you have [Angular's localize package](https://angular.io/guide/i18n-common-add-package) installed, or install it.
 
-```bash
+~~~bash
 ng add @angular/localize
-```
+~~~
 
 Configure the [i18n options](https://angular.io/guide/i18n-common-merge#define-locales-in-the-build-configuration) in the `angular.json` file at the root of your project.
 
@@ -97,13 +97,13 @@ Configure the [i18n options](https://angular.io/guide/i18n-common-merge#define-l
 
 Run the following command at the root of your project to install our package:
 
-```bash
+~~~bash
 # NPM
 npm install @translation/angular
 
 # Yarn
 yarn add @translation/angular
-```
+~~~
 
 ### 3. Create a new translation project
 
@@ -112,19 +112,19 @@ Sign in to our platform and create your new project [from the UI](https://transl
 ### 4. Copy the generated `tio.config.json` file to the root of your application
 
 This configuration file should look like this:
-```json
+~~~json
 {
   "api_key": "abcdefghijklmnopqrstuvwxyz123456",
   "source_locale": "en",
   "target_locales": ["fr", "it", "es"]
 }
-```
+~~~
 
 ### 5. Add scripts to your package.json
 
 To make your life easier, add these lines to the `package.json` at the root of your application:
 
-```json
+~~~json
 {
   "scripts": {
     "extract": "ng extract-i18n --output-path=src/locale",
@@ -132,7 +132,7 @@ To make your life easier, add these lines to the `package.json` at the root of y
     "translation:sync": "npm run extract && tio sync"
   }
 }
-```
+~~~
 
 N.B. If you are using Angular version 10 or lower, replace **extract-i18n** by **xi18n** in the "extract" command.
 
@@ -140,13 +140,13 @@ N.B. If you are using Angular version 10 or lower, replace **extract-i18n** by *
 
 To push your source keys and existing translations (if any) to Translation.io, run the following command:
 
-```bash
+~~~bash
 # NPM
 npm run translation:init
 
 # YARN
 yarn translation:init
-```
+~~~
 
 
 ## Usage
@@ -155,37 +155,37 @@ yarn translation:init
 
 To push new translatable source keys/strings and get translations from Translation.io, simply run:
 
-```bash
+~~~bash
 # NPM
 npm run translation:sync
 
 # YARN
 yarn translation:sync
-```
+~~~
 
 ### Read-only Sync
 
 To retrieve translations without pushing new source keys, you can run:
 
-```bash
+~~~bash
 # NPM
 npm run translation:sync -- --readonly
 
 # YARN
 yarn translation:sync -- --readonly
-```
+~~~
 
 ### Sync & Purge
 
 If you need to remove unused source keys/strings from Translation.io, using your current local application as reference, run the following command:
 
-```bash
+~~~bash
 # NPM
 npm run translation:sync -- --purge
 
 # YARN
 yarn translation:sync -- --purge
-```
+~~~
 
 **Warning:** all source keys/strings that are not present in your current local branch will be **permanently deleted from Translation.io**.
 
@@ -221,43 +221,43 @@ Since you created a new project, the translation history and tags will unfortuna
 
 The text in a HTML element can be marked as translatable by using the `i18n` attribute in the components' templates.
 
-```html
+~~~html
 <h1 i18n>Welcome to our Angular application!</h1>
-```
+~~~
 
 The attributes of HTML elements can also be marked as translatable by using `i18n-{attribute_name}` attributes.
 
-```html
+~~~html
 <img [src]="cat.png" i18n-alt alt="A fluffy cat" />
-```
+~~~
 
 You can interpolate variables (component properties) into translatable strings.
 
-```html
+~~~html
 <!-- Translators will see "Hi {name}, welcome to your dashboard!" -->
 <p i18n>Hi {{ name }}, welcome to your dashboard!</p>
-```
+~~~
 
 And you can also interpolate **valid** HTML tags.
-```html
+~~~html
 <!-- Translators will see "Text with <1>HTML</1> tags." -->
 <p i18n>Text with <em>HTML</em> tags.</p>
 
 <!-- Translators will see "Text with a <1><2>partly-emphasized</2> link</1>." -->
 <p i18n>Text with a <a href="#"><em>partly-emphasized</em> link</a>.</p>
-```
+~~~
 
 Literal strings in your component classes and functions can also be marked as translatable using `$localize` and surrounding the source text with backticks ( \` ).
 
-```javascript
+~~~javascript
 let text = $localize `Hello, we hope you will enjoy this app.`;
-```
+~~~
 
 This syntax also allows for variable interpolation.
-```javascript
+~~~javascript
 // Translators will see "Hi {name}, welcome to your dashboard!"
 let text = $localize `Hi ${name}, welcome to your dashboard!`;
-```
+~~~
 
 The official Angular documentation for the syntax can be found [here](https://angular.io/guide/i18n-common-prepare).
 
@@ -267,7 +267,7 @@ You can use metadata as the value of the i18n attribute to specify a custom ID, 
 
 The syntax for the metadata, is the following: `{meaning}|{description}@@{custom_id}`
 
-```html
+~~~html
 <!-- Specifying only the meaning (the pipe | is required) -->
 <h1 i18n="Welcome message|">Welcome to our app!</h1>
 
@@ -279,11 +279,11 @@ The syntax for the metadata, is the following: `{meaning}|{description}@@{custom
 
 <!-- Specifying a meaning, a description and an identifier -->
 <h1 i18n="Welcome message|Message used on the homepage@@home-welcome-message">Welcome to our app!</h1>
-```
+~~~
 
 Metadata can also be used with `$localize`, but it must then be formatted as follows: `:{meaning}|{description}@@{custom_id}:{source_text}`.
 
-```javascript
+~~~javascript
 // Specifying only the meaning (the pipe | is required)
 let text = $localize `:Welcome message|:Welcome to our Angular app!`;
 
@@ -295,7 +295,7 @@ let text = $localize `:@@home-welcome-message:Welcome to our Angular app!`;
 
 // Specifying a meaning, a description and an identifier
 let text = $localize `:Welcome message|Message used on the homepage@@home-welcome-message:Welcome to our Angular app!`;
-```
+~~~
 
 The official Angular documentation for optional metadata can be found [here](https://angular.io/guide/i18n-optional-manage-marked-text).
 
@@ -308,7 +308,7 @@ If you choose to use custom IDs, make sure that your IDs are unique (or that you
 To avoid any problems, we strongly recommend that you opt for the use of "meanings" instead of IDs.
 **Note:** If you use a meaning without a description, make sure to add a pipe (`|`) after the meaning, otherwise it will be considered as a description.
 
-```html
+~~~html
 <!-- Good use cases: -->
 
   <!-- Example 1
@@ -341,7 +341,7 @@ To avoid any problems, we strongly recommend that you opt for the use of "meanin
   -->
   <h2 i18n="@@section-title">First section</h2>
   <h2 i18n="@@section-title">Second section</h2>
-```
+~~~
 
 ### ICU expressions (plural and select)
 
@@ -349,14 +349,14 @@ To avoid any problems, we strongly recommend that you opt for the use of "meanin
 
 Pluralization rules may vary from one locale to another, and it is recommended to use the plural syntax in your code to facilitate translation. This syntax is expressed as follows: `{ component_property, plural, pluralization_categories }`.
 
-```html
+~~~html
 <!-- Translators will see "There are no cats", "There is one cat", "There are {x} cats" -->
 <p i18n>{count, plural,
   =0 {There are no cats}
   =1 {There is one cat}
   other {There are {{count}} cats}
 }</p>
-```
+~~~
 
 The official Angular documentation for plurals can be found [here](https://angular.io/guide/i18n-common-prepare#mark-plurals).
 
@@ -364,9 +364,9 @@ The official Angular documentation for plurals can be found [here](https://angul
 
 The select clause allows to display alternate text depending on the value of a variable. This syntax is expressed as follows: `{ component_property, select, selection_categories }`.
 
-```html
+~~~html
 <span i18n>The user is {gender, select, male {a man} female {a woman} other { other }}.</span>
-```
+~~~
 
 The official Angular documentation for select clauses can be found [here](https://angular.io/guide/i18n-common-prepare#mark-alternates-and-nested-expressions).
 
@@ -425,11 +425,11 @@ Note: our package will attempt to create any missing directories. If it fails (f
 
 If you need to use a proxy to connect to Translation.io, add the following line to your `tio.config.json` file:
 
-```json
+~~~json
 {
   "proxy": "http://login:pass@127.0.0.1:8080"
 }
-```
+~~~
 
 ## List of clients for Translation.io
 

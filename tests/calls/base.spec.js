@@ -46,33 +46,101 @@ describe('validateConfig', () => {
 ❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.invalid-json.json file are invalid ❌`);
   })
 
-    test('Error message if API key is missing', () => {
-      base = new Base('./tests/misc/tio.config.no-api-key.json')
-      base.validateConfig('Init')
+  test('Error message if API key is missing', () => {
+    base = new Base('./tests/misc/tio.config.no-api-key.json')
+    base.validateConfig('Init')
 
-      expect(consoleErrorOutput).toBe(`
+    expect(consoleErrorOutput).toBe(`
 ⚠️ The "api_key" parameter in your ./tests/misc/tio.config.no-api-key.json file seems to be missing.
 ❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.no-api-key.json file are invalid ❌`);
-    })
+  })
 
-    test.todo('Error message if API key is empty')
+  test('Error message if API key is empty', () => {
+    base = new Base('./tests/misc/tio.config.empty-api-key.json')
+    base.validateConfig('Init')
 
-    test.todo('Error message if source locale is missing')
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "api_key" parameter in your ./tests/misc/tio.config.empty-api-key.json file seems to be missing.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.empty-api-key.json file are invalid ❌`);
+  })
 
-    test.todo('Error message if source locale is empty')
+  test('Error message if source locale is missing', () => {
+    base = new Base('./tests/misc/tio.config.no-source-locale.json')
+    base.validateConfig('Init')
 
-    test.todo('Error message if target locales are missing')
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "source_locale" parameter in your ./tests/misc/tio.config.no-source-locale.json file seems to be missing.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.no-source-locale.json file are invalid ❌`);
+  })
 
-    test.todo('Error message if target locales are not an array')
+  test('Error message if source locale is empty', () => {
+    base = new Base('./tests/misc/tio.config.empty-source-locale.json')
+    base.validateConfig('Init')
 
-    test.todo('Error message if target locales are empty array')
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "source_locale" parameter in your ./tests/misc/tio.config.empty-source-locale.json file seems to be missing.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.empty-source-locale.json file are invalid ❌`);
+  })
 
-    test.todo('Error message if target locales contains empty language')
+  test('Error message if target locales are missing', () => {
+    base = new Base('./tests/misc/tio.config.no-target-locales.json')
+    base.validateConfig('Init')
 
-    test.todo('Error message if source locale is also in target locales')
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "target_locales" parameter in your ./tests/misc/tio.config.no-target-locales.json file is missing or invalid.
+Please make sure that its value is an array of locale codes (e.g.: ["fr", "it"])
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.no-target-locales.json file are invalid ❌`);
+  })
 
-    test.todo('Error message if target_files_path does not contain {lang}')
-    // this.options()['target_files_path'].includes('{lang}')
+  test('Error message if target locales are not an array', () => {
+    base = new Base('./tests/misc/tio.config.non-array-target-locales.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "target_locales" parameter in your ./tests/misc/tio.config.non-array-target-locales.json file is missing or invalid.
+Please make sure that its value is an array of locale codes (e.g.: ["fr", "it"])
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.non-array-target-locales.json file are invalid ❌`);
+  })
+
+  test('Error message if target locales are empty array', () => {
+    base = new Base('./tests/misc/tio.config.empty-array-target-locales.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "target_locales" parameter in your ./tests/misc/tio.config.empty-array-target-locales.json file is missing or invalid.
+Please make sure that its value is an array of locale codes (e.g.: ["fr", "it"])
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.empty-array-target-locales.json file are invalid ❌`);
+  })
+
+  test('Error message if target locales contains empty language', () => {
+    base = new Base('./tests/misc/tio.config.some-empty-in-target-locales.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "target_locales" parameter in your ./tests/misc/tio.config.some-empty-in-target-locales.json file is missing or invalid.
+Please make sure that its value is an array of locale codes (e.g.: ["fr", "it"])
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.some-empty-in-target-locales.json file are invalid ❌`);
+  })
+
+  test('Error message if source locale is also in target locales', () => {
+    base = new Base('./tests/misc/tio.config.source-locale-in-target-locales.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "target_locales" parameter in your ./tests/misc/tio.config.source-locale-in-target-locales.json file contains your source language (en).
+This will not work with Translation.io. Please remove it from the "target_locales".
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.source-locale-in-target-locales.json file are invalid ❌`);
+  })
+
+  test('Error message if target_files_path does not contain {lang}', () => {
+    base = new Base('./tests/misc/tio.config.invalid-target-files-path.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ The "target_files_path" parameter in your ./tests/misc/tio.config.invalid-target-files-path.json file does not contain the "{lang}" placeholder.
+Please update this parameter so that it contains "{lang}", in order for the process to work.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.invalid-target-files-path.json file are invalid ❌`);
+  })
 })
 
 describe('convertXmlUnitToSegment', () => {

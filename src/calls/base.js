@@ -26,16 +26,24 @@ class Base {
 
     if (! valid) {
       console.error(`\n⚠️ Your ${this.configFile} config file seems to be missing or is not a valid JSON.`)
-    } else if (! this.apiKey() || ! this.apiKey().length) {
+    } else if (! this.apiKey().length) {
       console.error(`\n⚠️ The "api_key" parameter in your ${this.configFile} file seems to be missing.`)
       valid = false
-    } else if (! this.sourceLanguage() || ! this.sourceLanguage().length) {
+    } else if (! this.sourceLanguage().length) {
       console.error(`\n⚠️ The "source_locale" parameter in your ${this.configFile} file seems to be missing.`)
       valid = false
-    } else if (! this.targetLanguages() || ! this.targetLanguages().length || this.targetLanguages().some(language => ! language.length)) {
+    } else if (! this.targetLanguages().length || this.targetLanguages().some(language => ! language.length)) {
       console.error(`\n⚠️ The "target_locales" parameter in your ${this.configFile} file is missing or invalid.`)
-      console.error(`Please make sure that it's value is an array of locale codes (e.g.: ["fr", "it"])`)
+      console.error(`\nPlease make sure that its value is an array of locale codes (e.g.: ["fr", "it"])`)
       valid = false
+    } else if (this.targetLanguages().includes(this.sourceLanguage())) {
+      console.error(`\n⚠️ The "target_locales" parameter in your ${this.configFile} file contains your source language (${this.sourceLanguage()}).`)
+      console.error(`\nThis will not work with Translation.io. Please remove it from the "target_locales".`)
+      valid =  false
+    } else if (this.targetFilesPath().length && ! this.targetFilesPath().includes('{lang}')) {
+      console.error(`\n⚠️ The "target_files_path" parameter in your ${this.configFile} file does not contain the "{lang}" placeholder.`)
+      console.error(`\nPlease update this parameter so that it contains "{lang}", in order for the process to work.`)
+      valid =  false
     }
 
     if (! valid) {
@@ -65,7 +73,7 @@ class Base {
   }
 
   apiKey() {
-    return this.options()['api_key']
+    return this.options()['api_key'] || ''
   }
 
   endpoint() {

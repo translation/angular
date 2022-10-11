@@ -13,9 +13,7 @@ class Sync extends Base {
   run() {
     console.log("\n🏁 Starting Translation.io Sync process, please wait 🏁")
 
-    // Validate the options before proceeding
-    if (! this.validateOptions()) {
-      console.error("\n❌ The Sync process could not be executed, because some of the parameters in your tio.config.json file are invalid ❌")
+    if (! this.validateConfig('Sync')) {
       return false
     }
 
@@ -52,7 +50,7 @@ class Sync extends Base {
              console.log("🎉 Synchronization successfully completed 🎉\n")
              console.log(`Use this URL to translate: ${response.data.project.url}`)
            },
-           error    => {
+           error => {
              console.error('HTTP REQUEST ERROR')
              console.error(error.message)
              if (error.response) {

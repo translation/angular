@@ -1,0 +1,5 @@
+{
+  "api_key": "abcdefghijklmnopqrstuvwxyz123456",
+  "source_locale": "en",
+  "target_locales": ["fr", "it", "es"]
+}

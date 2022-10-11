@@ -19,6 +19,6 @@ else if (action == 'sync') {
   syncService.run()
 }
 else {
-  console.log('No action selected')
+  console.error('No action selected')
   process.exitCode = 1
 }

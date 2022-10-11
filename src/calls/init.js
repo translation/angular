@@ -10,9 +10,7 @@ class Init extends Base {
   run() {
     console.log("\n🏁 Starting Translation.io Init process, please wait 🏁")
 
-    // Validate the options before proceeding
-    if (! this.validateOptions()) {
-      console.error("\n❌ The Init process could not be executed, because some of the parameters in your tio.config.json file are invalid ❌")
+    if (! this.validateConfig('Init')) {
       return false
     }
 
@@ -73,7 +71,7 @@ class Init extends Base {
              console.log("Then use 'npm run translation:sync' or 'yarn translation:sync' ")
              console.log("to send new keys to Translation.io and get new translations into your project.")
            },
-           error    => {
+           error => {
              console.error('HTTP REQUEST ERROR')
              console.error(error.message)
              if (error.response) {

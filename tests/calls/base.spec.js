@@ -1,11 +1,84 @@
 const Base = require('../../src/calls/base')
 
-let base;
+let base
+
+// Mock console.error
+let consoleErrorOutput = ""
+storeConsoleError = inputs => (consoleErrorOutput += inputs)
+console["error"] = jest.fn(storeConsoleError)
+
+describe('validateConfig', () => {
+  beforeEach(() => {
+    consoleErrorOutput = ""
+  })
+
+  test('No error message if correct config file', () => {
+    base = new Base('./tests/misc/tio.config.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe('')
+  })
+
+  test('Error message if missing config file (with Init)', () => {
+    base = new Base('./tests/misc/tio.config.missing.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ Your ./tests/misc/tio.config.missing.json config file seems to be missing or is not a valid JSON.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.missing.json file are invalid ❌`);
+  })
+
+  test('Error message if missing config file (with Sync)', () => {
+    base = new Base('./tests/misc/tio.config.missing.json')
+    base.validateConfig('Sync')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ Your ./tests/misc/tio.config.missing.json config file seems to be missing or is not a valid JSON.
+❌ The Sync process could not be executed, because some of the parameters in your ./tests/misc/tio.config.missing.json file are invalid ❌`);
+  })
+
+  test('Error message if config file is invalid JSON', () => {
+    base = new Base('./tests/misc/tio.config.invalid-json.json')
+    base.validateConfig('Init')
+
+    expect(consoleErrorOutput).toBe(`
+⚠️ Your ./tests/misc/tio.config.invalid-json.json config file seems to be missing or is not a valid JSON.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.invalid-json.json file are invalid ❌`);
+  })
+
+    test('Error message if API key is missing', () => {
+      base = new Base('./tests/misc/tio.config.no-api-key.json')
+      base.validateConfig('Init')
+
+      expect(consoleErrorOutput).toBe(`
+⚠️ The "api_key" parameter in your ./tests/misc/tio.config.no-api-key.json file seems to be missing.
+❌ The Init process could not be executed, because some of the parameters in your ./tests/misc/tio.config.no-api-key.json file are invalid ❌`);
+    })
+
+    test.todo('Error message if API key is empty')
+
+    test.todo('Error message if source locale is missing')
+
+    test.todo('Error message if source locale is empty')
+
+    test.todo('Error message if target locales are missing')
+
+    test.todo('Error message if target locales are not an array')
+
+    test.todo('Error message if target locales are empty array')
+
+    test.todo('Error message if target locales contains empty language')
+
+    test.todo('Error message if source locale is also in target locales')
+
+    test.todo('Error message if target_files_path does not contain {lang}')
+    // this.options()['target_files_path'].includes('{lang}')
+})
 
 describe('convertXmlUnitToSegment', () => {
   beforeEach(() => {
     base = new Base()
-  });
+  })
 
   test('Convert simple with generic (ignored) key', () => {
     const xmlUnit = base.xmlParser().parse(`
@@ -356,7 +429,7 @@ describe('convertXmlUnitToSegment', () => {
 describe('recomposeTarget', () => {
   beforeEach(() => {
     base = new Base()
-  });
+  })
 
   // fixed bug: {autres} was replaced with undefined
   test('Generate correct XLF using target from Translation.io API', () => {
@@ -473,7 +546,7 @@ describe('recomposeTarget', () => {
 describe('isIcuPluralString', () => {
   beforeEach(() => {
     base = new Base()
-  });
+  })
 
   test('Test on many cases', () => {
     // Classic tests

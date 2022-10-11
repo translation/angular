@@ -15,6 +15,36 @@ class Base {
   /*------------------*/
   /* Config & Options */
   /*------------------*/
+  validateConfig(action) {
+    let valid = true
+
+    try {
+      this.options()
+    } catch (error) {
+      valid = false
+    }
+
+    if (! valid) {
+      console.error(`\n⚠️ Your ${this.configFile} config file seems to be missing or is not a valid JSON.`)
+    } else if (! this.apiKey() || ! this.apiKey().length) {
+      console.error(`\n⚠️ The "api_key" parameter in your ${this.configFile} file seems to be missing.`)
+      valid = false
+    } else if (! this.sourceLanguage() || ! this.sourceLanguage().length) {
+      console.error(`\n⚠️ The "source_locale" parameter in your ${this.configFile} file seems to be missing.`)
+      valid = false
+    } else if (! this.targetLanguages() || ! this.targetLanguages().length || this.targetLanguages().some(language => ! language.length)) {
+      console.error(`\n⚠️ The "target_locales" parameter in your ${this.configFile} file is missing or invalid.`)
+      console.error(`Please make sure that it's value is an array of locale codes (e.g.: ["fr", "it"])`)
+      valid = false
+    }
+
+    if (! valid) {
+      console.error(`\n❌ The ${action} process could not be executed, because some of the parameters in your ${this.configFile} file are invalid ❌`)
+      process.exitCode = 1
+    }
+
+    return valid
+  }
 
   options() {
     return JSON.parse(
@@ -23,14 +53,14 @@ class Base {
   }
 
   sourceLanguage() {
-    return this.options()['source_locale'] ? this.options()['source_locale'].trim() : ''
+    return (this.options()['source_locale'] || '').trim()
   }
 
   targetLanguages() {
     let locales = this.options()['target_locales']
 
     // The method should always return an array
-    // The validateOptions() method will trigger a console error if it is an empty array
+    // The validateConfig() method will trigger a console error if it is an empty array
     return Array.isArray(locales) ? locales.map(locale => locale.trim()) : []
   }
 
@@ -47,14 +77,7 @@ class Base {
   }
 
   targetFilesPath() {
-    const targetPath = this.options()['target_files_path']
-
-    // The target path must contain {lang}
-    if (targetPath && targetPath.includes('{lang}')) {
-      return targetPath
-    } else {
-      return './src/locale/messages.{lang}.xlf'
-    }
+    return this.options()['target_files_path'] || './src/locale/messages.{lang}.xlf'
   }
 
   sourceFile() {
@@ -66,35 +89,13 @@ class Base {
     const targetFile = this.targetFilesPath().replace(regex, language)
 
     const targetDir = path.dirname(targetFile)
-    fs.mkdirSync(targetDir, { recursive: true });
+    fs.mkdirSync(targetDir, { recursive: true })
 
     return targetFile
   }
 
   proxy() {
     return this.options()['proxy']
-  }
-
-  validateOptions() {
-    let optionsAreValid = true
-
-    if (! this.apiKey() || this.apiKey().length == 0) {
-      console.error('\n⚠️ The "api_key" parameter in your tio.config.json file seems to be missing.')
-      optionsAreValid = false
-    }
-
-    if (! this.sourceLanguage() || this.sourceLanguage().length == 0) {
-      console.error('\n⚠️ The "source_locale" parameter in your tio.config.json file seems to be missing.')
-      optionsAreValid = false
-    }
-
-    if (! this.targetLanguages() || this.targetLanguages().length == 0) {
-      console.error('\n⚠️ The "target_locales" parameter in your tio.config.json file is missing or invalid.)')
-      console.log('Please make sure that it\'s value is an array of locale codes (e.g.: ["fr", "it"])')
-      optionsAreValid = false
-    }
-
-    return optionsAreValid
   }
 
   /*--------------------------*/

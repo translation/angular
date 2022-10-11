@@ -13,6 +13,12 @@ class Sync extends Base {
   run() {
     console.log("\n🏁 Starting Translation.io Sync process, please wait 🏁")
 
+    // Validate the options before proceeding
+    if (! this.validateOptions()) {
+      console.error("\n❌ The Sync process could not be executed, because some of the parameters in your tio.config.json file are invalid ❌")
+      return false
+    }
+
     // 1. Extract source segments
     const sourceRaw      = fs.readFileSync(this.sourceFile())
     const sourceXml      = this.xmlParser().parse(sourceRaw)

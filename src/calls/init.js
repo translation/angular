@@ -10,6 +10,12 @@ class Init extends Base {
   run() {
     console.log("\n🏁 Starting Translation.io Init process, please wait 🏁")
 
+    // Validate the options before proceeding
+    if (! this.validateOptions()) {
+      console.error("\n❌ The Init process could not be executed, because some of the parameters in your tio.config.json file are invalid ❌")
+      return false
+    }
+
     // 1. Prepare Translation.io request
     let request = {
       client:           'angular',

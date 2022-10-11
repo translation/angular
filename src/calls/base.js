@@ -23,11 +23,15 @@ class Base {
   }
 
   sourceLanguage() {
-    return this.options()['source_locale'].trim()
+    return this.options()['source_locale'] ? this.options()['source_locale'].trim() : ''
   }
 
   targetLanguages() {
-    return this.options()['target_locales'].map(locale => locale.trim())
+    let locales = this.options()['target_locales']
+
+    // The method should always return an array
+    // The validateOptions() method will trigger a console error if it is an empty array
+    return Array.isArray(locales) ? locales.map(locale => locale.trim()) : []
   }
 
   apiKey() {
@@ -71,18 +75,26 @@ class Base {
     return this.options()['proxy']
   }
 
-  createMissingDirectories(targetFile) {
-    targetFile = targetFile.replace(new RegExp('^\./'), '') // Trim any leading './'
-    let pathParts = targetFile.split('/').slice(0, -1)
-    let directory = './' // Add './' to ensure a relative path
+  validateOptions() {
+    let optionsAreValid = true
 
-    for (const part of pathParts) {
-      directory += `${part}/`
-
-      if (! fs.existsSync(directory)) {
-        fs.mkdirSync(directory)
-      }
+    if (! this.apiKey() || this.apiKey().length == 0) {
+      console.error('\n⚠️ The "api_key" parameter in your tio.config.json file seems to be missing.')
+      optionsAreValid = false
     }
+
+    if (! this.sourceLanguage() || this.sourceLanguage().length == 0) {
+      console.error('\n⚠️ The "source_locale" parameter in your tio.config.json file seems to be missing.')
+      optionsAreValid = false
+    }
+
+    if (! this.targetLanguages() || this.targetLanguages().length == 0) {
+      console.error('\n⚠️ The "target_locales" parameter in your tio.config.json file is missing or invalid.)')
+      console.log('Please make sure that it\'s value is an array of locale codes (e.g.: ["fr", "it"])')
+      optionsAreValid = false
+    }
+
+    return optionsAreValid
   }
 
   /*--------------------------*/

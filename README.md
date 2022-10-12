@@ -17,7 +17,6 @@ Write only the source text in your Angular application, and keep it synchronized
 
 Need help? [contact@translation.io](mailto:contact@translation.io)
 
-
 Table of contents
 =================
 * [Localization syntax overview](#localization-syntax-overview)
@@ -38,8 +37,8 @@ Table of contents
   * [Others](#others)
 * [License](#license)
 
-
 ## Localization syntax overview
+
 ### i18n attribute in templates
 
 Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
@@ -112,6 +111,7 @@ Sign in to our platform and create your new project [from the UI](https://transl
 ### 4. Copy the generated `tio.config.json` file to the root of your application
 
 This configuration file should look like this:
+
 ~~~json
 {
   "api_key": "abcdefghijklmnopqrstuvwxyz123456",
@@ -147,7 +147,6 @@ npm run translation:init
 # YARN
 yarn translation:init
 ~~~
-
 
 ## Usage
 
@@ -188,7 +187,6 @@ yarn translation:sync -- --purge
 ~~~
 
 **Warning:** all source keys/strings that are not present in your current local branch will be **permanently deleted from Translation.io**.
-
 
 ## Manage locales
 
@@ -239,6 +237,7 @@ You can interpolate variables (component properties) into translatable strings.
 ~~~
 
 And you can also interpolate **valid** HTML tags.
+
 ~~~html
 <!-- Translators will see "Text with <1>HTML</1> tags." -->
 <p i18n>Text with <em>HTML</em> tags.</p>
@@ -254,6 +253,7 @@ let text = $localize `Hello, we hope you will enjoy this app.`;
 ~~~
 
 This syntax also allows for variable interpolation.
+
 ~~~javascript
 // Translators will see "Hi {name}, welcome to your dashboard!"
 let text = $localize `Hi ${name}, welcome to your dashboard!`;
@@ -399,7 +399,6 @@ If your source locale file (XLF) is not located in the default `src/locale` dire
   }
 }
 ```
-
 
 ### Custom path for target locale files
 

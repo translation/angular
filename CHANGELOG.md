@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.2.0](https://github.com/translation/angular/releases/tag/v1.2.0) (2022-10-13)
+
+#### New features:
+
+ * Handle custom `source_file_path` and `target_files_path`.
+ * Start by validating the configuration file with nice errors before Init/Sync.
+
 ## [v1.1.0](https://github.com/translation/angular/releases/tag/v1.1.0) (2022-09-30)
 
 #### New features:

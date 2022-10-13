@@ -39,11 +39,11 @@ class Base {
     } else if (this.targetLanguages().includes(this.sourceLanguage())) {
       console.error(`\n⚠️ The "target_locales" parameter in your ${this.configFile} file contains your source language (${this.sourceLanguage()}).`)
       console.error(`\nThis will not work with Translation.io. Please remove it from the "target_locales".`)
-      valid =  false
-    } else if (this.targetFilesPath().length && ! this.targetFilesPath().includes('{lang}')) {
+      valid = false
+    } else if (! this.targetFilesPath().includes('{lang}')) {
       console.error(`\n⚠️ The "target_files_path" parameter in your ${this.configFile} file does not contain the "{lang}" placeholder.`)
       console.error(`\nPlease update this parameter so that it contains "{lang}", in order for the process to work.`)
-      valid =  false
+      valid = false
     }
 
     if (! valid) {

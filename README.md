@@ -7,7 +7,7 @@
 
 Add this package to localize your Angular application (see [Installation](#installation)).
 
-Use the [official Angular i18n syntax](#localization-syntax-overview) in your components.
+Use the [official Angular i18n syntax](#translation-syntaxes) in your components.
 
 Write only the source text in your Angular application, and keep it synchronized with your translators on [Translation.io](https://translation.io/angular).
 
@@ -17,9 +17,9 @@ Write only the source text in your Angular application, and keep it synchronized
 
 Need help? [contact@translation.io](mailto:contact@translation.io)
 
-Table of contents
-=================
-* [Localization syntax overview](#localization-syntax-overview)
+## Table of contents
+
+* [Translation syntaxes](#translation-syntaxes)
   * [i18n attribute in templates](#i18n-attribute-in-templates)
   * [$localize in classes and functions](#$localize-in-classes-and-functions)
 * [Installation](#installation)
@@ -27,8 +27,8 @@ Table of contents
   * [Sync](#sync)
   * [Read-only Sync](#read-only-sync)
   * [Sync & purge](#sync-&-purge)
-* [Manage locales](#manage-locales)
-* [Localization syntax in details](#localization-syntax-in-details)
+* [Manage Languages](#manage-languages)
+* [Translation syntaxes in details](#translation-syntaxes-in-details)
 * [Advanced configuration options](#advanced-configuration-options)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
   * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
@@ -37,7 +37,7 @@ Table of contents
   * [Others](#others)
 * [License](#license)
 
-## Localization syntax overview
+## Translation syntaxes
 
 ### i18n attribute in templates
 
@@ -77,7 +77,7 @@ Mark text (literal strings) as translatable in your component classes and functi
 let text = $localize `Welcome to our Angular application!`;
 ~~~
 
-To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Localization syntax in details](#localization-syntax-in-details)" section below.
+To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Translation syntaxes in details](#translation-syntaxes-in-details)" section below.
 
 
 ## Installation
@@ -188,9 +188,9 @@ yarn translation:sync -- --purge
 
 **Warning:** all source keys/strings that are not present in your current local branch will be **permanently deleted from Translation.io**.
 
-## Manage locales
+## Manage Languages
 
-### Add or remove locales
+### Add or remove languages
 
 You can add or remove a locale by updating `"target_locales": []` in your
 `tio.config.json` file, and syncing your project again.
@@ -199,7 +199,7 @@ If you want to add a new locale with existing translations (for instance if you
 already have a translated XLF file in your project), you will need to create a
 new empty project on Translation.io and init your project for them to appear.
 
-### Edit locales
+### Edit languages
 
 To edit existing locales while keeping their translations (e.g. changing from `en` to `en-US`):
 
@@ -213,7 +213,7 @@ To edit existing locales while keeping their translations (e.g. changing from `e
 Since you created a new project, the translation history and tags will unfortunately be lost.
 
 
-## Localization syntax in details
+## Translation syntaxes in details
 
 ### i18n attributes and $localize
 

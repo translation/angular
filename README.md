@@ -5,11 +5,12 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/52c0801558cd21fa31dd/test_coverage)](https://codeclimate.com/github/translation/angular/test_coverage)
 [![npm version)](https://img.shields.io/npm/v/@translation/angular)](https://www.npmjs.com/package/@translation/angular)
 
-Add this package to localize your **Angular** application..
+Add this package to localize your **Angular** application.
 
-Use these official Angular 
-<a href="#translation-syntaxes">`<p i18n>source text</p>`</a> template syntax
-and <a href="#translation-syntaxes">``$localize `source text` ``</a> JavaScript syntax.
+Use these official Angular syntaxes:
+
+* <a href="#translation-syntaxes">`<p i18n>source text</p>`</a> in templates.
+* <a href="#translation-syntaxes">``$localize `source text` ``</a>  in JavaScript.
 
 Write only the source text, and keep it synchronized with your translators 
 on [Translation.io](https://translation.io/angular).

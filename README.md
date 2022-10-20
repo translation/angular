@@ -5,13 +5,15 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/52c0801558cd21fa31dd/test_coverage)](https://codeclimate.com/github/translation/angular/test_coverage)
 [![npm version)](https://img.shields.io/npm/v/@translation/angular)](https://www.npmjs.com/package/@translation/angular)
 
-Add this package to localize your Angular application (see [Installation](#installation)).
+Add this package to localize your **Angular** application..
 
-Use the [official Angular i18n syntax](#translation-syntaxes) in your components.
+Use these official Angular <a href="#translation-syntaxes">`<p i18n>Template syntax</p>`</a>
+and <a href="#translation-syntaxes">``$localize `JavaScript syntax` ``</a>.
 
-Write only the source text in your Angular application, and keep it synchronized with your translators on [Translation.io](https://translation.io/angular).
+Write only the source text, and keep it synchronized with your translators 
+on [Translation.io](https://translation.io/angular).
 
-<a href="https://translation.io/laravel">
+<a href="https://translation.io/angular">
   <img width="720px" alt="Translation.io interface" src="https://translation.io/gifs/translation.gif">
 </a>
 
@@ -20,8 +22,8 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 ## Table of contents
 
 * [Translation syntaxes](#translation-syntaxes)
-  * [i18n attribute in templates](#i18n-attribute-in-templates)
-  * [$localize in classes and functions](#$localize-in-classes-and-functions)
+  * [Template Syntax - Components](#template-syntax)
+  * [JavaScript Syntax](#javascript-syntax)
 * [Installation](#installation)
 * [Usage](#usage)
   * [Sync](#sync)
@@ -39,7 +41,7 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 
 ## Translation syntaxes
 
-### i18n attribute in templates
+### Template Syntax - Components
 
 Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
 
@@ -68,7 +70,7 @@ Mark the text in a HTML element as translatable by using the `i18n` attribute in
 
 ~~~
 
-### $localize in classes and functions
+### JavaScript syntax
 
 Mark text (literal strings) as translatable in your component classes and functions using `$localize` and surrounding the text with backticks ( \` ).
 

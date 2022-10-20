@@ -7,10 +7,10 @@
 
 Add this package to localize your **Angular** application.
 
-Use these official Angular syntaxes:
+Use these [official](https://angular.io/guide/i18n-common-prepare) Angular syntaxes:
 
-* <a href="#translation-syntaxes">`<p i18n>source text</p>`</a> in templates.
-* <a href="#translation-syntaxes">``$localize `source text` ``</a>  in JavaScript.
+* <a href="#template-syntax---components">`<p i18n>source text</p>`</a> in templates.
+* <a href="#javascript-syntax">``$localize `source text` ``</a>  in JavaScript.
 
 Write only the source text, and keep it synchronized with your translators 
 on [Translation.io](https://translation.io/angular).
@@ -23,8 +23,8 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 
 ## Table of contents
 
-* [Translation syntaxes](#translation-syntaxes)
-  * [Template Syntax - Components](#template-syntax)
+* [Localization syntaxes](#localization-syntaxes)
+  * [Template Syntax / Components](#template-syntax---components)
   * [JavaScript Syntax](#javascript-syntax)
 * [Installation](#installation)
 * [Usage](#usage)
@@ -32,7 +32,7 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
   * [Read-only Sync](#read-only-sync)
   * [Sync & purge](#sync-&-purge)
 * [Manage Languages](#manage-languages)
-* [Translation syntaxes in details](#translation-syntaxes-in-details)
+* [Localization syntaxes in details](#localization-syntaxes-in-details)
 * [Advanced configuration options](#advanced-configuration-options)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
   * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
@@ -41,13 +41,14 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
   * [Others](#others)
 * [License](#license)
 
-## Translation syntaxes
+## Localization syntaxes
 
-### Template Syntax - Components
+### Template Syntax / Components
 
 Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
 
 ~~~html
+
 <!-- Simple use of the i18n attribute -->
 <h1 i18n>Welcome to our Angular application!</h1>
 
@@ -81,7 +82,7 @@ Mark text (literal strings) as translatable in your component classes and functi
 let text = $localize `Welcome to our Angular application!`;
 ~~~
 
-To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Translation syntaxes in details](#translation-syntaxes-in-details)" section below.
+To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Localization syntaxes in details](#localization-syntaxes-in-details)" section below.
 
 
 ## Installation
@@ -217,7 +218,7 @@ To edit existing locales while keeping their translations (e.g. changing from `e
 Since you created a new project, the translation history and tags will unfortunately be lost.
 
 
-## Translation syntaxes in details
+## Localization syntaxes in details
 
 ### i18n attributes and $localize
 

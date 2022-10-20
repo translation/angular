@@ -7,8 +7,9 @@
 
 Add this package to localize your **Angular** application..
 
-Use these official Angular <a href="#translation-syntaxes">`<p i18n>Template syntax</p>`</a>
-and <a href="#translation-syntaxes">``$localize `JavaScript syntax` ``</a>.
+Use these official Angular 
+<a href="#translation-syntaxes">`<p i18n>source text</p>`</a> template syntax
+and <a href="#translation-syntaxes">``$localize `source text` ``</a> JavaScript syntax.
 
 Write only the source text, and keep it synchronized with your translators 
 on [Translation.io](https://translation.io/angular).

@@ -7,7 +7,7 @@
 
 Add this package to localize your **Angular** application.
 
-Use these [official](https://angular.io/guide/i18n-common-prepare) Angular syntaxes:
+Use these [official](https://angular.io/guide/i18n-common-prepare) Angular localization syntaxes:
 
 * <a href="#template-syntax---components">`<p i18n>source text</p>`</a> in templates.
 * <a href="#javascript-syntax">``$localize `source text` ``</a>  in JavaScript.

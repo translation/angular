@@ -29,15 +29,17 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 * [Installation](#installation)
 * [Usage](#usage)
   * [Sync](#sync)
-  * [Read-only Sync](#read-only-sync)
-  * [Sync & purge](#sync-&-purge)
+  * [Sync and Purge](#sync-and-purge)
 * [Manage Languages](#manage-languages)
   * [Add or Remove Language](#add-or-remove-language)
   * [Edit Language](#edit-language)
   * [Custom Languages](#custom-languages)
   * [Fallbacks](#fallbacks)
 * [Continuous Integration](#continuous-integration)
-* [Advanced configuration options](#advanced-configuration-options)
+* [Advanced Configuration Options](#advanced-configuration-options)
+   * [Custom Path for the Source Locale File](#custom-path-for-the-source-locale-file)
+   * [Custom Path for Target Locale Files](#custom-path-for-target-locale-files)
+   * [Proxy](#proxy)
 * [Testing](#testing)
 * [Contributing](#contributing)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
@@ -251,19 +253,7 @@ npm run translation:sync
 yarn translation:sync
 ~~~
 
-### Read-only Sync
-
-Retrieve translations without pushing new source keys with:
-
-~~~bash
-# NPM
-npm run translation:sync -- --readonly
-
-# YARN
-yarn translation:sync -- --readonly
-~~~
-
-### Sync & Purge
+### Sync and Purge
 
 Remove unused source keys/strings from Translation.io, using your current local application as reference, with:
 
@@ -279,7 +269,7 @@ yarn translation:sync -- --purge
 
 ## Manage Languages
 
-### Add or remove languages
+### Add or Remove Language
 
 You can add or remove a locale by updating `"target_locales": []` in your
 `tio.config.json` file, and syncing your project again.
@@ -288,7 +278,7 @@ If you want to add a new locale with existing translations (for instance if you
 already have a translated XLF file in your project), you will need to create a
 new empty project on Translation.io and init it for the first time again.
 
-### Edit languages
+### Edit Language
 
 To edit existing locales while keeping their translations (e.g. changing from `en` to `en-US`):
 
@@ -323,13 +313,13 @@ This task will prevent your CI to fail and still provide new translations. But
 be aware that it won't send new keys from your code to Translation.io so you
 still need to sync at some point during development.
 
-## Advanced configuration options
+## Advanced Configuration Options
 
 The `tio.config.json` file, at the root of your application, can take other optional configuration options.
 
 We always favor "[_convention over configuration_](https://en.wikipedia.org/wiki/Convention_over_configuration)", so we strongly recommend that you use the default paths and file names in your localization process, but you may specify custom source and target paths for your application if necessary.
 
-### Custom path for the source locale file
+### Custom Path for the Source Locale File
 
 You may specify a custom source locale path in your `tio.config.json` file 
 if your source locale file (XLF) is not located in the default `src/locale` 
@@ -352,7 +342,7 @@ Make sure to stay consistent in your `package.json`:
 }
 ~~~
 
-### Custom path for target locale files
+### Custom Path for Target Locale Files
 
 You may specify a custom path for the target locale files (XLF) if you need them 
 to have a name other than the defaut `messages.{lang}.xlf` or to be located in 

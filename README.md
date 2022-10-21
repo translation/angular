@@ -37,8 +37,8 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
   * [Fallbacks](#fallbacks)
 * [Continuous Integration](#continuous-integration)
 * [Advanced Configuration Options](#advanced-configuration-options)
-   * [Custom Path for the Source Locale File](#custom-path-for-the-source-locale-file)
-   * [Custom Path for Target Locale Files](#custom-path-for-target-locale-files)
+   * [Source File Path](#source-file-path)
+   * [Target Files Path](#target-files-path)
    * [Proxy](#proxy)
 * [Testing](#testing)
 * [Contributing](#contributing)
@@ -319,7 +319,7 @@ The `tio.config.json` file, at the root of your application, can take other opti
 
 We always favor "[_convention over configuration_](https://en.wikipedia.org/wiki/Convention_over_configuration)", so we strongly recommend that you use the default paths and file names in your localization process, but you may specify custom source and target paths for your application if necessary.
 
-### Custom Path for the Source Locale File
+### Source File Path
 
 You may specify a custom source locale path in your `tio.config.json` file 
 if your source locale file (XLF) is not located in the default `src/locale` 
@@ -342,7 +342,7 @@ Make sure to stay consistent in your `package.json`:
 }
 ~~~
 
-### Custom Path for Target Locale Files
+### Target Files Path
 
 You may specify a custom path for the target locale files (XLF) if you need them 
 to have a name other than the defaut `messages.{lang}.xlf` or to be located in 

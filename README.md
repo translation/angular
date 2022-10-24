@@ -12,6 +12,11 @@ Use these [official](https://angular.io/guide/i18n-common-prepare) Angular local
 * <a href="#template--components">`<p i18n>source text</p>`</a> in templates.
 * <a href="#javascript">``$localize `source text` ``</a>  in JavaScript.
 
+Don't bother your translators with obscure `.XLF` files, and use our clean
+interface for singular and plurals:
+
+[![XLF files plural interface](https://github.com/translation/angular/raw/master/misc/angular-xlf-to-interface.png)](https://translation.io/angular)
+
 Write only the source text, and keep it synchronized with your translators 
 on [Translation.io](https://translation.io/angular).
 

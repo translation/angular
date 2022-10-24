@@ -24,7 +24,7 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 ## Table of contents
 
 * [Localization syntaxes](#localization-syntaxes)
-  * [Template & Components](#template---components)
+  * [Template & Components](#template--components)
   * [JavaScript](#javascript-syntax)
 * [Installation](#installation)
 * [Usage](#usage)
@@ -39,6 +39,7 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
    * [Source File Path](#source-file-path)
    * [Target Files Path](#target-files-path)
    * [Proxy](#proxy)
+* [Localization - Good Practices](#localization---good-practices)
 * [Testing](#testing)
 * [Contributing](#contributing)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
@@ -52,7 +53,7 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 
 ### Template & Components
 
-Mark the text as being translatable by using the `i18n` attribute in your templates.
+Mark text as being translatable by using the `i18n` attribute in your templates.
 
 #### Singular
 
@@ -99,6 +100,11 @@ Mark the text as being translatable by using the `i18n` attribute in your templa
 <span i18n="Big button at the bottom of the invoicing page">
   Send the invoice
 </span>
+
+<!-- Context & Comment -->
+<span i18n="invoicing|Big button at the bottom of the invoicing page">
+  Send the invoice
+</span>
 ~~~
 
 #### Plural
@@ -117,32 +123,32 @@ target language.
 ~~~html
 <!-- Regular -->
 <p i18n>{count, plural,
-  one {You've got 1 message}
+  one   {You've got 1 message}
   other {You've got {{count}} messages}}
 </p>
 
 <!-- Custom plural forms -->
 <p i18n>{count, plural,
-  =0 {Your inbox is empty!}
-  =42 {You've found the ultimate answer}
-  one {You've got 1 message}
+  =0    {Your inbox is empty!}
+  =42   {You've found the ultimate answer}
+  one   {You've got 1 message}
   other {You've got {{count}} messages}}
 </p>
 
 <!-- Variable interpolation -->
 <p i18n>{count, plural,
-  one {Hello {{name}}, you've got 1 message}
+  one   {Hello {{name}}, you've got 1 message}
   other {Hello {{name}}, you've got {{count}} messages}}
 </p>
 
 <!-- HTML tags -->
 <p i18n>{count, plural,
-  one {Hello {{name}}, you've got <strong>1</strong> message}
+  one   {Hello {{name}}, you've got <strong>1</strong> message}
   other {Hello {{name}}, you've got <strong>{{count}}</strong> messages}}
 </p>
 ~~~
 
-**Note:** English has only 2 plural forms (`one` and `other`) but other languages
+**Note:** English has only 2 plural forms (`one` and `other`), but other languages
 have more of them, from this list: `zero`, `one`, `two`, `few`, `many`,
 `other`.
 
@@ -151,7 +157,7 @@ https://translation.io/docs/languages_with_plural_cases
 
 ### JavaScript
 
-Mark the text as being translatable by using `$localize` and surrounding the text with backticks ( \` ).
+Mark text as being translatable by using `$localize` and surrounding the text with backticks ( \` ).
 
 ~~~javascript
 // Regular
@@ -167,7 +173,10 @@ $localize `:moment in time|:Date`;
 
 // Comment
 // Provide a plain-text description to the translators in the interface
-$localize`:Big button at the bottom of the invoicing page:Send the invoice`;
+$localize `:Big button at the bottom of the invoicing page:Send the invoice`;
+
+// Context & Comment
+$localize `:invoicing|Big button at the bottom of the invoicing page:Send the invoice`;
 ~~~
 
 ## Installation
@@ -210,7 +219,7 @@ Add these lines to your `package.json` to make your life easier:
 
 ### 4. Create a new translation project
 
-Sign in to [Translation.io](https://translation.io/angular) and create your new project, selecting the appropriate source and target locales.
+Sign in to [Translation.io](https://translation.io/angular) and create a new project, selecting the appropriate source and target locales.
 
 ### 5. Configure your project
 
@@ -228,7 +237,7 @@ The configuration file looks like this:
 
 ### 6. Initialize your project
 
-Run the following commands to push your source keys and existing translations to Translation.io
+Run the following command to push your source keys and existing translations to Translation.io
 
 ~~~bash
 # NPM
@@ -324,7 +333,7 @@ npm run translation:sync -- --readonly
 yarn translation:sync -- --readonly
 ~~~
 
-This task will prevent your CI to fail and still provide new translations. But
+This task will prevent your CI from failing and still provide new translations. But
 be aware that it won't send new keys from your code to Translation.io so you
 still need to sync at some point during development.
 
@@ -388,6 +397,43 @@ If you need to use a proxy to connect to Translation.io, add the following line 
 {
   "proxy": "http://login:pass@127.0.0.1:8080"
 }
+~~~
+
+## Localization - Good Practices
+
+The "unicity" of a source key is determined by its source text and its context 
+(if any). The comment plays no role in this unicity.
+
+If you use a meaning without a comment, make sure to add a 
+pipe (`|`) after the meaning, otherwise it will be considered as a comment.
+
+### Good use cases
+
+~~~html
+<!--
+  The context helps distinguish between two keys with the same source text
+  => This will result in two distinct source keys
+-->
+<span i18n="Numbered day in a calendar|">Date</span>
+<span i18n="Social meeting with someone|">Date</span>
+
+<!--
+  Adding a comment after the context will be useful to translators
+  => This will result in two distinct source keys
+-->
+<span i18n="Verb|Text on a button used to report a problem">Report</span>
+<span i18n="Noun|Title of the Report section in the app">Report</span>
+~~~
+
+### Bad use case
+
+~~~html
+<!--
+  Using only comments, without context (note the missing pipe | )
+  => This will result in only one source key
+-->
+<span i18n="Label for the datepicker">Date</span>
+<span i18n="Type of event in a dropdown">Date</span>
 ~~~
 
 ## Testing
@@ -454,6 +500,8 @@ Officially supported on [https://translation.io/angular](https://translation.io/
 
  * GitHub: https://github.com/translation/angular
  * NPM: https://www.npmjs.com/package/@translation/angular
+ 
+Credits: [@SimonCorellia](https://github.com/SimonCorellia), [@didier-84](hthttps://github.com/didier-84), [@michaelhoste](https://github.com/michaelhoste)
 
 ### Others
 

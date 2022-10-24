@@ -5,13 +5,17 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/52c0801558cd21fa31dd/test_coverage)](https://codeclimate.com/github/translation/angular/test_coverage)
 [![npm version)](https://img.shields.io/npm/v/@translation/angular)](https://www.npmjs.com/package/@translation/angular)
 
-Add this package to localize your Angular application (see [Installation](#installation)).
+Add this package to localize your **Angular** application.
 
-Use the [official Angular i18n syntax](#translation-syntaxes) in your components.
+Use these [official](https://angular.io/guide/i18n-common-prepare) Angular localization syntaxes:
 
-Write only the source text in your Angular application, and keep it synchronized with your translators on [Translation.io](https://translation.io/angular).
+* <a href="#template--components">`<p i18n>source text</p>`</a> in templates.
+* <a href="#javascript">``$localize `source text` ``</a>  in JavaScript.
 
-<a href="https://translation.io/laravel">
+Write only the source text, and keep it synchronized with your translators 
+on [Translation.io](https://translation.io/angular).
+
+<a href="https://translation.io/angular">
   <img width="720px" alt="Translation.io interface" src="https://translation.io/gifs/translation.gif">
 </a>
 
@@ -19,17 +23,25 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 
 ## Table of contents
 
-* [Translation syntaxes](#translation-syntaxes)
-  * [i18n attribute in templates](#i18n-attribute-in-templates)
-  * [$localize in classes and functions](#$localize-in-classes-and-functions)
+* [Localization syntaxes](#localization-syntaxes)
+  * [Template & Components](#template--components)
+  * [JavaScript](#javascript-syntax)
 * [Installation](#installation)
 * [Usage](#usage)
   * [Sync](#sync)
-  * [Read-only Sync](#read-only-sync)
-  * [Sync & purge](#sync-&-purge)
+  * [Sync and Purge](#sync-and-purge)
 * [Manage Languages](#manage-languages)
-* [Translation syntaxes in details](#translation-syntaxes-in-details)
-* [Advanced configuration options](#advanced-configuration-options)
+  * [Add or Remove Language](#add-or-remove-language)
+  * [Edit Language](#edit-language)
+  * [Custom Languages](#custom-languages)
+* [Continuous Integration](#continuous-integration)
+* [Advanced Configuration Options](#advanced-configuration-options)
+   * [Source File Path](#source-file-path)
+   * [Target Files Path](#target-files-path)
+   * [Proxy](#proxy)
+* [Localization - Good Practices](#localization---good-practices)
+* [Testing](#testing)
+* [Contributing](#contributing)
 * [List of clients for Translation.io](#list-of-clients-for-translationio)
   * [Ruby on Rails (Ruby)](#ruby-on-rails-ruby)
   * [Laravel (PHP)](#laravel-php)
@@ -37,48 +49,135 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
   * [Others](#others)
 * [License](#license)
 
-## Translation syntaxes
+## Localization syntaxes
 
-### i18n attribute in templates
+### Template & Components
 
-Mark the text in a HTML element as translatable by using the `i18n` attribute in your components' templates.
+Mark text as being translatable by using the `i18n` attribute in your templates.
+
+#### Singular
 
 ~~~html
-<!-- Simple use of the i18n attribute -->
-<h1 i18n>Welcome to our Angular application!</h1>
+<!-- Regular -->
+<h1 i18n>
+  Text to be translated
+</h1>
 
 <!-- Variable interpolation -->
-<!-- Translators will see "Hi {name}, welcome to your dashboard!" -->
-<p i18n>Hi {{ name }}, welcome to your dashboard!</p>
+<!-- Translators will see "Hi {name}" -->
+<p i18n>
+  Hi {{ name }}
+</p>
 
-<!-- Simple HTML tags interpolation -->
-<!-- Translators will see "Text with <1>HTML</1> tags." -->
-<p i18n>Text with <em>HTML</em> tags.</p>
+<!-- Simple HTML tags -->
+<!-- Translators will see "Text with <1>HTML</1> tags" -->
+<p i18n>
+  Text with <em>HTML</em> tags
+</p>
+
+<!-- Complex HTML Tags -->
+<!-- Translators will see "Text with a <1>link</1>" -->
+<p i18n>
+  Text with a
+  <a href="https://google.com" target="_blank">link</a>
+</p>
 
 <!-- Translatable attribute -->
-<img [src]="cat.png" i18n-alt alt="A fluffy cat" />
+<img [src]="cat.png" i18n-alt alt="Text to be translated" />
 
-<!-- ICU plural form -->
-<!-- Translators will see "There are no cats", "There is one cat", "There are {x} cats" -->
-<p i18n>{count, plural,
-  =0 {There are no cats}
-  =1 {There is one cat}
-  other {There are {{count}} cats}
-}</p>
+<!-- Context -->
+<!-- Differentiate translations for the same source text -->
+<span i18n="meeting someone|">
+  Date
+</span>
 
+<span i18n="moment in time|">
+  Date
+</span>
+
+<!-- Comment -->
+<!-- Provide a plain-text description to the translators in the interface -->
+<span i18n="Big button at the bottom of the invoicing page">
+  Send the invoice
+</span>
+
+<!-- Context & Comment -->
+<span i18n="invoicing|Big button at the bottom of the invoicing page">
+  Send the invoice
+</span>
 ~~~
 
-### $localize in classes and functions
+#### Plural
 
-Mark text (literal strings) as translatable in your component classes and functions using `$localize` and surrounding the text with backticks ( \` ).
+The plural syntax is supported using the [ICU MessageFormat](https://unicode-org.github.io/icu/userguide/format_parse/messages/). Multiple plural forms
+for each language are embedded into the same string, using a specific syntax with 
+curly braces.
+
+These examples may seem easy for developers but are hard for translators to work with, 
+without making any syntax mistake.
+
+That's why on Translation.io, we made sure that translators will only be able to see 
+the sentences to translate, and only the correct existing plural forms for their 
+target language.
+
+~~~html
+<!-- Regular -->
+<p i18n>{count, plural,
+  one   {You've got 1 message}
+  other {You've got {{count}} messages}}
+</p>
+
+<!-- Custom plural forms -->
+<p i18n>{count, plural,
+  =0    {Your inbox is empty!}
+  =42   {You've found the ultimate answer}
+  one   {You've got 1 message}
+  other {You've got {{count}} messages}}
+</p>
+
+<!-- Variable interpolation -->
+<p i18n>{count, plural,
+  one   {Hello {{name}}, you've got 1 message}
+  other {Hello {{name}}, you've got {{count}} messages}}
+</p>
+
+<!-- HTML tags -->
+<p i18n>{count, plural,
+  one   {Hello {{name}}, you've got <strong>1</strong> message}
+  other {Hello {{name}}, you've got <strong>{{count}}</strong> messages}}
+</p>
+~~~
+
+**Note:** English has only 2 plural forms (`one` and `other`), but other languages
+have more of them, from this list: `zero`, `one`, `two`, `few`, `many`,
+`other`.
+
+You can find the complete list of plural forms and plural rules here:
+https://translation.io/docs/languages_with_plural_cases
+
+### JavaScript
+
+Mark text as being translatable by using `$localize` and surrounding the text with backticks ( \` ).
 
 ~~~javascript
-// Simple use of the $localize function
-let text = $localize `Welcome to our Angular application!`;
+// Regular
+$localize `Text to be translated`;
+
+// Variable interpolation
+$localize `Hello ${name}`;
+
+// Context
+// Differentiate translations for the same source text
+$localize `:meeting someone|:Date`;
+$localize `:moment in time|:Date`;
+
+// Comment
+// Provide a plain-text description to the translators in the interface
+$localize `:Big button at the bottom of the invoicing page:Send the invoice`;
+
+// Context & Comment
+$localize `:invoicing|Big button at the bottom of the invoicing page:Send the invoice`;
 ~~~
-
-To explore the syntax more in details (specifying metadata, using plurals and interpolations), please check out the "[Translation syntaxes in details](#translation-syntaxes-in-details)" section below.
-
 
 ## Installation
 
@@ -90,11 +189,9 @@ Make sure that you have [Angular's localize package](https://angular.io/guide/i1
 ng add @angular/localize
 ~~~
 
-Configure the [i18n options](https://angular.io/guide/i18n-common-merge#define-locales-in-the-build-configuration) in the `angular.json` file at the root of your project.
+Configure the [i18n options](https://angular.io/guide/i18n-common-merge#define-locales-in-the-build-configuration) in your `angular.json` file.
 
-### 2. Install our `@translation/angular` package
-
-Run the following command at the root of your project to install our package:
+### 2. Install our package
 
 ~~~bash
 # NPM
@@ -104,25 +201,9 @@ npm install @translation/angular
 yarn add @translation/angular
 ~~~
 
-### 3. Create a new translation project
+### 3. Add the following scripts
 
-Sign in to our platform and create your new project [from the UI](https://translation.io/angular), selecting the appropriate source and target locales.
-
-### 4. Copy the generated `tio.config.json` file to the root of your application
-
-This configuration file should look like this:
-
-~~~json
-{
-  "api_key": "abcdefghijklmnopqrstuvwxyz123456",
-  "source_locale": "en",
-  "target_locales": ["fr", "it", "es"]
-}
-~~~
-
-### 5. Add scripts to your package.json
-
-To make your life easier, add these lines to the `package.json` at the root of your application:
+Add these lines to your `package.json` to make your life easier:
 
 ~~~json
 {
@@ -134,11 +215,29 @@ To make your life easier, add these lines to the `package.json` at the root of y
 }
 ~~~
 
-N.B. If you are using Angular version 10 or lower, replace **extract-i18n** by **xi18n** in the "extract" command.
+**Note:** If you are using Angular version 10 or lower, replace **extract-i18n** by **xi18n** in the "extract" command.
+
+### 4. Create a new translation project
+
+Sign in to [Translation.io](https://translation.io/angular) and create a new project, selecting the appropriate source and target locales.
+
+### 5. Configure your project
+
+Copy the generated `tio.config.json` file to the root of your application.
+
+The configuration file looks like this:
+
+~~~json
+{
+  "api_key": "abcdefghijklmnopqrstuvwxyz123456",
+  "source_locale": "en",
+  "target_locales": ["fr", "it", "es"]
+}
+~~~
 
 ### 6. Initialize your project
 
-To push your source keys and existing translations (if any) to Translation.io, run the following command:
+Run the following command to push your source keys and existing translations to Translation.io
 
 ~~~bash
 # NPM
@@ -152,7 +251,7 @@ yarn translation:init
 
 ### Sync
 
-To push new translatable source keys/strings and get translations from Translation.io, simply run:
+Push new translatable source keys/strings and get translations from Translation.io with:
 
 ~~~bash
 # NPM
@@ -162,21 +261,9 @@ npm run translation:sync
 yarn translation:sync
 ~~~
 
-### Read-only Sync
+### Sync and Purge
 
-To retrieve translations without pushing new source keys, you can run:
-
-~~~bash
-# NPM
-npm run translation:sync -- --readonly
-
-# YARN
-yarn translation:sync -- --readonly
-~~~
-
-### Sync & Purge
-
-If you need to remove unused source keys/strings from Translation.io, using your current local application as reference, run the following command:
+Remove unused source keys/strings from Translation.io, using your current local application as reference, with:
 
 ~~~bash
 # NPM
@@ -190,16 +277,16 @@ yarn translation:sync -- --purge
 
 ## Manage Languages
 
-### Add or remove languages
+### Add or Remove Language
 
 You can add or remove a locale by updating `"target_locales": []` in your
 `tio.config.json` file, and syncing your project again.
 
 If you want to add a new locale with existing translations (for instance if you
 already have a translated XLF file in your project), you will need to create a
-new empty project on Translation.io and init your project for them to appear.
+new empty project on Translation.io and init it for the first time again.
 
-### Edit languages
+### Edit Language
 
 To edit existing locales while keeping their translations (e.g. changing from `en` to `en-US`):
 
@@ -212,177 +299,55 @@ To edit existing locales while keeping their translations (e.g. changing from `e
 
 Since you created a new project, the translation history and tags will unfortunately be lost.
 
+### Custom Languages
 
-## Translation syntaxes in details
+Custom languages are convenient if you want to customize translations for a specific customer
+or another instance of your application.
 
-### i18n attributes and $localize
-
-The text in a HTML element can be marked as translatable by using the `i18n` attribute in the components' templates.
-
-~~~html
-<h1 i18n>Welcome to our Angular application!</h1>
-~~~
-
-The attributes of HTML elements can also be marked as translatable by using `i18n-{attribute_name}` attributes.
-
-~~~html
-<img [src]="cat.png" i18n-alt alt="A fluffy cat" />
-~~~
-
-You can interpolate variables (component properties) into translatable strings.
-
-~~~html
-<!-- Translators will see "Hi {name}, welcome to your dashboard!" -->
-<p i18n>Hi {{ name }}, welcome to your dashboard!</p>
-~~~
-
-And you can also interpolate **valid** HTML tags.
-
-~~~html
-<!-- Translators will see "Text with <1>HTML</1> tags." -->
-<p i18n>Text with <em>HTML</em> tags.</p>
-
-<!-- Translators will see "Text with a <1><2>partly-emphasized</2> link</1>." -->
-<p i18n>Text with a <a href="#"><em>partly-emphasized</em> link</a>.</p>
-~~~
-
-Literal strings in your component classes and functions can also be marked as translatable using `$localize` and surrounding the source text with backticks ( \` ).
+A custom language is always be derived from an [existing language](https://translation.io/docs/languages).
+Its structure should be like:
 
 ~~~javascript
-let text = $localize `Hello, we hope you will enjoy this app.`;
+`${existingLanguageCode}-${customText}`
 ~~~
 
-This syntax also allows for variable interpolation.
+where `customText` can only contain alphabetic characters and `-`.
 
-~~~javascript
-// Translators will see "Hi {name}, welcome to your dashboard!"
-let text = $localize `Hi ${name}, welcome to your dashboard!`;
+Examples: `en-microsoft` or `fr-BE-custom`.
+
+## Continuous Integration
+
+If you want fresh translations in your Continuous Integration workflow, you may
+find yourself calling `npm run translation:sync` very frequently.
+
+Since this task can't be concurrently executed
+(we have a [mutex](https://en.wikipedia.org/wiki/Mutual_exclusion) strategy with
+a queue but it returns an error under heavy load), we implemented this
+threadsafe readonly task:
+
+~~~bash
+# NPM
+npm run translation:sync -- --readonly
+
+# YARN
+yarn translation:sync -- --readonly
 ~~~
 
-The official Angular documentation for the syntax can be found [here](https://angular.io/guide/i18n-common-prepare).
+This task will prevent your CI from failing and still provide new translations. But
+be aware that it won't send new keys from your code to Translation.io so you
+still need to sync at some point during development.
 
-### Optional metadata for translation
-
-You can use metadata as the value of the i18n attribute to specify a custom ID, a meaning and a description.
-
-The syntax for the metadata, is the following: `{meaning}|{description}@@{custom_id}`
-
-~~~html
-<!-- Specifying only the meaning (the pipe | is required) -->
-<h1 i18n="Welcome message|">Welcome to our app!</h1>
-
-<!-- Specifying only the description -->
-<h1 i18n="Message used on the homepage">Welcome to our app!</h1>
-
-<!-- Specifying only the indetifier -->
-<h1 i18n="@@home-welcome-message">Welcome to our app!</h1>
-
-<!-- Specifying a meaning, a description and an identifier -->
-<h1 i18n="Welcome message|Message used on the homepage@@home-welcome-message">Welcome to our app!</h1>
-~~~
-
-Metadata can also be used with `$localize`, but it must then be formatted as follows: `:{meaning}|{description}@@{custom_id}:{source_text}`.
-
-~~~javascript
-// Specifying only the meaning (the pipe | is required)
-let text = $localize `:Welcome message|:Welcome to our Angular app!`;
-
-// Specifying only the description
-let text = $localize `:Message used on the homepage:Welcome to our Angular app!`;
-
-// Specifying only the identifier
-let text = $localize `:@@home-welcome-message:Welcome to our Angular app!`;
-
-// Specifying a meaning, a description and an identifier
-let text = $localize `:Welcome message|Message used on the homepage@@home-welcome-message:Welcome to our Angular app!`;
-~~~
-
-The official Angular documentation for optional metadata can be found [here](https://angular.io/guide/i18n-optional-manage-marked-text).
-
-#### Our recommendations for metadata
-
-The "unicity" of a source key is determined by its source text, its custom ID (if any) and its meaning (if any). The description plays no role in this unicity.
-
-If you choose to use custom IDs, make sure that your IDs are unique (or that you always use the same source text with the same ID), otherwise only the first source text will be associated with the ID ([see official documentation](https://angular.io/guide/i18n-optional-manage-marked-text#define-unique-custom-ids)).
-
-To avoid any problems, we strongly recommend that you opt for the use of "meanings" instead of IDs.
-**Note:** If you use a meaning without a description, make sure to add a pipe (`|`) after the meaning, otherwise it will be considered as a description.
-
-~~~html
-<!-- Good use cases: -->
-
-  <!-- Example 1
-    The meaning helps distinguish between two keys with the same source text
-    => This will result in two distinct source keys
-  -->
-  <span i18n="Numbered day in a calendar|">Date</span>
-  <span i18n="Social meeting with someone|">Date</span>
-
-  <!-- Example 2
-    Adding a description after the meaning will be useful to translators
-    => This will result in two distinct source keys
-  -->
-  <span i18n="Verb|Text on a button used to report a problem">Report</span>
-  <span i18n="Noun|Title of the Report section in the app">Report</span>
-
-<!-- Bad use cases: -->
-
-  <!-- Example 1
-    Using only descriptions, without meanings (note the missing pipe | )
-    -> This will result in only one source key
-  -->
-  <label i18n="Label for the datepicker">Date</label>
-  ...
-  <option i18n="Type of event in a dropdown">Date</option>
-
-  <!-- Example 2
-    Using the same ID with two different source texts
-    -> This will result in only one source key (the first one)
-  -->
-  <h2 i18n="@@section-title">First section</h2>
-  <h2 i18n="@@section-title">Second section</h2>
-~~~
-
-### ICU expressions (plural and select)
-
-#### Pluralization
-
-Pluralization rules may vary from one locale to another, and it is recommended to use the plural syntax in your code to facilitate translation. This syntax is expressed as follows: `{ component_property, plural, pluralization_categories }`.
-
-~~~html
-<!-- Translators will see "There are no cats", "There is one cat", "There are {x} cats" -->
-<p i18n>{count, plural,
-  =0 {There are no cats}
-  =1 {There is one cat}
-  other {There are {{count}} cats}
-}</p>
-~~~
-
-The official Angular documentation for plurals can be found [here](https://angular.io/guide/i18n-common-prepare#mark-plurals).
-
-#### Select clause
-
-The select clause allows to display alternate text depending on the value of a variable. This syntax is expressed as follows: `{ component_property, select, selection_categories }`.
-
-~~~html
-<span i18n>The user is {gender, select, male {a man} female {a woman} other { other }}.</span>
-~~~
-
-The official Angular documentation for select clauses can be found [here](https://angular.io/guide/i18n-common-prepare#mark-alternates-and-nested-expressions).
-
-#### Our recommendations for plural and select expressions
-
-To facilitate the work of translators, try to avoid complicated or nested expressions.
-
-## Advanced configuration options
+## Advanced Configuration Options
 
 The `tio.config.json` file, at the root of your application, can take other optional configuration options.
 
 We always favor "[_convention over configuration_](https://en.wikipedia.org/wiki/Convention_over_configuration)", so we strongly recommend that you use the default paths and file names in your localization process, but you may specify custom source and target paths for your application if necessary.
 
-### Custom path for the source locale file
+### Source File Path
 
-If your source locale file (XLF) is not located in the default `src/locale` directory and/or is not named `messages.xlf` (default name), you may specify a custom source locale path in your `tio.config.json` file:
+You may specify a custom source locale path in your `tio.config.json` file 
+if your source locale file (XLF) is not located in the default `src/locale` 
+directory and/or is not named `messages.xlf` (default name):
 
 ~~~json
 {
@@ -390,7 +355,8 @@ If your source locale file (XLF) is not located in the default `src/locale` dire
 }
 ~~~
 
-**Warning!** The name of your source file should match the one generated by the `extract` script. Make sure to stay consistent in your `package.json`:
+**Warning!** The name of your source file should match the one generated by the `extract` script. 
+Make sure to stay consistent in your `package.json`:
 
 ~~~json
 {
@@ -400,9 +366,14 @@ If your source locale file (XLF) is not located in the default `src/locale` dire
 }
 ~~~
 
-### Custom path for target locale files
+### Target Files Path
 
-You may also specify a custom path for the target locale files (XLF) if you need them to have a name other than the defaut `messages.{lang}.xlf` or to be located in a directory other than the default `src/locale` directory. Simply add the following line to your `tio.config.json`, but make sure that it contains the `{lang}` placeholder as such:
+You may specify a custom path for the target locale files (XLF) if you need them 
+to have a name other than the defaut `messages.{lang}.xlf` or to be located in 
+a directory other than the default `src/locale` directory. 
+
+Simply add the following line to your `tio.config.json`, but make sure that it 
+contains the `{lang}` placeholder as such:
 
 ~~~json
 {
@@ -418,8 +389,6 @@ or
 }
 ~~~
 
-Note: our package will attempt to create any missing directories. If it fails (for example, if permissions are strict on your side), please make sure to create the required directories manually.
-
 ### Proxy
 
 If you need to use a proxy to connect to Translation.io, add the following line to your `tio.config.json` file:
@@ -430,12 +399,71 @@ If you need to use a proxy to connect to Translation.io, add the following line 
 }
 ~~~
 
+## Localization - Good Practices
+
+The "unicity" of a source key is determined by its source text and its context 
+(if any). The comment plays no role in this unicity.
+
+If you use a meaning without a comment, make sure to add a 
+pipe (`|`) after the meaning, otherwise it will be considered as a comment.
+
+### Good use cases
+
+~~~html
+<!--
+  The context helps distinguish between two keys with the same source text
+  => This will result in two distinct source keys
+-->
+<span i18n="Numbered day in a calendar|">Date</span>
+<span i18n="Social meeting with someone|">Date</span>
+
+<!--
+  Adding a comment after the context will be useful to translators
+  => This will result in two distinct source keys
+-->
+<span i18n="Verb|Text on a button used to report a problem">Report</span>
+<span i18n="Noun|Title of the Report section in the app">Report</span>
+~~~
+
+### Bad use case
+
+~~~html
+<!--
+  Using only comments, without context (note the missing pipe | )
+  => This will result in only one source key
+-->
+<span i18n="Label for the datepicker">Date</span>
+<span i18n="Type of event in a dropdown">Date</span>
+~~~
+
+## Testing
+
+Run the specs with:
+
+~~~bash
+jest
+~~~
+
+or 
+
+~~~bash
+npm run test
+~~~
+
+Please note that [GitHub Actions](.github/workflows/test.yml) contains more specs including real synchronization 
+tests between different versions of Angular projects and Translation.io.
+
+## Contributing
+
+Please read the [CONTRIBUTING](CONTRIBUTING.md) file.
+
 ## List of clients for Translation.io
 
-Implementations were usually started by contributors for their own projects.
-The following are officially supported by [Translation.io](https://translation.io)
+The following clients are officially supported by [Translation.io](https://translation.io)
 and are well documented.
 
+Some of these implementations (and other non-officially supported ones)
+were started by contributors for their own translation projects.
 We are thankful to all contributors for their hard work!
 
 ### Ruby on Rails (Ruby)
@@ -472,6 +500,8 @@ Officially supported on [https://translation.io/angular](https://translation.io/
 
  * GitHub: https://github.com/translation/angular
  * NPM: https://www.npmjs.com/package/@translation/angular
+ 
+Credits: [@SimonCorellia](https://github.com/SimonCorellia), [@didier-84](hthttps://github.com/didier-84), [@michaelhoste](https://github.com/michaelhoste)
 
 ### Others
 

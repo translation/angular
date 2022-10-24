@@ -12,17 +12,17 @@ Use these [official](https://angular.io/guide/i18n-common-prepare) Angular local
 * <a href="#template--components">`<p i18n>source text</p>`</a> in templates.
 * <a href="#javascript">``$localize `source text` ``</a>  in JavaScript.
 
-Don't bother your translators with obscure `.XLF` files. Make them use our clean
-interface to translate complex singular and plurals strings:
-
-[![XLF files plural interface](https://github.com/translation/angular/raw/master/misc/angular-xlf-to-interface.png)](https://translation.io/angular)
-
 Write only the source text, and keep it synchronized with your translators 
 on [Translation.io](https://translation.io/angular).
 
 <a href="https://translation.io/angular">
   <img width="720px" alt="Translation.io interface" src="https://translation.io/gifs/translation.gif">
 </a>
+
+Don't bother your translators with obscure `.XLF` files. Make them use our clean
+interface to translate complex singular and plurals strings:
+
+[![XLF files plural interface](https://github.com/translation/angular/raw/master/misc/angular-xlf-to-interface.png)](https://translation.io/angular)
 
 Need help? [contact@translation.io](mailto:contact@translation.io)
 

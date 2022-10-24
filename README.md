@@ -19,7 +19,7 @@ on [Translation.io](https://translation.io/angular).
   <img width="720px" alt="Translation.io interface" src="https://translation.io/gifs/translation.gif">
 </a>
 
-<br/>
+ 
 
 Don't bother your translators with obscure `.XLF` files. Make them use our clean
 interface to translate complex singular and plurals strings:

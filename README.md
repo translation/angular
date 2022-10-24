@@ -34,7 +34,6 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
   * [Add or Remove Language](#add-or-remove-language)
   * [Edit Language](#edit-language)
   * [Custom Languages](#custom-languages)
-  * [Fallbacks](#fallbacks)
 * [Continuous Integration](#continuous-integration)
 * [Advanced Configuration Options](#advanced-configuration-options)
    * [Source File Path](#source-file-path)
@@ -290,6 +289,22 @@ To edit existing locales while keeping their translations (e.g. changing from `e
  6. Remove the old project.
 
 Since you created a new project, the translation history and tags will unfortunately be lost.
+
+### Custom Languages
+
+Custom languages are convenient if you want to customize translations for a specific customer
+or another instance of your application.
+
+A custom language is always be derived from an [existing language](https://translation.io/docs/languages).
+Its structure should be like:
+
+~~~javascript
+`${existingLanguageCode}-${customText}`
+~~~
+
+where `customText` can only contain alphabetic characters and `-`.
+
+Examples: `en-microsoft` or `fr-BE-custom`.
 
 ## Continuous Integration
 

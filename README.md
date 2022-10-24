@@ -25,7 +25,7 @@ Need help? [contact@translation.io](mailto:contact@translation.io)
 
 * [Localization syntaxes](#localization-syntaxes)
   * [Template & Components](#template--components)
-  * [JavaScript](#javascript-syntax)
+  * [JavaScript](#javascript)
 * [Installation](#installation)
 * [Usage](#usage)
   * [Sync](#sync)
@@ -412,14 +412,14 @@ pipe (`|`) after the meaning, otherwise it will be considered as a comment.
 ~~~html
 <!--
   The context helps distinguish between two keys with the same source text
-  => This will result in two distinct source keys
+   => This will result in two distinct source keys
 -->
 <span i18n="Numbered day in a calendar|">Date</span>
 <span i18n="Social meeting with someone|">Date</span>
 
 <!--
   Adding a comment after the context will be useful to translators
-  => This will result in two distinct source keys
+   => This will result in two distinct source keys
 -->
 <span i18n="Verb|Text on a button used to report a problem">Report</span>
 <span i18n="Noun|Title of the Report section in the app">Report</span>
@@ -430,7 +430,7 @@ pipe (`|`) after the meaning, otherwise it will be considered as a comment.
 ~~~html
 <!--
   Using only comments, without context (note the missing pipe | )
-  => This will result in only one source key
+   => This will result in only one source key
 -->
 <span i18n="Label for the datepicker">Date</span>
 <span i18n="Type of event in a dropdown">Date</span>
@@ -516,6 +516,6 @@ You can also use the more [traditional API](https://translation.io/docs/api).
 Feel free to contact us on [contact@translation.io](mailto:contact@translation.io)
 if you need some help or if you want to share your library.
 
-## Licence
+## License
 
 The MIT License (MIT). Please see [License File](LICENSE) for more information.

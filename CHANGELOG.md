@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.3.0](https://github.com/translation/angular/releases/tag/v1.3.0) (2023-01-10)
+
+#### Fixes (bugs & defects):
+
+ * Improve interpolation substitution to be more resilient to bad XLF formatting.
+
 ## [v1.2.0](https://github.com/translation/angular/releases/tag/v1.2.0) (2022-10-13)
 
 #### New features:

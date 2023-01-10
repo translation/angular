@@ -21,6 +21,11 @@ function escapeKeys(hash) {
   return hash
 }
 
+// Mock console.error
+let consoleErrorOutput = ""
+storeConsoleError = inputs => (consoleErrorOutput += inputs)
+console["error"] = jest.fn(storeConsoleError)
+
 /* Specs */
 
 describe('Interpolation.extract', () => {
@@ -437,5 +442,15 @@ describe('Interpolation.substitution', () => {
         ['{name}']
       )
     ).toEqual('{name}')
+  })
+
+  test('Simple example resulting in a "parsing error" when attempting a substitution (bad XLF formatting because of older version of extract-i18n)', () => {
+    expect(
+      Interpolation.substitution(
+        '<x id="INTERPOLATION" equiv-text="&lt;/a"/>',
+        []
+      )
+    ).toEqual('{parsingError}')
+    expect(consoleErrorOutput).toBe(`\n⚠️ No substitution found for this extraction: <x id="INTERPOLATION" equiv-text="&lt;/a"/>\nPlease check the validity of your XLF formatting.`);
   })
 })

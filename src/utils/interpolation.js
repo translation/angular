@@ -56,23 +56,24 @@ class Interpolation {
       substitution = `{x${number}}`
     } else if(extraction.includes('id="INTERPOLATION"') && !extraction.includes('equiv-text=')) { // {x1} - May be converted later to {x} if only 1
       substitution = `{x1}`
-    } else if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text=')) {  // {name}, {variable}, {count}
+    } else if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text="{{') && extraction.includes('}}"')) { // {name}, {variable}, {count}
       name         = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0].trim()
       substitution = `{${name}}`
     } else if (extraction.includes('id="ICU')) {                                                  // {icu1}, {icu2}, ... - May be converted later to {icu} if only 1
       number       = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
       substitution = `{icu${number}}`
-    } else if (HtmlTagExtraction.isOpeningTag(extraction)) {                                       // <tag>
+    } else if (HtmlTagExtraction.isOpeningTag(extraction)) {                                      // <tag>
       number       = HtmlTagExtraction.addToStackAndGetNumber(extraction)
       substitution = `&lt;${number}&gt;`
-    } else if (HtmlTagExtraction.isClosingTag(extraction)) {                                       // </tag>
+    } else if (HtmlTagExtraction.isClosingTag(extraction)) {                                      // </tag>
       number       = HtmlTagExtraction.removeFromStackAndGetNumber(extraction)
       substitution = `&lt;/${number}&gt;`
-    } else if (HtmlTagExtraction.isSelfClosingTag(extraction)) {                                   // <tag/>
+    } else if (HtmlTagExtraction.isSelfClosingTag(extraction)) {                                  // <tag/>
       number       = HtmlTagExtraction.addToStackAndGetNumber(extraction)
       substitution = `&lt;${number}/&gt;`
     } else {
-      console.error(`No substitution found for this extraction: ${extraction}`)
+      substitution = `{parsingError}`;
+      console.error(`\n⚠️ No substitution found for this extraction: ${extraction}\nPlease check the validity of your XLF formatting.`);
     }
 
     return substitution

@@ -51,32 +51,60 @@ class Interpolation {
   static substitution(extraction, existingSubstitutions) {
     let substitution, name, number
 
-    if (extraction.includes('id="INTERPOLATION_') && !extraction.includes('equiv-text=')) {       // {x2}, {x3}, ...
+    if (extraction.includes('id="INTERPOLATION_') && ! extraction.includes('equiv-text=')) {        // {x2}, {x3}, ... // Interpolations in HTML templates
       number       = parseInt(extraction.split('id="INTERPOLATION_', 2)[1].split('"', 2)[0]) + 1
       substitution = `{x${number}}`
-    } else if(extraction.includes('id="INTERPOLATION"') && !extraction.includes('equiv-text=')) { // {x1} - May be converted later to {x} if only 1
+    } else if (extraction.includes('id="INTERPOLATION"') && ! extraction.includes('equiv-text=')) { // {x1} - May be converted later to {x} if only 1
       substitution = `{x1}`
-    } else if (extraction.includes('id="INTERPOLATION') && extraction.includes('equiv-text="{{') && extraction.includes('}}"')) { // {name}, {variable}, {count}
+    } else if (this.includesAll(extraction, ['id="INTERPOLATION', 'equiv-text="{{', '}}"'])) {      // {name}, {variable}, {count}
       name         = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0].trim()
       substitution = `{${name}}`
-    } else if (extraction.includes('id="ICU')) {                                                  // {icu1}, {icu2}, ... - May be converted later to {icu} if only 1
+    } else if (this.includesAll(extraction, ['id="PH_', 'equiv-text='])) {                          // {x2}, {x3}, ... // Interpolations (placeholders) in components, using $localize
+      number       = parseInt(extraction.split('id="PH_', 2)[1].split('"', 2)[0]) + 1
+      substitution = `{x${number}}`
+    } else if (this.includesAll(extraction, ['id="PH"', 'equiv-text='])) {                          // {x1} - May be converted later to {x} if only 1
+      substitution = `{x1}`
+    } else if (extraction.includes('id="ICU')) {                                                    // {icu1}, {icu2}, ... - May be converted later to {icu} if only 1
       number       = (existingSubstitutions.join(" ").match(/{icu\d+?}/g) || []).length + 1
       substitution = `{icu${number}}`
-    } else if (HtmlTagExtraction.isOpeningTag(extraction)) {                                      // <tag>
+    } else if (HtmlTagExtraction.isOpeningTag(extraction)) {                                        // <tag>
       number       = HtmlTagExtraction.addToStackAndGetNumber(extraction)
       substitution = `&lt;${number}&gt;`
-    } else if (HtmlTagExtraction.isClosingTag(extraction)) {                                      // </tag>
+    } else if (HtmlTagExtraction.isClosingTag(extraction)) {                                        // </tag>
       number       = HtmlTagExtraction.removeFromStackAndGetNumber(extraction)
       substitution = `&lt;/${number}&gt;`
-    } else if (HtmlTagExtraction.isSelfClosingTag(extraction)) {                                  // <tag/>
+    } else if (HtmlTagExtraction.isSelfClosingTag(extraction)) {                                    // <tag/>
       number       = HtmlTagExtraction.addToStackAndGetNumber(extraction)
       substitution = `&lt;${number}/&gt;`
+    } else if (extraction.includes('<x id="') && this.excludesAll(extraction, ['id="INTERPOLATION', 'id="PH', 'id="ICU'])) { // {name} // Named interpolations (placeholders) in components, using $localize, excluding specific ids, so that they end up as parsing errors below
+      name         = extraction.split('id="', 2)[1].split('"', 2)[0].trim()
+      substitution = `{${name}}`
     } else {
       substitution = `{parsingError}`;
       console.error(`\n⚠️ No substitution found for this extraction: ${extraction}\nPlease check the validity of your XLF formatting.`);
     }
 
     return substitution
+  }
+
+  // Helper method (because String.prototype.includes() does not accept an array of strings)
+  static includesAll(extraction, terms) {
+    for (const term of terms) {
+      if (! extraction.includes(term)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  // Helper method (because String.prototype.excludes() doesn't exist and String.prototype.includes() does not accept an array of strings)
+  static excludesAll(extraction, terms) {
+    for (const term of terms) {
+      if (extraction.includes(term)) {
+        return false
+      }
+    }
+    return true
   }
 
   static renameKey(object, oldKey, newKey) {

@@ -168,6 +168,62 @@
         </context-group>
         <target></target>
       </trans-unit>
+      <trans-unit id="7789534275794595013" datatype="html">
+        <source>12. Variable interpolation: my name is <x id="INTERPOLATION" equiv-text="{{ name }}"/>.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="5008943336610818013" datatype="html">
+        <source>13. Named placeholder: <x id="ITEMCOUNT" equiv-text="{{ items.length // i18n(ph=&quot;itemCount&quot;) }}"/> items.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="6962731021804310323" datatype="html">
+        <source>Text to be translated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="28113302887959640" datatype="html">
+        <source>Hello <x id="PH" equiv-text="this.name"/>.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.ts</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="6983233377181567851" datatype="html">
+        <source>You have two friends: <x id="PH" equiv-text="this.friendNames[0]"/> &amp; <x id="PH_1" equiv-text="this.friendNames[1]"/>.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="8967721153468652541" datatype="html">
+        <source>There are <x id="itemCount" equiv-text="this.items.length"/> items in your cart.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="3663231730977935317" datatype="html">
+        <source>Hello <x id="PH" equiv-text="this.name"/>. There are <x id="itemCount" equiv-text="this.items.length"/> items in your cart.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <target></target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

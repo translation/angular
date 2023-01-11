@@ -193,6 +193,76 @@
       "references": [
         "src/app/app.component.html:46"
       ]
+    },
+    {
+      "source_id": "948d9a612c396e0de914ad0d8dc1b835a81dfdc16d4917cfa41bc0f1a0df9f0f",
+      "target_language": "fr",
+      "type": "source",
+      "source": "12. Variable interpolation: my name is {name}.",
+      "target": "12. Interpolation de variable : mon nom est {name}.",
+      "references": [
+        "src/app/app.component.html:48"
+      ]
+    },
+    {
+      "source_id": "b3a72447d25111fa4e48b739bcc4bdfaeb1e7bea70409bac9bcdf7f17992cea0",
+      "target_language": "fr",
+      "type": "source",
+      "source": "13. Named placeholder: {ITEMCOUNT} items.",
+      "target": "13. Placeholder nommé : {ITEMCOUNT} articles.",
+      "references": [
+        "src/app/app.component.html:50"
+      ]
+    },
+    {
+      "source_id": "f7dc4e90247945d0a9d70eccaafd75cb56c7987e3b1de3eaf970cd9673eb1cd0",
+      "target_language": "fr",
+      "type": "source",
+      "source": "Text to be translated",
+      "target": "Texte à traduire",
+      "references": [
+        "src/app/app.component.ts:17"
+      ]
+    },
+    {
+      "source_id": "eab068f292d85741ff602d3696392ca2a3d71df0343218eee35bf8d7d5258832",
+      "target_language": "fr",
+      "type": "source",
+      "source": "Hello {x}.",
+      "target": "Bonjour {x}.",
+      "references": [
+        "src/app/app.component.ts:18"
+      ]
+    },
+    {
+      "source_id": "22e4538560cea910c8552d1ce82c2ae67624e6230928af751878c47c58d3e0a9",
+      "target_language": "fr",
+      "type": "source",
+      "source": "You have two friends: {x1} & {x2}.",
+      "target": "Vous avez deux amis : {x1} et {x2}.",
+      "references": [
+        "src/app/app.component.ts:19"
+      ]
+    },
+    {
+      "source_id": "733ac8154b547bde5f8cb91c54b3f105f4da0e80cae74c56e69654630f3b46d8",
+      "target_language": "fr",
+      "type": "source",
+      "source": "There are {itemCount} items in your cart.",
+      "target": "Il y a {itemCount} articles dans votre panier.",
+      "references": [
+        "src/app/app.component.ts:20"
+      ]
+    },
+    {
+      "source_id": "6801d44c06148f6d7b411c863d7f803721c2d1931dc5b164b269b12da7f62a4f",
+      "target_language": "fr",
+      "type": "source",
+      "source": "Hello {x}. There are {itemCount} items in your cart.",
+      "target": "Bonjour {x}. Il y a {itemCount} articles dans votre panier.",
+      "references": [
+        "src/app/app.component.ts:21"
+      ]
     }
   ]
 }

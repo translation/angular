@@ -471,15 +471,6 @@ describe('Interpolation.substitution', () => {
     ).toEqual('{itemCount}')
   })
 
-  test('Simple example with a named placeholder, when using $localize in a component', () => {
-    expect(
-      Interpolation.substitution(
-        '<x id="itemCount" equiv-text="this.items.length"/>',
-        []
-      )
-    ).toEqual('{itemCount}')
-  })
-
   test('Simple example resulting in a "parsing error" when attempting a substitution (bad XLF formatting because of older version of extract-i18n)', () => {
     expect(
       Interpolation.substitution(

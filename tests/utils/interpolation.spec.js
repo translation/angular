@@ -444,6 +444,33 @@ describe('Interpolation.substitution', () => {
     ).toEqual('{name}')
   })
 
+  test('Simple example with a single unnamed placeholder, when using $localize in a component', () => {
+    expect(
+      Interpolation.substitution(
+        '<x id="PH" equiv-text="this.name"/>',
+        []
+      )
+    ).toEqual('{x1}')
+  })
+
+  test('Simple example with indexed, unnamed placeholders, when using $localize in a component', () => {
+    expect(
+      Interpolation.substitution(
+        '<x id="PH_1" equiv-text="this.otherName"/>',
+        ['{x1}']
+      )
+    ).toEqual('{x2}')
+  })
+
+  test('Simple example with a named placeholder, when using $localize in a component', () => {
+    expect(
+      Interpolation.substitution(
+        '<x id="itemCount" equiv-text="this.items.length"/>',
+        []
+      )
+    ).toEqual('{itemCount}')
+  })
+
   test('Simple example resulting in a "parsing error" when attempting a substitution (bad XLF formatting because of older version of extract-i18n)', () => {
     expect(
       Interpolation.substitution(

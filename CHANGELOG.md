@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.4.0](https://github.com/translation/angular/releases/tag/v1.4.0) (2023-01-12)
+
+#### New features:
+
+ * Handle placeholders (named or unnamed) in components ([#5](https://github.com/translation/angular/pull/5)).
+ 
+#### Fixes (bugs & defects):
+
+ * Fix dependency issues.
+
 ## [v1.3.0](https://github.com/translation/angular/releases/tag/v1.3.0) (2023-01-10)
 
 #### Fixes (bugs & defects):

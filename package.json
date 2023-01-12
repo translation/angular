@@ -1,6 +1,6 @@
 {
   "name": "@translation/angular",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Translation.io client for Angular applications",
   "repository": {
     "type": "git",
@@ -54,13 +54,14 @@
     }
   ],
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "axios": "^0 >=0.16",
     "fast-xml-parser": "^4",
     "https-proxy-agent": "^5",
-    "jest": ">=23",
     "@formatjs/icu-messageformat-parser": "^2"
+  },
+  "devDependencies": {
+    "jest": ">=23"
   },
   "scripts": {
     "test": "jest"

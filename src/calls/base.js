@@ -170,7 +170,7 @@ class Base {
     if (typeof xmlNode === 'string' || xmlNode instanceof String) {
       return xmlNode
     } else if (xmlNode) {
-      return xmlNode['#text']
+      return xmlNode['#text'] || ''
     } else {
       return ''
     }

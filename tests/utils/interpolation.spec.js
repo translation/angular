@@ -444,6 +444,24 @@ describe('Interpolation.substitution', () => {
     ).toEqual('{name}')
   })
 
+  test('Simple example with a substitution having a complex expression (not just a variable name) as equiv-text', () => {
+    expect(
+      Interpolation.substitution(
+        '<x id="INTERPOLATION" equiv-text="{{ user.birthday | date:\'dd/MM/y\' }}"/>',
+        []
+      )
+    ).toEqual('{x1}')
+  })
+
+  test('Simple example with a second substitution having a complex expression (not just a variable name) as equiv-text', () => {
+    expect(
+      Interpolation.substitution(
+        '<x id="INTERPOLATION_1" equiv-text="{{ user.birthday | date:\'dd/MM/y\' }}"/>',
+        ['{x1}']
+      )
+    ).toEqual('{x2}')
+  })
+
   test('Simple example with a single unnamed placeholder, when using $localize in a component', () => {
     expect(
       Interpolation.substitution(

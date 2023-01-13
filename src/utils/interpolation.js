@@ -57,8 +57,18 @@ class Interpolation {
     } else if (extraction.includes('id="INTERPOLATION"') && ! extraction.includes('equiv-text=')) { // {x1} - May be converted later to {x} if only 1
       substitution = `{x1}`
     } else if (this.includesAll(extraction, ['id="INTERPOLATION', 'equiv-text="{{', '}}"'])) {      // {name}, {variable}, {count}
-      name         = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0].trim()
-      substitution = `{${name}}`
+      name = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0].trim()
+
+      if (/^[a-zA-Z_$][a-zA-Z_$0-9]*$/.test(name)) {
+        substitution = `{${name}}`
+      } else {
+        if (extraction.includes('id="INTERPOLATION_')) {
+          number       = parseInt(extraction.split('id="INTERPOLATION_', 2)[1].split('"', 2)[0]) + 1
+          substitution = `{x${number}}`
+        } else {
+          substitution = `{x1}`
+        }
+      }
     } else if (this.includesAll(extraction, ['id="PH_', 'equiv-text='])) {                          // {x2}, {x3}, ... // Interpolations (placeholders) in components, using $localize
       number       = parseInt(extraction.split('id="PH_', 2)[1].split('"', 2)[0]) + 1
       substitution = `{x${number}}`

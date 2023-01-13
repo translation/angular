@@ -56,12 +56,12 @@ class Interpolation {
       substitution = `{x${number}}`
     } else if (extraction.includes('id="INTERPOLATION"') && ! extraction.includes('equiv-text=')) { // {x1} - May be converted later to {x} if only 1
       substitution = `{x1}`
-    } else if (this.includesAll(extraction, ['id="INTERPOLATION', 'equiv-text="{{', '}}"'])) {      // {name}, {variable}, {count}
+    } else if (this.includesAll(extraction, ['id="INTERPOLATION', 'equiv-text="{{', '}}"'])) {      // {variable} or {complex | expression}
       name = extraction.split('equiv-text="{{', 2)[1].split('}}"', 2)[0].trim()
 
-      if (/^[a-zA-Z_$][a-zA-Z_$0-9]*$/.test(name)) {
+      if (/^[a-zA-Z_$][a-zA-Z_$0-9]*$/.test(name)) {                                                // {variable}
         substitution = `{${name}}`
-      } else {
+      } else {                                                                                      // {complex | expression} transformed as {x}
         if (extraction.includes('id="INTERPOLATION_')) {
           number       = parseInt(extraction.split('id="INTERPOLATION_', 2)[1].split('"', 2)[0]) + 1
           substitution = `{x${number}}`

@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.5.0](https://github.com/translation/angular/releases/tag/v1.5.0) (2023-01-13)
+
+#### New features:
+
+ * Improve substitution for interpolations with complex expressions like `user.birthday | date:\'dd/MM/y\'`.
+ 
+#### Fixes (bugs & defects):
+
+ * Better node parsing if no `<source>` or `<target>` is found.
+
 ## [v1.4.0](https://github.com/translation/angular/releases/tag/v1.4.0) (2023-01-12)
 
 #### New features:

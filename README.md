@@ -496,7 +496,7 @@ Credits: [@armandsar](https://github.com/armandsar), [@michaelhoste](https://git
 Officially supported on [https://translation.io/lingui](https://translation.io/lingui)
 
 Translation.io is directly integrated in the great
-[Lingui](https://lingui.js.org/) internationalization project.
+[Lingui](https://lingui.dev/) internationalization project.
 
  * GitHub: https://github.com/translation/lingui
  * NPM: https://www.npmjs.com/package/@translation/lingui

@@ -349,7 +349,7 @@ class Base {
       translatedTargetSegments.forEach(translatedTargetSegment => {
         let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
-        if (targetXmlUnit) {
+        if (targetXmlUnit && translatedTargetSegment.target != '') { // if not translated, then no <target>, then fallback to source language
           targetXmlUnit.target = this.recomposeTarget(targetXmlUnit, translatedTargetSegment)
         }
       })
@@ -436,4 +436,3 @@ class Base {
 }
 
 module.exports = Base
-

@@ -350,6 +350,9 @@ class Base {
         let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
         if (targetXmlUnit) {
+          console.log("---\n")
+          console.log(translatedTargetSegment.target)
+          console.log("---\n")
           targetXmlUnit.target = this.recomposeTarget(targetXmlUnit, translatedTargetSegment)
         }
       })
@@ -436,4 +439,3 @@ class Base {
 }
 
 module.exports = Base
-

@@ -349,11 +349,7 @@ class Base {
       translatedTargetSegments.forEach(translatedTargetSegment => {
         let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
 
-        if (targetXmlUnit) {
-          console.log("---")
-          console.log(translatedTargetSegment.source)
-          console.log(translatedTargetSegment.target)
-          console.log("---\n")
+        if (targetXmlUnit && translatedTargetSegment.target != '') { // if not translated, then no <target>, then fallback to source language
           targetXmlUnit.target = this.recomposeTarget(targetXmlUnit, translatedTargetSegment)
         }
       })

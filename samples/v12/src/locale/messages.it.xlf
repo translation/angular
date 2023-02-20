@@ -10,7 +10,6 @@
         </context-group>
         <note priority="1" from="description">An introduction header for this sample</note>
         <note priority="1" from="meaning">User welcome</note>
-        <target></target>
       </trans-unit>
       <trans-unit id="5206857922697139278" datatype="html">
         <source>I don&apos;t output any element</source>
@@ -18,7 +17,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="392942015236586892" datatype="html">
         <source>Angular logo</source>
@@ -26,7 +24,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="4606963464835766483" datatype="html">
         <source>Updated <x id="ICU" equiv-text="{minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago}}"/></source>
@@ -34,7 +31,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="2002272803511843863" datatype="html">
         <source>{VAR_PLURAL, plural, =0 {just now} =1 {one minute ago} other {<x id="INTERPOLATION"/> minutes ago}}</source>
@@ -46,7 +42,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">19,22</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="3560311772637911677" datatype="html">
         <source>The author is <x id="ICU" equiv-text="{gender, select, male {male} female {female} other {other}}"/></source>
@@ -54,7 +49,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="7670372064920373295" datatype="html">
         <source>{VAR_SELECT, select, male {male} female {female} other {other}}</source>
@@ -66,7 +60,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="6056512605726495811" datatype="html">
         <source>Updated: <x id="ICU" equiv-text="{minutes, plural,
@@ -78,7 +71,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">19,23</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="6614439584127246414" datatype="html">
         <source>01. A simple <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>tag<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> interpolation.</source>
@@ -86,7 +78,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="921899479087148151" datatype="html">
         <source>02. A series of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>non-nested<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tag <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>interpolations<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>.</source>
@@ -94,7 +85,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="1025114103596514402" datatype="html">
         <source>03. A <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>series <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>of <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/>nested<x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/> tag<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> interpolations<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.</source>
@@ -102,7 +92,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">30</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="2158469501470947762" datatype="html">
         <source>04. A series of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>non-nested<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> tag interpolations <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>with attributes<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.</source>
@@ -110,7 +99,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">32</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="5333372789835402443" datatype="html">
         <source>05. A series of <x id="START_EMPHASISED_TEXT_1" equiv-text="&lt;em style=&quot;color:green&quot;&gt;"/>nested <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong data-id=&quot;42&quot;&gt;"/>tag<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> interpolations <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em style=&quot;color:red&quot;&gt;"/>with<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/> attributes<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.</source>
@@ -118,7 +106,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="8880256692345672869" datatype="html">
         <source>06. An example of <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://google.com&quot; target=&quot;_blank&quot; data-id=&quot;5324532&quot; title=&quot;Let&apos;s use symbols #&amp; &lt;@ &gt;&gt; %;&quot;&gt;"/>link<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> with many attributes.</source>
@@ -126,7 +113,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">36</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="2602478720328613603" datatype="html">
         <source>07. Opening a <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>tag and <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>opening it again<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> before closing it<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> and closing it again (strong tag).</source>
@@ -134,7 +120,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">38</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="8102224577822467593" datatype="html">
         <source>08. All <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/> sorts <x id="LINE_BREAK_1" equiv-text="&lt;BR/&gt;"/> of <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/> line <x id="LINE_BREAK_2" equiv-text="&lt;Br /&gt;"/> breaks <x id="LINE_BREAK_1" equiv-text="&lt;BR/&gt;"/>.</source>
@@ -142,7 +127,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">40</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="8048158107145255945" datatype="html">
         <source>09. <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>We have nested interpolations and <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>a line<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> break<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/> in-between<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>.</source>
@@ -150,7 +134,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">42</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="1162418464075294573" datatype="html">
         <source>10. A line break <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/> and all sorts <x id="HORIZONTAL_RULE" ctype="x-hr" equiv-text="&lt;hr/&gt;"/> of <x id="HORIZONTAL_RULE" ctype="x-hr" equiv-text="&lt;hr/&gt;"/> horizontal <x id="HORIZONTAL_RULE_1" equiv-text="&lt;HR&gt;"/> rules,<x id="HORIZONTAL_RULE_2" equiv-text="&lt;hr style=&quot;display: none&quot;/&gt;"/> even with attributes.</source>
@@ -158,7 +141,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="9075420308171641266" datatype="html">
         <source>11. Symbols: &lt; &lt; &amp;&amp; &gt;&gt; &lt;1&gt;</source>
@@ -166,7 +148,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">46</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="7789534275794595013" datatype="html">
         <source>12. Variable interpolation: my name is <x id="INTERPOLATION" equiv-text="{{ name }}"/>.</source>
@@ -174,7 +155,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">48</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="5008943336610818013" datatype="html">
         <source>13. Named placeholder: <x id="ITEMCOUNT" equiv-text="{{ items.length // i18n(ph=&quot;itemCount&quot;) }}"/> items.</source>
@@ -182,7 +162,6 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">50</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="6962731021804310323" datatype="html">
         <source>Text to be translated</source>
@@ -190,7 +169,6 @@
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">17</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="28113302887959640" datatype="html">
         <source>Hello <x id="PH" equiv-text="this.name"/>.</source>
@@ -198,7 +176,6 @@
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">18</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="6983233377181567851" datatype="html">
         <source>You have two friends: <x id="PH" equiv-text="this.friendNames[0]"/> &amp; <x id="PH_1" equiv-text="this.friendNames[1]"/>.</source>
@@ -206,7 +183,6 @@
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">19</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="8967721153468652541" datatype="html">
         <source>There are <x id="itemCount" equiv-text="this.items.length"/> items in your cart.</source>
@@ -214,7 +190,6 @@
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">20</context>
         </context-group>
-        <target></target>
       </trans-unit>
       <trans-unit id="3663231730977935317" datatype="html">
         <source>Hello <x id="PH" equiv-text="this.name"/>. There are <x id="itemCount" equiv-text="this.items.length"/> items in your cart.</source>
@@ -222,7 +197,6 @@
           <context context-type="sourcefile">src/app/app.component.ts</context>
           <context context-type="linenumber">21</context>
         </context-group>
-        <target></target>
       </trans-unit>
     </body>
   </file>

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.6.0](https://github.com/translation/angular/releases/tag/v1.6.0) (2023-02-20)
+ 
+#### Fixes (bugs & defects):
+
+ * Don't write empty `<target>` in translated XLF, it prevented the fallback to source language to work as intended.
+
 ## [v1.5.0](https://github.com/translation/angular/releases/tag/v1.5.0) (2023-01-13)
 
 #### New features:

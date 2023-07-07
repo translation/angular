@@ -343,13 +343,15 @@ class Base {
       const targetXmlUnits = this.forceArray(targetXml.xliff.file.body['trans-unit']) // Ensure consistent array
 
       // 4 Populate the loaded .xlf it with targets from Translation.io
-      const translatedTargetSegments = response.segments[language]
-      const targetXmlUnitsHash       = this.buildXmlUnitsHash(targetXmlUnits)
+      const translatedTargetSegmentsHash = this.buildTranslatedTargetSegmentsHash(response.segments[language])
 
-      translatedTargetSegments.forEach(translatedTargetSegment => {
-        let targetXmlUnit = targetXmlUnitsHash[this.uniqueIdentifier(translatedTargetSegment)]
-
-        if (targetXmlUnit && translatedTargetSegment.target != '') { // if not translated, then no <target>, then fallback to source language
+      // Iterate over XML units
+      targetXmlUnits.forEach(targetXmlUnit => {
+        const targetXmlUnitSegment    = this.convertXmlUnitToSegment(targetXmlUnit)
+        const xmlUniqueIdentifier     = this.uniqueIdentifier(targetXmlUnitSegment)
+        const translatedTargetSegment = translatedTargetSegmentsHash[xmlUniqueIdentifier]
+                
+        if (translatedTargetSegment && translatedTargetSegment.target != '') { // if not translated, then no <target>, then fallback to source language
           targetXmlUnit.target = this.recomposeTarget(targetXmlUnit, translatedTargetSegment)
         }
       })
@@ -358,6 +360,16 @@ class Base {
       const translatedTargetRaw = this.xmlBuilder().build(targetXml)
       fs.writeFileSync(targetFile, translatedTargetRaw)
     })
+  }
+
+  buildTranslatedTargetSegmentsHash(segments) {
+    let translatedTargetSegmentsHash = {}
+
+    segments.forEach(segment => {
+      translatedTargetSegmentsHash[this.uniqueIdentifier(segment)] = segment
+    })
+
+    return translatedTargetSegmentsHash
   }
 
   // Use XML segment and API segment to build back the target with existing interpolations
@@ -386,18 +398,6 @@ class Base {
 
   uniqueIdentifier(segment) {
     return `${segment.source}|||${segment.context}`
-  }
-
-  // For O(1) search optimization
-  buildXmlUnitsHash(xmlUnits) {
-    let targetXmlUnitsHash = {}
-
-    xmlUnits.forEach(xmlUnit => {
-      const segment = this.convertXmlUnitToSegment(xmlUnit)
-      targetXmlUnitsHash[this.uniqueIdentifier(segment)] = xmlUnit
-    })
-
-    return targetXmlUnitsHash
   }
 
   escapeDoubleSingleQuotesFromIcuPlural(icuPlural) {

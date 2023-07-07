@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.7.0](https://github.com/translation/angular/releases/tag/v1.7.0) (2023-07-07)
+ 
+#### Fixes (bugs & defects):
+
+ * Improve the rebuilding of target XLF files [#7](https://github.com/translation/angular/pull/7).
+
 ## [v1.6.0](https://github.com/translation/angular/releases/tag/v1.6.0) (2023-02-20)
  
 #### Fixes (bugs & defects):

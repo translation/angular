@@ -343,7 +343,8 @@ class Base {
       const targetXmlUnits = this.forceArray(targetXml.xliff.file.body['trans-unit']) // Ensure consistent array
 
       // 4 Populate the loaded .xlf it with targets from Translation.io
-      const translatedTargetSegmentsHash = this.buildTranslatedTargetSegmentsHash(response.segments[language])
+      const translatedTargetSegments     = response.segments[language]
+      const translatedTargetSegmentsHash = this.buildTranslatedTargetSegmentsHash(translatedTargetSegments)
 
       // Iterate over XML units
       targetXmlUnits.forEach(targetXmlUnit => {
@@ -362,6 +363,7 @@ class Base {
     })
   }
 
+  // For O(1) search optimization
   buildTranslatedTargetSegmentsHash(segments) {
     let translatedTargetSegmentsHash = {}
 
